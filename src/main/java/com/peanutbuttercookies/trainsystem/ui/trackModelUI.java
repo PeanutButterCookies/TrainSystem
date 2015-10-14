@@ -1,6 +1,5 @@
 package com.peanutbuttercookies.trainsystem.interfaces;
 
-
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.event.MouseAdapter;
@@ -22,31 +21,15 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JList;
 import javax.swing.JTable;
 
-public class trackModelUI extends JFrame {
+public class TrackModelUI extends JFrame {
 
 	private JPanel contentPane;
 	public ArrayList<Block> track;
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					trackModelUI frame = new trackModelUI(null);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
 	 * Create the frame.
 	 */
-	public trackModelUI(ArrayList<Block> newTrack) {
+	public TrackModelUI(ArrayList<Block> newTrack) {
 		track = newTrack;
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
