@@ -20,7 +20,7 @@ public interface TrackModelInterface {
 	
 	
 	//only handled by track model
-	public void setBeacon(int blockId); //sent to train controller
+	public void setBeacon(); //sent to train controller
 	public void setStation(String station); //sent to train controller
 	public void setLayout(Block newBlock);
 	public void setBlock(String line, String section, int blockId, int blockLength, int speedLim, String infra, int occupancy);
