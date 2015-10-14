@@ -21,6 +21,7 @@ public interface TrackModelInterface {
 	
 	//only handled by track model
 	public void setBeacon(int blockId);
+	public void setStation(int blockId);
 	public void setLayout(Block newBlock);
 	public void setBlock(String line, String section, int blockId, int blockLength, int speedLim, String infra, int occupancy);
 }
