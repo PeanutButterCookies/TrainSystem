@@ -11,5 +11,5 @@ public interface TrackModelInterface {
 	public void getBlockUnoccupied(int blockId);
 	public void setBeacon(int blockId);
 	public void setLayout(int blockId);
-	public void setBlock(String line, String section, int BlockNum, int BlockLength, int SpeedLim, int Infra);
+	public void setBlock(String line, String section, int blockId, int blockLength, int speedLim, int infra, int occupancy);
 }
