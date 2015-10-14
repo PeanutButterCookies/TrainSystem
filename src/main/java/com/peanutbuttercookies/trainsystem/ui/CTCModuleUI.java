@@ -1,9 +1,7 @@
 package com.peanutbuttercookies.trainsystem.ui;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.io.IOException;
 
 import javax.swing.BoxLayout;
@@ -18,11 +16,16 @@ import com.peanutbuttercookies.trainsystem.ui.models.CTCBlockTableModel;
 import com.peanutbuttercookies.trainsystem.ui.models.CTCTrainTableModel;
 
 public class CTCModuleUI extends JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6499144261081785066L;
+
 	private JTable blockTable;
 	private JTable trainTable;
 	private JButton sendButton;
-	private JComboBox trainCBox;
-	private JComboBox blockCBox;
+	private JComboBox<String> trainCBox;
+	private JComboBox<String> blockCBox;
 	private CTCBlockTableModel blockModel;
 	private CTCTrainTableModel trainModel;
 	private JScrollPane trainSP;
@@ -62,7 +65,7 @@ public class CTCModuleUI extends JFrame {
 		blockModel = new CTCBlockTableModel();
 		blockTable = new JTable(blockModel);
 		trainModel = new CTCTrainTableModel();
-		trainTable = new JTable();
+		trainTable = new JTable(trainModel);
 //		trainTable.setPreferredSize(new Dimension(300, 500));
 //		blockTable.setPreferredSize(new Dimension(300, 500));
 		trainSP = new JScrollPane(trainTable);
@@ -74,8 +77,8 @@ public class CTCModuleUI extends JFrame {
 	}
 	
 	private void initializeBottom(JPanel bottom) {
-		trainCBox = new JComboBox();
-		blockCBox = new JComboBox();
+		trainCBox = new JComboBox<String>();
+		blockCBox = new JComboBox<String>();
 		sendButton = new JButton("Send");
 		trainCBox.setPreferredSize(new Dimension(200, 30));
 		blockCBox.setPreferredSize(new Dimension(200, 30));
