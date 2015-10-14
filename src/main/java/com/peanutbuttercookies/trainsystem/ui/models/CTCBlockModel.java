@@ -6,11 +6,13 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.ComboBoxModel;
+import javax.swing.event.ListDataListener;
 import javax.swing.table.AbstractTableModel;
 
 import com.peanutbuttercookies.trainsystem.ctc.CTCBlock;
 
-public class CTCBlockTableModel extends AbstractTableModel {
+public class CTCBlockModel extends AbstractTableModel implements ComboBoxModel<Integer> {
 
 	/**
 	 * 
@@ -19,11 +21,11 @@ public class CTCBlockTableModel extends AbstractTableModel {
 
 	private List<CTCBlock> blocks;
 	
-	public CTCBlockTableModel() throws IOException {
+	public CTCBlockModel() throws IOException {
 		blocks = new ArrayList<CTCBlock>();
 		
 //		For prototype only
-		BufferedReader reader = new BufferedReader(new InputStreamReader(CTCBlockTableModel.class.getResourceAsStream("/trackLayout.txt")));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(CTCBlockModel.class.getResourceAsStream("/trackLayout.txt")));
 		reader.readLine();
 		while(reader.ready()) {
 			String[] line = reader.readLine().split(" ");
@@ -32,7 +34,7 @@ public class CTCBlockTableModel extends AbstractTableModel {
 		}
 	}
 	
-	public CTCBlockTableModel(List<CTCBlock> blocks) {
+	public CTCBlockModel(List<CTCBlock> blocks) {
 		this.blocks = blocks;
 	}
 	
@@ -72,6 +74,42 @@ public class CTCBlockTableModel extends AbstractTableModel {
 		default:
 			return "error";
 		}
+	}
+
+	@Override
+	public void addListDataListener(ListDataListener arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Integer getElementAt(int arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getSize() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void removeListDataListener(ListDataListener arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Object getSelectedItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setSelectedItem(Object arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

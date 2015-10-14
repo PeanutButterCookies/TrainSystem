@@ -1,6 +1,5 @@
 package com.peanutbuttercookies.trainsystem.ui;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.io.IOException;
 
@@ -12,8 +11,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import com.peanutbuttercookies.trainsystem.ui.models.CTCBlockTableModel;
-import com.peanutbuttercookies.trainsystem.ui.models.CTCTrainTableModel;
+import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
+import com.peanutbuttercookies.trainsystem.ui.models.CTCBlockModel;
+import com.peanutbuttercookies.trainsystem.ui.models.CTCTrainModel;
 
 public class CTCModuleUI extends JFrame {
 	/**
@@ -21,25 +21,27 @@ public class CTCModuleUI extends JFrame {
 	 */
 	private static final long serialVersionUID = 6499144261081785066L;
 
+	private CTCModuleInterface module;
+	
 	private JTable blockTable;
 	private JTable trainTable;
 	private JButton sendButton;
-	private JComboBox<String> trainCBox;
-	private JComboBox<String> blockCBox;
-	private CTCBlockTableModel blockModel;
-	private CTCTrainTableModel trainModel;
+	private JComboBox<Integer> trainCBox;
+	private JComboBox<Integer> blockCBox;
+	private CTCBlockModel blockModel;
+	private CTCTrainModel trainModel;
 	private JScrollPane trainSP;
 	private JScrollPane blockSP;
 	
-	public CTCModuleUI() throws IOException {
+	public CTCModuleUI(CTCModuleInterface module) throws IOException {
 		super("CTCModule");
+		this.module = module;
 	
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setPreferredSize(new Dimension(600, 300));
         JPanel contentPane = new JPanel();
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
         contentPane.setPreferredSize(new Dimension(600, 600));
-        contentPane.setBackground(Color.cyan);
         JPanel topPane = new JPanel();
         JPanel bottomPane = new JPanel();
         topPane.setPreferredSize(new Dimension(600, 550));
@@ -49,6 +51,8 @@ public class CTCModuleUI extends JFrame {
 //        middlePane.setLayout(new FlowLayout());
         bottomPane.setLayout(new BoxLayout(bottomPane, BoxLayout.X_AXIS));
 
+		blockModel = new CTCBlockModel();
+		trainModel = new CTCTrainModel();
         initializeTop(topPane);
         initializeBottom(bottomPane);
 
@@ -62,23 +66,17 @@ public class CTCModuleUI extends JFrame {
 	
 	private void initializeTop(JPanel top) throws IOException {
 		
-		blockModel = new CTCBlockTableModel();
 		blockTable = new JTable(blockModel);
-		trainModel = new CTCTrainTableModel();
 		trainTable = new JTable(trainModel);
-//		trainTable.setPreferredSize(new Dimension(300, 500));
-//		blockTable.setPreferredSize(new Dimension(300, 500));
 		trainSP = new JScrollPane(trainTable);
 		blockSP = new JScrollPane(blockTable);
-//		trainSP.setPreferredSize(new Dimension(200, 200));
-//		blockSP.setPreferredSize(new Dimension(200, 200));
 		top.add(trainSP);
 		top.add(blockSP);
 	}
 	
 	private void initializeBottom(JPanel bottom) {
-		trainCBox = new JComboBox<String>();
-		blockCBox = new JComboBox<String>();
+		trainCBox = new JComboBox<Integer>(trainModel);
+		blockCBox = new JComboBox<Integer>(blockModel);
 		sendButton = new JButton("Send");
 		trainCBox.setPreferredSize(new Dimension(200, 30));
 		blockCBox.setPreferredSize(new Dimension(200, 30));

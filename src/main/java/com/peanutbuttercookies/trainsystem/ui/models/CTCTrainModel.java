@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.swing.ComboBoxModel;
+import javax.swing.event.ListDataListener;
 import javax.swing.table.AbstractTableModel;
 
-public class CTCTrainTableModel extends AbstractTableModel {
+public class CTCTrainModel extends AbstractTableModel implements ComboBoxModel<Integer> {
 
 	/**
 	 * 
@@ -17,7 +19,7 @@ public class CTCTrainTableModel extends AbstractTableModel {
 	HashMap<Integer, Integer> trainToBlock;
 	HashMap<Integer, Integer> blockToTrain;
 	
-	public CTCTrainTableModel() {
+	public CTCTrainModel() {
 		trainToBlock = new HashMap<Integer, Integer>();
 		blockToTrain = new HashMap<Integer, Integer>();
 		trains = new ArrayList<Integer>();
@@ -59,5 +61,41 @@ public class CTCTrainTableModel extends AbstractTableModel {
 		default:
 			return "error";
 		}
+	}
+
+	@Override
+	public void addListDataListener(ListDataListener l) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Integer getElementAt(int index) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getSize() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void removeListDataListener(ListDataListener l) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Object getSelectedItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setSelectedItem(Object anItem) {
+		// TODO Auto-generated method stub
+		
 	}
 }
