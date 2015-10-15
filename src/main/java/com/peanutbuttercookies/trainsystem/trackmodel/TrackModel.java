@@ -1,9 +1,9 @@
 package com.peanutbuttercookies.trainsystem.trackmodel;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import com.peanutbuttercookies.trainsystem.ui.TrackModelUI;
 
@@ -30,10 +30,11 @@ public TrackModelUI newUI;
 	
 	public void fileRead()	{
 		track = new ArrayList<Block>();
-		String file = "C:/Users/Fauzul/Documents/COE1186/trackLayout.txt";
-		String line;
-		try	(BufferedReader br = new BufferedReader(new FileReader(file));)	{
-			while((line = br.readLine()) != null)	{
+		
+		try	{
+			BufferedReader br = new BufferedReader(new InputStreamReader(TrackModel.class.getResourceAsStream("/trackLayout.txt")));	
+			while(br.ready()) {
+				String line = br.readLine();
 				String delims = "[ ]+";
 				String[] tokens = line.split(delims);
 				if(!tokens[0].equals("Line"))	{
