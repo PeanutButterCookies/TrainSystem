@@ -104,9 +104,9 @@ public class TrainControllerUI extends JFrame {
 		contentPane.add(textField_3);
 		textField_3.setColumns(10);
 		if(trainController.doorsOpen == false)
-			textField_3.setText("False");
+			textField_3.setText("Closed");
 		else
-			textField_3.setText("True");
+			textField_3.setText("Open");
 		
 		textField_4 = new JTextField();
 		textField_4.setEditable(false);
