@@ -14,7 +14,7 @@ public class TrackModel implements TrackModelInterface {
 	private TrackControllerInterface trackComm;
 	private TrainInterface trainComm;
 	private ArrayList<Block> track;
-	private TrackModelUI newUI;
+	private TrackModelUI tmUI;
 	
 	public TrackModel() {
 		fileRead();
@@ -55,11 +55,14 @@ public class TrackModel implements TrackModelInterface {
 	@Override
 	public void setBlockOccupied(int blockId, int trainId) {
 		track.get(blockId-1).setOccupancy();
+ 		if(tmUI.currentView(blockId))
+ 			tmUI.display(blockId);
 		trackComm.setTrainPresence(trainId, blockId);
-		//trainComm.setSpeedLimit(track.get(blockId-1).getSpeedLim());
-		//trainComm.setStation(track.get(blockId-1).getInfra());
-		//trainComm.setBlockId(blockId);
-		//trainComm.setBlockLength(track.get(blockId-1).getBlockLen());
+		trainComm.setSpeedLimit(track.get(blockId-1).getSpeedLim());
+		if(!track.get(blockId-1).getInfra().equals("none"));
+			trainComm.setStation(track.get(blockId-1).getInfra());
+		trainComm.setBlockId(blockId);
+		trainComm.setBlockLength(track.get(blockId-1).getBlockLen());
 	}
 
 	@Override
@@ -67,6 +70,8 @@ public class TrackModel implements TrackModelInterface {
 		for(int i =0; i<track.size(); i++)	{
 			if(track.get(i).getBlockId() == blockId)	{
 				track.get(i).setOccupancy();
+				if(tmUI.currentView(blockId))
+		 			tmUI.display(blockId);
 			}
 		}
 	}
@@ -83,20 +88,20 @@ public class TrackModel implements TrackModelInterface {
 
 	@Override
 	public void setBlock(String line, String section, int blockId, int blockLen, int speedLim, String infra, int occupancy) {
-		// TODO Auto-generated method stub
-		//@SuppressWarnings("unused")
 		Block newBlock = new Block(line, section, blockId, blockLen, speedLim, infra, occupancy);
 		setLayout(newBlock);
 	}
 	
 	@Override
 	public void setSpeed(int trainId, int speed)	{
-		//trainComm.setSpeed(trainId, speed);
+		trainComm.setSpeed(speed);
+		System.out.println("Speed Received " + trainId + " " + speed + " -Track Model");
+
 	}
 	
 	@Override
 	public void setAuthority(int trainId, int authority)	{
-		//trainComm.setAuthority(trainId, authority);
+		trainComm.setAuthority(authority);
 	}
 
 	@Override
@@ -107,10 +112,9 @@ public class TrackModel implements TrackModelInterface {
 
 	@Override
 	public void setStation(String station) {
-		// TODO Auto-generated method stub
 		if(!station.equals("none"))	{
 			setBeacon();
-			//trainComm.getStation(station);
+			trainComm.setStation(station);
 		}
 	}
 
@@ -131,5 +135,12 @@ public class TrackModel implements TrackModelInterface {
 	@Override
 	public ArrayList<Block> getTrack() {
 		return track;
+	}
+
+
+	@Override
+	public void setUI(TrackModelUI tmUI) {
+		this.tmUI = tmUI;
+		
 	}
 }

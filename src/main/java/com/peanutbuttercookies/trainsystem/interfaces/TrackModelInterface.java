@@ -7,6 +7,7 @@ package com.peanutbuttercookies.trainsystem.interfaces;
 import java.util.ArrayList;
 
 import com.peanutbuttercookies.trainsystem.trackmodel.Block;
+import com.peanutbuttercookies.trainsystem.ui.TrackModelUI;
 
 public interface TrackModelInterface {
 	//for train access, but should not need it
@@ -26,6 +27,7 @@ public interface TrackModelInterface {
 	
 	
 	//only handled by track model
+	public void setUI(TrackModelUI tmUI);
 	public ArrayList<Block> getTrack();
 	public void setTC(TrackControllerInterface trackComm);
 	public void setTI(TrainInterface trainComm);
