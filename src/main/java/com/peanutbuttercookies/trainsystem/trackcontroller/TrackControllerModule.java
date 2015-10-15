@@ -19,16 +19,14 @@ public class TrackControllerModule implements TrackControllerInterface {
 		
 		if(trainId>=trainList.size()){
 			trainList.addElement(new TC_Train(trainId,authority,suggestedSpeed,0,"Red"));
-			trackModel.setAuthority(trainId, authority);
-			trackModel.setSpeed(trainId, suggestedSpeed);
+			trackModel.setSpeedAuthority(trainId, suggestedSpeed, authority);
 		}
 		else{
 			TC_Train temp =trainList.get(trainId);
 			temp.setAuthority(authority);
 			temp.setCommandedSpeed(suggestedSpeed);
 			
-			trackModel.setAuthority(trainId, authority);
-			trackModel.setSpeed(trainId, suggestedSpeed);
+			trackModel.setSpeedAuthority(trainId, suggestedSpeed, authority);
 		}
 		return true;
 	}

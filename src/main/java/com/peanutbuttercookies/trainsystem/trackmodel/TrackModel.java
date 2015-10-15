@@ -54,6 +54,11 @@ public class TrackModel implements TrackModelInterface {
 
 	@Override
 	public void setBlockOccupied(int blockId, int trainId) {
+		
+		// TEMP HACK
+		blockId += 1;
+		// TEMP HACK
+		
 		track.get(blockId-1).setOccupancy();
  		if(tmUI.currentView(blockId))
  			tmUI.display(blockId);
@@ -93,17 +98,14 @@ public class TrackModel implements TrackModelInterface {
 	}
 	
 	@Override
-	public void setSpeed(int trainId, int speed)	{
+	public void setSpeedAuthority(int trainId, int speed, int authority)	{
 		trainComm.setSpeed(speed);
+		trainComm.setAuthority(authority);
+		trainComm.run();
 		System.out.println("Speed Received " + trainId + " " + speed + " -Track Model");
 
 	}
 	
-	@Override
-	public void setAuthority(int trainId, int authority)	{
-		trainComm.setAuthority(authority);
-	}
-
 	@Override
 	public int getBeacon(int trainId) {
 		// TODO Auto-generated method stub
