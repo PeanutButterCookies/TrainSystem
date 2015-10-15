@@ -59,11 +59,12 @@ public class TrainController implements TrainControllerInterface{
 	}
 	
 	public void atStation(){
+		openDoors();
 		
 	}
 	
 	public void leaveStation(){
-		
+		closeDoors();
 	}
 
 	@Override

@@ -124,6 +124,15 @@ public class Train implements TrainInterface {
 			trackModel.setBlockUnoccupied(blockId);
 			blockId++;
 		}
+		setSpeed(0);
+		trainController.openDoors();
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		trainController.closeDoors();
 	}
 
 
