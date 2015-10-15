@@ -9,27 +9,24 @@ import java.util.HashSet;
 import java.util.List;
 
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
+import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
+import com.peanutbuttercookies.trainsystem.ui.CTCModuleUI;
 
 public class CTCModule implements CTCModuleInterface {
 
-//	private TrackControllerModuleInterface trackCtrl;
+	private TrackControllerInterface trackCtrl;
+	private CTCModuleUI ui;
 	
 	private List<CTCBlock> blocks;
-	private List<Integer> trains;
 	private HashMap<Integer, Integer> trainToBlock;
 	private HashMap<Integer, Integer> blockToTrain;
-	private HashSet<Integer> blockSet;
 
 	private int maxTrain = 0;
-	private int speed = 0;
-	private int authority = 0;
-	private int train = 1;
 
 	public CTCModule() throws IOException {
 		blocks = new ArrayList<CTCBlock>();
 		trainToBlock = new HashMap<Integer, Integer>();
 		blockToTrain = new HashMap<Integer, Integer>();
-		trains = new ArrayList<Integer>();
 
 		// for prototype
 		BufferedReader reader = new BufferedReader(
@@ -76,12 +73,18 @@ public class CTCModule implements CTCModuleInterface {
 
 	@Override
 	public boolean send(String speed, Integer train, Integer authority) {
-		// TODO Auto-generated method stub
+		int speedInt = 0;
+		try {
+			speedInt = Integer.parseInt(speed);
+		} catch(NumberFormatException e) {
+			return false;
+		}
 		if(train < 1 || train > maxTrain + 1) {
 			return false;
 		} else if(train == maxTrain + 1) {
 			maxTrain++;
 		}
+		trackCtrl.setSpeedAuthority(train, speedInt, authority);
 		return true;
 	}
 
@@ -93,6 +96,11 @@ public class CTCModule implements CTCModuleInterface {
 	@Override
 	public List<CTCBlock> getBlocks() {
 		return blocks;
+	}
+
+	@Override
+	public void setUI(CTCModuleUI ui) {
+		this.ui = ui;
 	}
 
 
