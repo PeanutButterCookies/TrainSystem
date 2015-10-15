@@ -78,7 +78,7 @@ public class TrackModel implements TrackModelInterface {
 
 	@Override
 	public void setBeacon() {
-		trainComm.setBeaconInfo("1");
+		//trainComm.setBeaconInfo("1");
 	}
 	
 	@Override
@@ -94,14 +94,14 @@ public class TrackModel implements TrackModelInterface {
 	
 	@Override
 	public void setSpeed(int trainId, int speed)	{
-		trainComm.setSpeed(trainId, speed);
+		trainComm.setSpeed(speed);
 		System.out.println("Speed Received " + trainId + " " + speed + " -Track Model");
 
 	}
 	
 	@Override
 	public void setAuthority(int trainId, int authority)	{
-		trainComm.setAuthority(trainId, authority);
+		trainComm.setAuthority(authority);
 	}
 
 	@Override
@@ -114,7 +114,7 @@ public class TrackModel implements TrackModelInterface {
 	public void setStation(String station) {
 		if(!station.equals("none"))	{
 			setBeacon();
-			trainComm.getStation(station);
+			trainComm.setStation(station);
 		}
 	}
 
