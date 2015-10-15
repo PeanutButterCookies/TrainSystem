@@ -4,6 +4,8 @@ package com.peanutbuttercookies.trainsystem.interfaces;
 *	10/14/2015
 */
 
+import com.peanutbuttercookies.trainsystem.trackmodel.Block;
+
 public interface TrackModelInterface {
 	//for train access, but should not need it
 	public int getSpeed(int trainId);
