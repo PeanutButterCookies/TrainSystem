@@ -105,11 +105,11 @@ public class Train implements TrainInterface {
 		this.authority = authority;
 	}
 	public void run(){
-		trainController.setAcceleration(getAcceleration());
+		trainController.setAcceleration(0.0);
 		trainController.setSpeed(getSpeed());
 		while(blockId<=authority){
 			trackModel.setBlockOccupied(blockId, id);
-			setSpeed(70*1000/3600);
+			//setSpeed(70*1000/3600);
 			double distance = 0;
 			while(distance <= blockLength){
 				distance+=speed*60;
