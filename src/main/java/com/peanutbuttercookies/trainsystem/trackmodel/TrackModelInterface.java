@@ -11,6 +11,8 @@ public interface TrackModelInterface {
 	//both go directly to train
 	public void setSpeed(int trainId, int speed);
 	public void setAuthority(int trainId, int authority);
+	
+	//set by trainModel
 	public void setBlockOccupied(int blockId, int trainId);
 	public void setBlockUnoccupied(int blockId);
 	

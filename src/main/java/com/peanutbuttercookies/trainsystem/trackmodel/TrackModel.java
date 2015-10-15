@@ -5,25 +5,28 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.ui.TrackModelUI;
 
 public class TrackModel implements TrackModelInterface {
-public ArrayList<Block> track;
-public TrackModelUI newUI;
-	public static void main(String[] args) {
-		TrackModel curModel = new TrackModel();
-		//TrainModel trainComm = new trainModel();
-		curModel.fileRead();
-		curModel.loadUI();
+	private TrackControllerInterface trackComm;
+	private TrainInterface trainComm;
+	private ArrayList<Block> track;
+	private TrackModelUI newUI;
+	
+	public TrackModel() {
+		trainComm = new Train();
+		trackComm = new TrackController();
+		fileRead();
+		loadUI();
 	}
 	
 	
 	
-	@SuppressWarnings("deprecation")
 	public void loadUI()
 	{
 		newUI = new TrackModelUI(track);
-		newUI.show();
+		newUI.setVisible(true);
 	}
 	
 	
@@ -48,27 +51,29 @@ public TrackModelUI newUI;
 	}
 	@Override
 	public int getSpeed(int trainId) {
+		// TODO Auto-generated method stub
 		return 0;
 		
 	}
 
 	@Override
 	public int getAuthority(int trainId) {
+		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public void setBlockOccupied(int blockId, int trainId) {
-		// TODO Auto-generated method stub
 		track.get(blockId-1).setOccupancy();
-		setStation(track.get(blockId-1).getInfra());
-		//trackComm.setTrainPresence(trainId, blockId);
-		//trainComm.setSpeedLimit(track.get(blockId-1).getSpeedLim());
+		trackComm.setTrainPresence(trainId, blockId);
+		trainComm.setSpeedLimit(track.get(blockId-1).getSpeedLim());
+		trainComm.setStation(track.get(blockId-1).getInfra());
+		trainComm.setBlockId(blockId);
+		trainComm.setBlockLength(track.get(blockId-1).getBlockLen());
 	}
 
 	@Override
 	public void setBlockUnoccupied(int blockId) {
-		// TODO Auto-generated method stub
 		for(int i =0; i<track.size(); i++)	{
 			if(track.get(i).getBlockId() == blockId)	{
 				track.get(i).setOccupancy();
@@ -78,8 +83,7 @@ public TrackModelUI newUI;
 
 	@Override
 	public void setBeacon() {
-		// TODO Auto-generated method stub
-		//trainComm.getBeaconInfo("1");
+		//trainComm.setBeaconInfo("1");
 	}
 	
 	@Override
