@@ -24,3 +24,4 @@ public interface TrainInterface {
 	public double getPower();
 	public double getCurrentSpeed();
 }
+

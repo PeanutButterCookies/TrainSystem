@@ -112,7 +112,7 @@ public class Train implements TrainInterface {
 			double distance = 0;
 			while(distance <= blockLength){
 				distance+=speed*60;
-				getPower(mass,speed,0);
+				setPower(mass,speed,0.0);
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {

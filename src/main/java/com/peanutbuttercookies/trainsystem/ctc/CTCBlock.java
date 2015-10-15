@@ -1,8 +1,23 @@
+/*
+ * Kevin Nash
+ * 10/15/2015
+ */
+
 package com.peanutbuttercookies.trainsystem.ctc;
 
-public class CTCBlock {
-	int blockNumber;
-	boolean occupied;
+import java.util.Arrays;
+
+public class CTCBlock extends AbstractCTCBean {
+	
+	static {
+		fields = Arrays.asList(new String[] {
+			"Block Number",
+			"Occupied"
+		});
+	}
+	
+	private int blockNumber;
+	private boolean occupied;
 	
 	public CTCBlock(int blockNumber) {
 		setBlockNumber(blockNumber);
@@ -21,4 +36,5 @@ public class CTCBlock {
 	public void setOccupied(boolean occupied) {
 		this.occupied = occupied;
 	}
+	
 }

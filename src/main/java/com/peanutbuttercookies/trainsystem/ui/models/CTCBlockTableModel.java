@@ -1,3 +1,4 @@
+
 package com.peanutbuttercookies.trainsystem.ui.models;
 
 import java.io.BufferedReader;

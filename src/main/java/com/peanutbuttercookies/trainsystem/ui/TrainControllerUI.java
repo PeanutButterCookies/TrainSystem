@@ -27,18 +27,7 @@ public class TrainControllerUI extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					TrainControllerUI frame = new TrainControllerUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	
 
 	/**
 	 * Create the frame.
@@ -137,5 +126,8 @@ public class TrainControllerUI extends JFrame {
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, comboBox, 0, SpringLayout.SOUTH, lblSelectTrain);
 		contentPane.add(comboBox);
 		comboBox.addItem(trainController);
+		
+		setVisible(true);
 	}
+	
 }

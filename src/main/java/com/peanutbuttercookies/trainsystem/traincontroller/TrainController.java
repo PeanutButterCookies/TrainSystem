@@ -11,7 +11,7 @@ public class TrainController implements TrainControllerInterface{
 	public double mass;
 	public int authority;
 	public double power;
-	public String station;
+	public String station="";
 	public boolean doorsOpen = false;
 	TrainInterface train;
 	TrainControllerUI ui; 

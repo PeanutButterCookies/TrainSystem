@@ -4,6 +4,10 @@ package com.peanutbuttercookies.trainsystem.interfaces;
 *	10/14/2015
 */
 
+import java.util.ArrayList;
+
+import com.peanutbuttercookies.trainsystem.trackmodel.Block;
+
 public interface TrackModelInterface {
 	//for train access, but should not need it
 	public int getSpeed(int trainId);
@@ -15,11 +19,16 @@ public interface TrackModelInterface {
 	//both go directly to train
 	public void setSpeed(int trainId, int speed); //sent to train controller
 	public void setAuthority(int trainId, int authority); //sent to train controller
+	
+	//train model uses
 	public void setBlockOccupied(int blockId, int trainId);
 	public void setBlockUnoccupied(int blockId);
 	
 	
 	//only handled by track model
+	public ArrayList<Block> getTrack();
+	public void setTC(TrackControllerInterface trackComm);
+	public void setTI(TrainInterface trainComm);
 	public void setBeacon(); //sent to train controller
 	public void setStation(String station); //sent to train controller
 	public void setLayout(Block newBlock);
