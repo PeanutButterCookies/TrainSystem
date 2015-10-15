@@ -117,11 +117,11 @@ public class TrainControllerUI extends JFrame {
 		textField_4.setText(trainController.station);
 		
 		
-		JComboBox<TrainController> comboBox = new JComboBox<TrainController>();
+		JComboBox<Integer> comboBox = new JComboBox<Integer>();
 		sl_contentPane.putConstraint(SpringLayout.WEST, comboBox, 6, SpringLayout.EAST, lblSelectTrain);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, comboBox, 0, SpringLayout.SOUTH, lblSelectTrain);
 		contentPane.add(comboBox);
-		comboBox.addItem(trainController);
+		comboBox.addItem(1);
 		setVisible(true);
 	}
 }
