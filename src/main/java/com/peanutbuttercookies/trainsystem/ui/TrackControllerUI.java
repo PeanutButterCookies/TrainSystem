@@ -39,25 +39,11 @@ public class TrackControllerUI extends JFrame {
 	private TrackControllerInterface trackController;
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					TrackControllerUI frame = new TrackControllerUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
 	 * Create the frame.
 	 */
-	public TrackControllerUI() {
+	public TrackControllerUI(TrackControllerInterface trackController) {
+		super("Track Controller");
+		this.trackController = trackController;
 		setTitle("Track Controller Module");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1280, 720);
@@ -371,5 +357,7 @@ public class TrackControllerUI extends JFrame {
 		);
 		panel.setLayout(gl_panel);
 		contentPane.setLayout(gl_contentPane);
+		setVisible(true);
 	}
+
 }
