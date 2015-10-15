@@ -20,6 +20,7 @@ public class TrainControllerUI extends JFrame {
 	private JTextField textField_2;
 	private JTextField textField_3;
 	private JTextField textField_4;
+	private JTextField textField_5;
 
 	/**
 	 * Launch the application.
@@ -124,5 +125,17 @@ public class TrainControllerUI extends JFrame {
 		sl_contentPane.putConstraint(SpringLayout.WEST, comboBox, 6, SpringLayout.EAST, lblSelectTrain);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, comboBox, 0, SpringLayout.SOUTH, lblSelectTrain);
 		contentPane.add(comboBox);
+		
+		JLabel lblPower = new JLabel("Power:");
+		sl_contentPane.putConstraint(SpringLayout.NORTH, lblPower, 0, SpringLayout.NORTH, lblAuthority);
+		sl_contentPane.putConstraint(SpringLayout.EAST, lblPower, 0, SpringLayout.EAST, lblDoors);
+		contentPane.add(lblPower);
+		
+		textField_5 = new JTextField();
+		textField_5.setEditable(false);
+		sl_contentPane.putConstraint(SpringLayout.SOUTH, textField_5, 0, SpringLayout.SOUTH, lblAuthority);
+		sl_contentPane.putConstraint(SpringLayout.EAST, textField_5, 0, SpringLayout.EAST, textField_3);
+		contentPane.add(textField_5);
+		textField_5.setColumns(10);
 	}
 }
