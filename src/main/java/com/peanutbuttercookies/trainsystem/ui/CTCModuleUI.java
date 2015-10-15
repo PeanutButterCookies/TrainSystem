@@ -70,6 +70,12 @@ public class CTCModuleUI extends JFrame implements ActionListener {
 		setLocationByPlatform(true);
 		setVisible(true);
 	}
+	
+	public void blockUpdated(int blockId) {
+		blockTableModel.fireTableRowsUpdated(0, blockTableModel.getRowCount() - 1);
+		trainTableModel.moveTrain(blockId);
+		trainTableModel.fireTableRowsUpdated(0, trainTableModel.getRowCount() - 1);
+	}
 
 	private void initializeTop(JPanel top) throws IOException {
 
@@ -124,9 +130,13 @@ public class CTCModuleUI extends JFrame implements ActionListener {
 		int train = getSelected(trainModel);
 		int authority = getSelected(blockModel);
 		if(module.send(speed.getText(), train, authority)) {
+			if(train ==0) {
+				train++;
+			}
 			if(!trainSet.contains(train)) {
 				trainSet.add(train);
 				trainModel.addElement(train);
+				System.out.println("element added");
 			}
 		}
 	}
@@ -136,5 +146,6 @@ public class CTCModuleUI extends JFrame implements ActionListener {
 		int index = m.getIndexOf(selected);
 		return m.getElementAt(index);
 	}
+	
 
 }

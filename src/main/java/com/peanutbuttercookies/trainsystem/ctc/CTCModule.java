@@ -77,9 +77,10 @@ public class CTCModule implements CTCModuleInterface {
 		try {
 			speedInt = Integer.parseInt(speed);
 		} catch(NumberFormatException e) {
+			System.out.println("Not a number");
 			return false;
 		}
-		if(train < 1 || train > maxTrain + 1) {
+		if(train < 0 || train > maxTrain + 1) {
 			return false;
 		} else if(train == maxTrain + 1) {
 			maxTrain++;

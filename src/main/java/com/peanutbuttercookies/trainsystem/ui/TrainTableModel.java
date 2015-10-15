@@ -47,5 +47,30 @@ public class TrainTableModel extends AbstractTableModel {
 		
 		return "error";
 	}
+	
+	public void moveTrain(int blockId) {
+		int min = Integer.MAX_VALUE;
+		int trainId = -1;
+		int rowIndex = -1;
+		for(int i=0; i<trainList.size(); i++) {
+			int train = trainList.get(i);
+			int diff = blockId - train;
+			if(diff < 0) {
+				diff *= -1;
+			}
+			if(diff < min) {
+				trainId = train;
+				min = diff;
+				rowIndex = i;
+			}
+		}
+		int current = trainMap.get(trainId);
+		if(current < blockId) {
+			trainMap.put(trainId, min);
+		}
+		
+		fireTableCellUpdated(rowIndex, 1);
+
+	}
 
 }
