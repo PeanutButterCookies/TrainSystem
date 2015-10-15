@@ -15,12 +15,15 @@ import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 import com.peanutbuttercookies.trainsystem.trackcontroller.TrackControllerModule;
 import com.peanutbuttercookies.trainsystem.trackmodel.TrackModel;
 import com.peanutbuttercookies.trainsystem.ui.CTCModuleUI;
+import com.peanutbuttercookies.trainsystem.ui.TrackModelUI;
+import com.peanutbuttercookies.trainsystem.ui.TrackControllerUI;
 
 public class MainApp {
 	public static void main(String[] args) throws IOException {
 		CTCModuleInterface ctc = new CTCModule();
 		TrackControllerInterface tc = new TrackControllerModule();
 		TrackModelInterface tm = new TrackModel();
+//		TrainInterface ti = new TrainModel();
 		
 		ctc.setTC(tc);
 		tc.setCTC(ctc);
