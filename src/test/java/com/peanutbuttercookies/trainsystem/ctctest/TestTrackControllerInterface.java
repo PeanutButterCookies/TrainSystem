@@ -12,6 +12,7 @@ import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 import com.peanutbuttercookies.trainsystem.trackcontroller.TC_Train;
+import com.peanutbuttercookies.trainsystem.ui.TrackControllerUI;
 
 public class TestTrackControllerInterface implements TrackControllerInterface {
 
@@ -40,6 +41,12 @@ public class TestTrackControllerInterface implements TrackControllerInterface {
 
 	@Override
 	public void setTrackModel(TrackModelInterface trackModel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setTrackControllerUI(TrackControllerUI trackControllerUI) {
 		// TODO Auto-generated method stub
 		
 	}

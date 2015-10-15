@@ -1,15 +1,23 @@
 package com.peanutbuttercookies.trainsystem.trackcontroller;
 
+import com.peanutbuttercookies.trainsystem.ui.TrackControllerUI;
+
 import java.util.Vector;
 
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 
+/**
+ * 
+ * @author Chris Good
+ *
+ */
 public class TrackControllerModule implements TrackControllerInterface {
 	
 	private CTCModuleInterface ctc;
 	private TrackModelInterface trackModel;
+	private TrackControllerUI ui;
 	
 	private Vector<TC_Train> trainList=new Vector<TC_Train>();
 	
@@ -17,12 +25,12 @@ public class TrackControllerModule implements TrackControllerInterface {
 	public boolean setSpeedAuthority(int trainId, int suggestedSpeed, int authority) {
 		// TODO Auto-generated method stub
 		
-		if(trainId>=trainList.size()){
+		if(trainId>trainList.size()){
 			trainList.addElement(new TC_Train(trainId,authority,suggestedSpeed,0,"Red"));
 			trackModel.setSpeedAuthority(trainId, suggestedSpeed, authority);
 		}
 		else{
-			TC_Train temp =trainList.get(trainId);
+			TC_Train temp =trainList.get(trainId-1);
 			temp.setAuthority(authority);
 			temp.setCommandedSpeed(suggestedSpeed);
 			
@@ -35,8 +43,9 @@ public class TrackControllerModule implements TrackControllerInterface {
 	public boolean setTrainPresence(int trainId, int blockNum) {
 		// TODO Auto-generated method stub
 		if(trainId<trainList.size()){
-			trainList.get(trainId).setPresence(blockNum);
+			trainList.get(trainId-1).setPresence(blockNum);
 			ctc.setBlockOccupied(blockNum);
+			ui.updateTable();
 			return true;
 		}
 		else{
@@ -71,6 +80,12 @@ public class TrackControllerModule implements TrackControllerInterface {
 	@Override
 	public void setTrackModel(TrackModelInterface trackModel) {
 		this.trackModel = trackModel;
+	}
+
+	@Override
+	public void setTrackControllerUI(TrackControllerUI trackControllerUI) {
+		ui=trackControllerUI;
+		
 	}
 
 }
