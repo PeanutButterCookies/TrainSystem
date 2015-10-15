@@ -20,6 +20,8 @@ public interface TrackControllerInterface {
 	public boolean 	setTrainPresence(int trainId, int blockNum);							//called by track model module
 	
 	public Vector<TC_Train>	getLineInfo(String line);
+	public void setCTC(CTCModuleInterface ctc);
+	public void setTrackModel(TrackModelInterface trackModel);
 	
 	//public int 		getTrainPresence(int trainId);		//Used by the CTC module
 	//public int 		getCommandedSpeed(int trainID);		//Used by track model module
