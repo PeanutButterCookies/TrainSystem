@@ -3,6 +3,7 @@ package com.peanutbuttercookies.trainsystem.interfaces;
 import java.util.Vector;
 
 import com.peanutbuttercookies.trainsystem.trackcontroller.TC_Train;
+import com.peanutbuttercookies.trainsystem.ui.TrackControllerUI;
 
 /**
  * 
@@ -22,6 +23,7 @@ public interface TrackControllerInterface {
 	public Vector<TC_Train>	getLineInfo(String line);
 	public void setCTC(CTCModuleInterface ctc);
 	public void setTrackModel(TrackModelInterface trackModel);
+	public void setTrackControllerUI(TrackControllerUI trackControllerUI);
 	
 	//public int 		getTrainPresence(int trainId);		//Used by the CTC module
 	//public int 		getCommandedSpeed(int trainID);		//Used by track model module
