@@ -8,6 +8,10 @@ import javax.swing.table.AbstractTableModel;
 
 public class TrainTableModel extends AbstractTableModel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3648136737558041721L;
 	private List<Integer> trainList;
 	private HashMap<Integer, Integer> trainMap;
 	
