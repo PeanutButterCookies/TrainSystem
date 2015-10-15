@@ -31,7 +31,6 @@ public class MainApp {
 		TrainInterface ti = new Train();
 		TrainController trainController = new TrainController();
 		
-		
 		ctc.setTC(tc);
 		tc.setCTC(ctc);
 		tc.setTrackModel(tm);
