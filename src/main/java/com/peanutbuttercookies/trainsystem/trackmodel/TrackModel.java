@@ -6,6 +6,9 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
+import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
+import com.peanutbuttercookies.trainsystem.interfaces.TrainInterface;
+import com.peanutbuttercookies.trainsystem.trackcontroller.Train;
 import com.peanutbuttercookies.trainsystem.ui.TrackModelUI;
 
 public class TrackModel implements TrackModelInterface {
@@ -15,10 +18,14 @@ public class TrackModel implements TrackModelInterface {
 	private TrackModelUI newUI;
 	
 	public TrackModel() {
-		trainComm = new Train();
-		trackComm = new TrackController();
 		fileRead();
 		loadUI();
+	}
+	public TrackModel(TrackControllerInterface trackComm, TrainInterface trainComm) {
+		this();
+		setTI(trainComm);
+		setTC(trackComm);
+		
 	}
 	
 	
@@ -66,10 +73,10 @@ public class TrackModel implements TrackModelInterface {
 	public void setBlockOccupied(int blockId, int trainId) {
 		track.get(blockId-1).setOccupancy();
 		trackComm.setTrainPresence(trainId, blockId);
-		trainComm.setSpeedLimit(track.get(blockId-1).getSpeedLim());
-		trainComm.setStation(track.get(blockId-1).getInfra());
-		trainComm.setBlockId(blockId);
-		trainComm.setBlockLength(track.get(blockId-1).getBlockLen());
+		//trainComm.setSpeedLimit(track.get(blockId-1).getSpeedLim());
+		//trainComm.setStation(track.get(blockId-1).getInfra());
+		//trainComm.setBlockId(blockId);
+		//trainComm.setBlockLength(track.get(blockId-1).getBlockLen());
 	}
 
 	@Override
@@ -122,5 +129,20 @@ public class TrackModel implements TrackModelInterface {
 			setBeacon();
 			//trainComm.getStation(station);
 		}
+	}
+
+
+
+	@Override
+	public void setTC(TrackControllerInterface trackComm) {
+		this.trackComm = trackComm;
+		
+	}
+
+
+
+	@Override
+	public void setTI(TrainInterface trainComm) {
+		this.trainComm = trainComm;
 	}
 }

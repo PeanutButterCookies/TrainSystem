@@ -24,6 +24,8 @@ public interface TrackModelInterface {
 	
 	
 	//only handled by track model
+	public void setTC(TrackControllerInterface trackComm);
+	public void setTI(TrainInterface trainComm);
 	public void setBeacon(); //sent to train controller
 	public void setStation(String station); //sent to train controller
 	public void setLayout(Block newBlock);
