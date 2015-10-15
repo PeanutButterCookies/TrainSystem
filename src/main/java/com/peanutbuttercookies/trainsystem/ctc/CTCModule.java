@@ -1,3 +1,8 @@
+/*
+ * Kevin Nash
+ * 10/15/2015
+ */
+
 package com.peanutbuttercookies.trainsystem.ctc;
 
 import java.io.BufferedReader;
@@ -5,27 +10,22 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
-import com.peanutbuttercookies.trainsystem.ui.CTCModuleUI;
 
 public class CTCModule implements CTCModuleInterface {
 
-	private TrackControllerInterface trackCtrl;
-	private CTCModuleUI ui;
+	private TrackControllerInterface tc;
 	
 	private List<CTCBlock> blocks;
-	private HashMap<Integer, Integer> trainToBlock;
 	private HashMap<Integer, Integer> blockToTrain;
 
 	private int maxTrain = 0;
 
 	public CTCModule() throws IOException {
 		blocks = new ArrayList<CTCBlock>();
-		trainToBlock = new HashMap<Integer, Integer>();
 		blockToTrain = new HashMap<Integer, Integer>();
 
 		// for prototype
@@ -37,6 +37,11 @@ public class CTCModule implements CTCModuleInterface {
 			addBlock(Integer.parseInt(line[2]));
 		}
 
+	}
+	
+	@Override
+	public void setTC(TrackControllerInterface tc) {
+		this .tc = tc;
 	}
 
 	private void addBlock(int blockId) {
@@ -80,12 +85,12 @@ public class CTCModule implements CTCModuleInterface {
 			System.out.println("Not a number");
 			return false;
 		}
-		if(train < 0 || train > maxTrain + 1) {
+		if(train < 0 || train > maxTrain) {
 			return false;
 		} else if(train == maxTrain + 1) {
 			maxTrain++;
 		}
-		trackCtrl.setSpeedAuthority(train, speedInt, authority);
+		tc.setSpeedAuthority(train, speedInt, authority);
 		return true;
 	}
 
@@ -98,11 +103,5 @@ public class CTCModule implements CTCModuleInterface {
 	public List<CTCBlock> getBlocks() {
 		return blocks;
 	}
-
-	@Override
-	public void setUI(CTCModuleUI ui) {
-		this.ui = ui;
-	}
-
 
 }

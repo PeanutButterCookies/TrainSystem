@@ -1,3 +1,9 @@
+/*
+ * Kevin Nash
+ * 10/15/2015
+ */
+
+
 package com.peanutbuttercookies.trainsystem.ui;
 
 import java.awt.Dimension;
@@ -43,7 +49,6 @@ public class CTCModuleUI extends JFrame implements ActionListener {
 	public CTCModuleUI(CTCModuleInterface module) throws IOException {
 		super("CTCModule");
 		this.module = module;
-		module.setUI(this);
 
 		trainSet = new HashSet<Integer>();
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

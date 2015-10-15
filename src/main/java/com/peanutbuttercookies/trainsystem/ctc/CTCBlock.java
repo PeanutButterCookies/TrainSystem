@@ -1,3 +1,8 @@
+/*
+ * Kevin Nash
+ * 10/15/2015
+ */
+
 package com.peanutbuttercookies.trainsystem.ctc;
 
 public class CTCBlock {
