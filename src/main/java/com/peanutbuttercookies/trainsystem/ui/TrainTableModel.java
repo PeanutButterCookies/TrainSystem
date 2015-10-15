@@ -52,6 +52,15 @@ public class TrainTableModel extends AbstractTableModel {
 		return "error";
 	}
 	
+	public void addTrain(int trainId ) {
+		if(trainMap.containsKey(trainId)) {
+			return;
+		}
+		trainList.add(trainId);
+		trainMap.put(trainId, 0);
+		fireTableRowsInserted(getRowCount() - 1, getRowCount() - 1);
+	}
+	
 	public void moveTrain(int blockId) {
 		int min = Integer.MAX_VALUE;
 		int trainId = -1;
