@@ -86,7 +86,7 @@ public class TrackModel implements TrackModelInterface {
 
 	@Override
 	public void setBeacon() {
-		//trainComm.setBeaconInfo("1");
+		trainComm.setBeaconInfo("1");
 	}
 	
 	@Override
@@ -96,15 +96,13 @@ public class TrackModel implements TrackModelInterface {
 
 	@Override
 	public void setBlock(String line, String section, int blockId, int blockLen, int speedLim, String infra, int occupancy) {
-		// TODO Auto-generated method stub
-		//@SuppressWarnings("unused")
 		Block newBlock = new Block(line, section, blockId, blockLen, speedLim, infra, occupancy);
 		setLayout(newBlock);
 	}
 	
 	@Override
 	public void setSpeed(int trainId, int speed)	{
-		//trainComm.setSpeed(trainId, speed);
+		trainComm.setSpeed(trainId, speed);
 		System.out.println("Speed Received " + trainId + " " + speed + " -Track Model");
 
 	}
@@ -122,7 +120,6 @@ public class TrackModel implements TrackModelInterface {
 
 	@Override
 	public void setStation(String station) {
-		// TODO Auto-generated method stub
 		if(!station.equals("none"))	{
 			setBeacon();
 			trainComm.getStation(station);
