@@ -1,5 +1,5 @@
 /*
- * Kevin Nash
+	 * Kevin Nash
  * 10/15/2015
  */
 
@@ -46,5 +46,6 @@ public class MainApp {
 		TrackControllerUI tcUI = new TrackControllerUI(tc);
 		TrainUI tUI = new TrainUI(ti);
 		TrainControllerUI trainControllerUI = new TrainControllerUI(trainController);
+
 	}
 }
