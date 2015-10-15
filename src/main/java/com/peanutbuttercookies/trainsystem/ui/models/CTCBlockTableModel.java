@@ -8,6 +8,8 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
+import com.peanutbuttercookies.trainsystem.ctc.CTCBlock;
+
 public class CTCBlockTableModel extends AbstractTableModel {
 
 	/**
