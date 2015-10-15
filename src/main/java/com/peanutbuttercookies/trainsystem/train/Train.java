@@ -102,6 +102,7 @@ public class Train implements TrainInterface {
 		return power;
 	}
 	public void setAuthority(int authority){
+		trainController.setAuthority(authority);
 		this.authority = authority;
 	}
 	public void run(){
@@ -158,7 +159,7 @@ public class Train implements TrainInterface {
 			trainController.setSpeed(getSpeed());
 			while(blockId<=authority){
 				trackModel.setBlockOccupied(blockId + 1, id);
-				setSpeed(70*1000/3600);
+//				setSpeed(70*1000/3600);
 				double distance = 0;
 				while(distance <= blockLength){
 					distance+=speed*60;
