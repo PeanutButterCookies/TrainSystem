@@ -8,6 +8,10 @@ import javax.swing.table.AbstractTableModel;
 
 public class TrainTableModel extends AbstractTableModel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3648136737558041721L;
 	private List<Integer> trainList;
 	private HashMap<Integer, Integer> trainMap;
 	
@@ -46,6 +50,15 @@ public class TrainTableModel extends AbstractTableModel {
 		}
 		
 		return "error";
+	}
+	
+	public void addTrain(int trainId ) {
+		if(trainMap.containsKey(trainId)) {
+			return;
+		}
+		trainList.add(trainId);
+		trainMap.put(trainId, 0);
+		fireTableRowsInserted(getRowCount() - 1, getRowCount() - 1);
 	}
 	
 	public void moveTrain(int blockId) {

@@ -1,36 +1,31 @@
 package com.peanutbuttercookies.trainsystem.ui;
 
-import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.util.Vector;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.JButton;
-import javax.swing.JSeparator;
-import javax.swing.JTextArea;
-import javax.swing.border.BevelBorder;
-import java.awt.Color;
-import javax.swing.border.EtchedBorder;
-import javax.swing.JTextPane;
-import javax.swing.JTable;
-import javax.swing.JComboBox;
-import javax.swing.DropMode;
-import java.awt.Font;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
-import javax.swing.JList;
-import javax.swing.border.MatteBorder;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.EtchedBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.ListSelectionModel;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+
+import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
+import com.peanutbuttercookies.trainsystem.trackcontroller.TC_Train;
 
 public class TrackControllerUI extends JFrame {
 
@@ -40,6 +35,8 @@ public class TrackControllerUI extends JFrame {
 	private JTable tableVariableDisplay;
 	private JTextField textField_2;
 	private JTable tableLineSelection;
+	
+	private TrackControllerInterface trackController;
 
 	/**
 	 * Launch the application.
@@ -204,6 +201,10 @@ public class TrackControllerUI extends JFrame {
 		tableLineSelection.setShowGrid(false);
 		tableLineSelection.setCellSelectionEnabled(true);
 		tableLineSelection.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		//DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		//centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+		//tableLineSelection.setDefaultRenderer(String.class, centerRenderer);
+		//tableLineSelection.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
 		
 		tableLineSelection.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override
@@ -216,13 +217,29 @@ public class TrackControllerUI extends JFrame {
 				}
 				
 				//*** Figure out tableVariableDisplay logic ***
+				if(selectedLine!=null && trackController.getLineInfo(selectedLine)!=null){
+					Vector<TC_Train> tableInfo=trackController.getLineInfo(selectedLine);
+					lblDisplayingLine.setText("- Displaying "+selectedLine+" Line -");
+					for(int i=0; i<tableInfo.size(); i++){
+						TC_Train temp=tableInfo.get(i);
+						tableVariableDisplay.setValueAt(temp.getTrainId(), i+1, 0);
+						tableVariableDisplay.setValueAt(temp.getAuthority(), i+1, 1);		//MUST BE CHANGED AFTER PROTOTYPE
+						tableVariableDisplay.setValueAt(temp.getCommandedSpeed(), i+1, 2);	//MUST BE CHANGED AFTER PROTOTYPE
+						tableVariableDisplay.setValueAt(temp.getPresence(), i+1, 3);
+						tableVariableDisplay.setValueAt(temp.getAuthority(), i+1, 4);
+						tableVariableDisplay.setValueAt(temp.getCommandedSpeed(), i+1, 5);
+						tableVariableDisplay.setValueAt(false, i+1, 6);						//MUST BE CHANGED AFTER PROTOTYPE
+						tableVariableDisplay.setValueAt(false, i+1, 7);						//MUST BE CHANGED AFTER PROTOTYPE
+						
+					}
+				}
 				
 			}
 		});
 		
 		tableLineSelection.setModel(new DefaultTableModel(
 			new Object[][] {
-				{null},
+				{"Red"},
 				{null},
 				{null},
 				{null},
@@ -254,7 +271,14 @@ public class TrackControllerUI extends JFrame {
 			new String[] {
 				"Line Selection"
 			}
-		));
+		) {
+			Class[] columnTypes = new Class[] {
+				String.class
+			};
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+		});
 		tableLineSelection.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		GroupLayout gl_panel_LineSelection = new GroupLayout(panel_LineSelection);
 		gl_panel_LineSelection.setHorizontalGroup(

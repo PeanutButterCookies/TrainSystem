@@ -23,12 +23,12 @@ public class MainApp {
 	public static void main(String[] args) throws IOException {
 		CTCModuleInterface ctc = new CTCModule();
 		TrackControllerInterface tc = new TrackControllerModule();
-		TrackModelInterface tm = new TrackModel();
-		TrainInterface ti = new TrainModel();
+//		TrackModelInterface tm = new TrackModel();
+//		TrainInterface ti = new TrainModel();
 		
 		ctc.setTC(tc);
-		tm.setTC(tc);
-		tm.setTI(ti);
+//		tm.setTC(tc);
+//		tm.setTI(ti);
 		
 		CTCModuleUI ctcUI = new CTCModuleUI(ctc);
 		TrackModelUI tmUI = new TrackModelUI(tm);
