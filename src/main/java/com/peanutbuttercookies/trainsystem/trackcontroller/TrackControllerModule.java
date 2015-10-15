@@ -8,6 +8,11 @@ import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 
+/**
+ * 
+ * @author Chris Good
+ *
+ */
 public class TrackControllerModule implements TrackControllerInterface {
 	
 	private CTCModuleInterface ctc;
