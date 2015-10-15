@@ -6,7 +6,10 @@
 
 package com.peanutbuttercookies.trainsystem.ctctest;
 
+import java.util.Vector;
+
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
+import com.peanutbuttercookies.trainsystem.trackcontroller.TC_Train;
 
 public class TestTrackControllerInterface implements TrackControllerInterface {
 
@@ -22,33 +25,9 @@ public class TestTrackControllerInterface implements TrackControllerInterface {
 	}
 
 	@Override
-	public int getTrainPresence(int trainId) {
-		return 0;
-	}
-
-	@Override
-	public int getCommandedSpeed(int trainID) {
-		return 0;
-	}
-
-	@Override
-	public int getAuthority(int trainID) {
-		return 0;
-	}
-
-	@Override
-	public String getBeacon(int blockNum) {
+	public Vector<TC_Train> getLineInfo(String line) {
+		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public int getSignal(int trainId) {
-		return 0;
-	}
-
-	@Override
-	public boolean getRRCrossing(int trainId) {
-		return false;
 	}
 
 }

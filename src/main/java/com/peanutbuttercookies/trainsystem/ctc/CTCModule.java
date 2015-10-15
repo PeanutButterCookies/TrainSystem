@@ -87,7 +87,7 @@ public class CTCModule implements CTCModuleInterface {
 		}
 		if(train < 0 || train > maxTrain) {
 			return false;
-		} else if(train == maxTrain + 1) {
+		} else if(train == 0) {
 			maxTrain++;
 		}
 		tc.setSpeedAuthority(train, speedInt, authority);
