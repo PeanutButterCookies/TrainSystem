@@ -17,6 +17,7 @@ import com.peanutbuttercookies.trainsystem.trackcontroller.TrackControllerModule
 import com.peanutbuttercookies.trainsystem.trackmodel.TrackModel;
 import com.peanutbuttercookies.trainsystem.trainmodel.TrainModel;
 import com.peanutbuttercookies.trainsystem.ui.CTCModuleUI;
+import com.peanutbuttercookies.trainsystem.ui.TrackModelUI;
 
 public class MainApp {
 	public static void main(String[] args) throws IOException {
@@ -30,6 +31,7 @@ public class MainApp {
 		tm.setTI(ti);
 		
 		CTCModuleUI ctcUI = new CTCModuleUI(ctc);
+		TrackModelUI tmUI = new TrackModelUI(tm);
 		
 	}
 }

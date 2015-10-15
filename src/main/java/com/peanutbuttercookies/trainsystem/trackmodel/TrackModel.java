@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrainInterface;
-import com.peanutbuttercookies.trainsystem.trackcontroller.Train;
 import com.peanutbuttercookies.trainsystem.ui.TrackModelUI;
 
 public class TrackModel implements TrackModelInterface {
@@ -19,23 +18,7 @@ public class TrackModel implements TrackModelInterface {
 	
 	public TrackModel() {
 		fileRead();
-		loadUI();
 	}
-	public TrackModel(TrackControllerInterface trackComm, TrainInterface trainComm) {
-		this();
-		setTI(trainComm);
-		setTC(trackComm);
-		
-	}
-	
-	
-	
-	public void loadUI()
-	{
-		newUI = new TrackModelUI(track);
-		newUI.setVisible(true);
-	}
-	
 	
 	
 	public void fileRead()	{
@@ -144,5 +127,9 @@ public class TrackModel implements TrackModelInterface {
 	@Override
 	public void setTI(TrainInterface trainComm) {
 		this.trainComm = trainComm;
+	}
+	@Override
+	public ArrayList<Block> getTrack() {
+		return track;
 	}
 }

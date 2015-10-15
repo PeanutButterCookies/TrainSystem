@@ -4,6 +4,8 @@ package com.peanutbuttercookies.trainsystem.interfaces;
 *	10/14/2015
 */
 
+import java.util.ArrayList;
+
 import com.peanutbuttercookies.trainsystem.trackmodel.Block;
 
 public interface TrackModelInterface {
@@ -24,6 +26,7 @@ public interface TrackModelInterface {
 	
 	
 	//only handled by track model
+	public ArrayList<Block> getTrack();
 	public void setTC(TrackControllerInterface trackComm);
 	public void setTI(TrainInterface trainComm);
 	public void setBeacon(); //sent to train controller
