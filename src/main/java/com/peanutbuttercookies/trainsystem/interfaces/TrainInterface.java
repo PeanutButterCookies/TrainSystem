@@ -1,5 +1,7 @@
 package com.peanutbuttercookies.trainsystem.interfaces;
 
+import com.peanutbuttercookies.trainsystem.traincontroller.TrainController;
+
 public interface TrainInterface {
 	public void setSpeed(double speed);
 	public void setAuthority(int authority);
@@ -23,4 +25,6 @@ public interface TrainInterface {
 	public void setPower(double mass, double velocity, double acceleration);
 	public double getPower();
 	public double getCurrentSpeed();
+	public void setTrainController(TrainController tc);
+	public void setTrackModel(TrackModelInterface tm);
 }

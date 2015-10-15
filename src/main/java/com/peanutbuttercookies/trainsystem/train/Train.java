@@ -3,6 +3,7 @@ package com.peanutbuttercookies.trainsystem.train;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrainControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrainInterface;
+import com.peanutbuttercookies.trainsystem.traincontroller.TrainController;
 
 public class Train implements TrainInterface {
 
@@ -123,6 +124,18 @@ public class Train implements TrainInterface {
 			trackModel.setBlockUnoccupied(blockId);
 			blockId++;
 		}
+	}
+
+
+	@Override
+	public void setTrainController(TrainController tc) {
+		this.trainController = tc;
+	}
+
+
+	@Override
+	public void setTrackModel(TrackModelInterface tm) {
+		trackModel = tm;
 	}
 	
 

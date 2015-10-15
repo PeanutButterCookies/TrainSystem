@@ -65,6 +65,11 @@ public class TrainController implements TrainControllerInterface{
 	public void leaveStation(){
 		
 	}
+
+	@Override
+	public void setTrainModel(TrainInterface trainModel) {
+		this.train = trainModel;
+	}
 	
 	
 

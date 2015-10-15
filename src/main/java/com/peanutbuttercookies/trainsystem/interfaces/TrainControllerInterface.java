@@ -15,4 +15,5 @@ public interface TrainControllerInterface {
 	public double calculateVelocity(double velocity, double acceleration, double time);
 	public void atStation();
 	public void leaveStation();
+	public void setTrainModel(TrainInterface trainModel);
 }
