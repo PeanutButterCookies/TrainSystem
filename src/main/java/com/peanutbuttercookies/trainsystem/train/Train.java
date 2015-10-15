@@ -105,34 +105,37 @@ public class Train implements TrainInterface {
 		this.authority = authority;
 	}
 	public void run(){
-		trainController.setAcceleration(getAcceleration());
-		trainController.setSpeed(getSpeed());
-		while(blockId<=authority){
-			trackModel.setBlockOccupied(blockId, id);
-			setSpeed(70*1000/3600);
-			double distance = 0;
-			while(distance <= blockLength){
-				distance+=speed*60;
-				setPower(mass,speed,0);
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			trackModel.setBlockUnoccupied(blockId);
-			blockId++;
-		}
-		setSpeed(0);
-		trainController.openDoors();
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		trainController.closeDoors();
+		Thread t = new Thread(new MovementThread());
+		t.start();
+
+//		trainController.setAcceleration(getAcceleration());
+//		trainController.setSpeed(getSpeed());
+//		while(blockId<=authority){
+//			trackModel.setBlockOccupied(blockId, id);
+//			setSpeed(70*1000/3600);
+//			double distance = 0;
+//			while(distance <= blockLength){
+//				distance+=speed*60;
+//				setPower(mass,speed,0);
+//				try {
+//					Thread.sleep(1000);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+//			trackModel.setBlockUnoccupied(blockId);
+//			blockId++;
+//		}
+//		setSpeed(0);
+//		trainController.openDoors();
+//		try {
+//			Thread.sleep(2000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		trainController.closeDoors();
 	}
 
 
@@ -145,6 +148,44 @@ public class Train implements TrainInterface {
 	@Override
 	public void setTrackModel(TrackModelInterface tm) {
 		trackModel = tm;
+	}
+	
+	public class MovementThread implements Runnable {
+
+		@Override
+		public void run() {
+			trainController.setAcceleration(getAcceleration());
+			trainController.setSpeed(getSpeed());
+			while(blockId<=authority){
+				trackModel.setBlockOccupied(blockId + 1, id);
+				setSpeed(70*1000/3600);
+				double distance = 0;
+				while(distance <= blockLength){
+					distance+=speed*60;
+					setPower(mass,speed,0);
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				trackModel.setBlockUnoccupied(blockId);
+				blockId++;
+			}
+			setSpeed(0);
+			trainController.openDoors();
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			trainController.closeDoors();
+
+		}
+		
+		
 	}
 	
 

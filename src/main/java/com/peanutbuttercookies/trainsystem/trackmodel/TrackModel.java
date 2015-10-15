@@ -56,7 +56,7 @@ public class TrackModel implements TrackModelInterface {
 	public void setBlockOccupied(int blockId, int trainId) {
 		
 		// TEMP HACK
-		blockId += 1;
+//		blockId += 1;
 		// TEMP HACK
 		
 		track.get(blockId-1).setOccupancy();

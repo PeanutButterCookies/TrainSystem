@@ -41,7 +41,10 @@ public class TrackControllerModule implements TrackControllerInterface {
 
 	@Override
 	public boolean setTrainPresence(int trainId, int blockNum) {
-		// TODO Auto-generated method stub
+		System.out.println("train id setTrain presence: " + trainId);
+		//temp hack
+		trainId += 1;
+		// temp hack
 		if(trainId<trainList.size()){
 			trainList.get(trainId-1).setPresence(blockNum);
 			ctc.setBlockOccupied(blockNum);
