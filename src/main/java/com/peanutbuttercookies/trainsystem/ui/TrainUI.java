@@ -28,21 +28,6 @@ public class TrainUI extends JFrame {
 	private JTextField acceleration;
 	private JTextField power;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					TrainUI frame = new TrainUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the frame.
@@ -189,5 +174,6 @@ public class TrainUI extends JFrame {
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, selectTrain, 0, SpringLayout.SOUTH, lblSelectTrain);
 		contentPane.add(selectTrain);
 		selectTrain.addItem(train);
+		setVisible(true);
 	}
 }
