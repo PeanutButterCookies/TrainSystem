@@ -61,6 +61,7 @@ public TrackModelUI newUI;
 		// TODO Auto-generated method stub
 		track.get(blockId-1).setOccupancy();
 		setStation(track.get(blockId-1).getInfra());
+		//trackComm.setTrainPresence(trainId, blockId);
 		//trainComm.setSpeedLimit(track.get(blockId-1).getSpeedLim());
 	}
 
