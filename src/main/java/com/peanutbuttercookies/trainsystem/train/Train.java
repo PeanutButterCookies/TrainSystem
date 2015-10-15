@@ -102,6 +102,7 @@ public class Train implements TrainInterface {
 		return power;
 	}
 	public void setAuthority(int authority){
+		trainController.setAuthority(authority);
 		this.authority = authority;
 	}
 	public void run(){
