@@ -28,6 +28,9 @@ public class TrackModelUI extends JFrame {
 	private JPanel contentPane;
 	private ArrayList<Block> track;
 	private TrackModelInterface module;
+	private DefaultListModel<String> infoList;
+	private JList list;
+	private JList list_2;
 	
 
 	/**
@@ -36,6 +39,7 @@ public class TrackModelUI extends JFrame {
 	public TrackModelUI(TrackModelInterface module) throws IOException {
 		super("TrackModel");
 		this.module = module;
+		module.setUI(this);
 		track = module.getTrack();
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -57,10 +61,10 @@ public class TrackModelUI extends JFrame {
 				
 		JList list_1 = new JList(sectionList);
 		
-		JList list_2 = new JList(blockList);
+		list_2 = new JList(blockList);
 		
         
-        DefaultListModel<String> infoList = new DefaultListModel<String>();
+        infoList = new DefaultListModel<String>();
         infoList.addElement("Section " + track.get(0).getSection());
         infoList.addElement("Block " + track.get(0).getBlockId());
         infoList.addElement("Block Length " + track.get(0).getBlockLen());
@@ -78,7 +82,7 @@ public class TrackModelUI extends JFrame {
 				        infoList.addElement("Block Length " + track.get(i).getBlockLen());
 				        infoList.addElement("Speed Limit " + track.get(i).getSpeedLim());
 				        infoList.addElement("Station " + track.get(i).getInfra());
-				        infoList.addElement("Occupancy 0");
+				        infoList.addElement("Occupancy " + track.get(i).getOccupancy());
 				        break;
 					}
 				}
@@ -88,22 +92,22 @@ public class TrackModelUI extends JFrame {
         list_2.addMouseListener(new MouseAdapter()	{
         	public void mouseClicked(MouseEvent e)	{
         		
-					Integer blockVal = (Integer)list_2.getSelectedValue();
-					
-					if(blockVal.equals(list_2.getSelectedValue()))	{
-						infoList.clear();
-						infoList.addElement("Section " + track.get(blockVal-1).getSection());
-				        infoList.addElement("Block " + track.get(blockVal-1).getBlockId());
-				        infoList.addElement("Block Length " + track.get(blockVal-1).getBlockLen());
-				        infoList.addElement("Speed Limit " + track.get(blockVal-1).getSpeedLim());
-				        infoList.addElement("Station " + track.get(blockVal-1).getInfra());
-				        infoList.addElement("Occupancy " + track.get(blockVal-1).getOccupancy());
-				    
+        		Integer blockVal = (Integer)list_2.getSelectedValue();
+				
+				if(blockVal.equals(list_2.getSelectedValue()))	{
+					infoList.clear();
+					infoList.addElement("Section " + track.get(blockVal-1).getSection());
+			        infoList.addElement("Block " + track.get(blockVal-1).getBlockId());
+			        infoList.addElement("Block Length " + track.get(blockVal-1).getBlockLen());
+			        infoList.addElement("Speed Limit " + track.get(blockVal-1).getSpeedLim());
+			        infoList.addElement("Station " + track.get(blockVal-1).getInfra());
+			        infoList.addElement("Occupancy " + track.get(blockVal-1).getOccupancy());
+			    
 				}
 			}
 		});
 		
-		JList list = new JList(infoList);
+		list = new JList(infoList);
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -140,7 +144,27 @@ public class TrackModelUI extends JFrame {
 		setVisible(true);
 	}
 	
-	public void loadTrack(ArrayList<Block> newTrack)	{
+	private void loadTrack(ArrayList<Block> newTrack)	{
 		track = newTrack;
+	}
+	
+	public void display(int blockVal)	{
+		infoList.clear();
+		infoList.addElement("Section " + track.get(blockVal-1).getSection());
+        infoList.addElement("Block " + track.get(blockVal-1).getBlockId());
+        infoList.addElement("Block Length " + track.get(blockVal-1).getBlockLen());
+        infoList.addElement("Speed Limit " + track.get(blockVal-1).getSpeedLim());
+        infoList.addElement("Station " + track.get(blockVal-1).getInfra());
+        infoList.addElement("Occupancy " + track.get(blockVal-1).getOccupancy());
+        list = new JList(infoList);
+	}
+	
+	public boolean currentView(Integer blockId)
+	{
+		Integer blockVal = (Integer) list_2.getSelectedValue();
+		if(blockId.equals(blockVal))
+			return true;
+		else 
+			return false;
 	}
 }

@@ -8,13 +8,21 @@ import java.util.ArrayList;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrainInterface;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+
+import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
+import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
+import com.peanutbuttercookies.trainsystem.interfaces.TrainInterface;
 import com.peanutbuttercookies.trainsystem.ui.TrackModelUI;
 
 public class TrackModel implements TrackModelInterface {
 	private TrackControllerInterface trackComm;
 	private TrainInterface trainComm;
 	private ArrayList<Block> track;
-	private TrackModelUI newUI;
+	private TrackModelUI tmUI;
 	
 	public TrackModel() {
 		fileRead();
@@ -55,11 +63,14 @@ public class TrackModel implements TrackModelInterface {
 	@Override
 	public void setBlockOccupied(int blockId, int trainId) {
 		track.get(blockId-1).setOccupancy();
+ 		if(tmUI.currentView(blockId))
+ 			tmUI.display(blockId);
 		trackComm.setTrainPresence(trainId, blockId);
-		//trainComm.setSpeedLimit(track.get(blockId-1).getSpeedLim());
-		//trainComm.setStation(track.get(blockId-1).getInfra());
-		//trainComm.setBlockId(blockId);
-		//trainComm.setBlockLength(track.get(blockId-1).getBlockLen());
+		trainComm.setSpeedLimit(track.get(blockId-1).getSpeedLim());
+		if(!track.getblockId-1.getInfra().equals("none"));
+			trainComm.setStation(track.get(blockId-1).getInfra());
+		trainComm.setBlockId(blockId);
+		trainComm.setBlockLength(track.get(blockId-1).getBlockLen());
 	}
 
 	@Override
@@ -67,6 +78,8 @@ public class TrackModel implements TrackModelInterface {
 		for(int i =0; i<track.size(); i++)	{
 			if(track.get(i).getBlockId() == blockId)	{
 				track.get(i).setOccupancy();
+				if(tmUI.currentView(blockId))
+		 			tmUI.display(blockId);
 			}
 		}
 	}
@@ -92,11 +105,13 @@ public class TrackModel implements TrackModelInterface {
 	@Override
 	public void setSpeed(int trainId, int speed)	{
 		//trainComm.setSpeed(trainId, speed);
+		System.out.println("Speed Received " + trainId + " " + speed + " -Track Model");
+
 	}
 	
 	@Override
 	public void setAuthority(int trainId, int authority)	{
-		//trainComm.setAuthority(trainId, authority);
+		trainComm.setAuthority(trainId, authority);
 	}
 
 	@Override
@@ -110,7 +125,7 @@ public class TrackModel implements TrackModelInterface {
 		// TODO Auto-generated method stub
 		if(!station.equals("none"))	{
 			setBeacon();
-			//trainComm.getStation(station);
+			trainComm.getStation(station);
 		}
 	}
 
@@ -131,5 +146,12 @@ public class TrackModel implements TrackModelInterface {
 	@Override
 	public ArrayList<Block> getTrack() {
 		return track;
+	}
+
+
+	@Override
+	public void setUI(TrackModelUI tmUI) {
+		this.tmUI = tmUI;
+		
 	}
 }

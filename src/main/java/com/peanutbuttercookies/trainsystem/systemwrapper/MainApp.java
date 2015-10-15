@@ -17,21 +17,24 @@ import com.peanutbuttercookies.trainsystem.trackcontroller.TrackControllerModule
 import com.peanutbuttercookies.trainsystem.trackmodel.TrackModel;
 import com.peanutbuttercookies.trainsystem.trainmodel.TrainModel;
 import com.peanutbuttercookies.trainsystem.ui.CTCModuleUI;
+import com.peanutbuttercookies.trainsystem.ui.TrackControllerUI;
 import com.peanutbuttercookies.trainsystem.ui.TrackModelUI;
 
 public class MainApp {
 	public static void main(String[] args) throws IOException {
 		CTCModuleInterface ctc = new CTCModule();
 		TrackControllerInterface tc = new TrackControllerModule();
-//		TrackModelInterface tm = new TrackModel();
-//		TrainInterface ti = new TrainModel();
+		TrackModelInterface tm = new TrackModel();
+ 		TrainInterface ti = new TrainModel();
 		
 		ctc.setTC(tc);
-//		tm.setTC(tc);
-//		tm.setTI(ti);
+		tc.setCTC(ctc);
+		tc.setTrackModel(tm);
+		tm.setTC(tc);
+		tm.setTI(ti);
 		
 		CTCModuleUI ctcUI = new CTCModuleUI(ctc);
-//		TrackModelUI tmUI = new TrackModelUI(tm);
-		
+		TrackModelUI tmUI = new TrackModelUI(tm);
+		TrackControllerUI tcUI = new TrackControllerUI(tc);
 	}
 }

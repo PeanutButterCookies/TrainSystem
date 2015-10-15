@@ -8,7 +8,9 @@ package com.peanutbuttercookies.trainsystem.ctctest;
 
 import java.util.Vector;
 
+import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
+import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 import com.peanutbuttercookies.trainsystem.trackcontroller.TC_Train;
 
 public class TestTrackControllerInterface implements TrackControllerInterface {
@@ -28,6 +30,18 @@ public class TestTrackControllerInterface implements TrackControllerInterface {
 	public Vector<TC_Train> getLineInfo(String line) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void setCTC(CTCModuleInterface ctc) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setTrackModel(TrackModelInterface trackModel) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -65,4 +65,14 @@ public class TrackControllerModule implements TrackControllerInterface {
 		}
 	}
 
+	@Override
+	public void setCTC(CTCModuleInterface ctc) {
+		this.ctc = ctc;
+	}
+
+	@Override
+	public void setTrackModel(TrackModelInterface trackModel) {
+		this.trackModel = trackModel;
+	}
+
 }
