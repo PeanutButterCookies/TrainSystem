@@ -1,25 +1,32 @@
 package com.peanutbuttercookies.trainsystem.train;
 
+import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
+import com.peanutbuttercookies.trainsystem.interfaces.TrainControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrainInterface;
 
 public class Train implements TrainInterface {
 
-	double width=2.65;
-	double length = 32.2;
-	double height=3.42;
-	double speed;
-	double acceleration;
-	double power;
-	double trainSpeedLimit = 70;
-	double serviceBrakeRate = 1.2;
-	double speedLimit;
-	String station;
-	double blockLength;
-	int blockId;
-	double emergencyBrakeRate = 2.73;
-	double mass=56.7*907.185;
-	int numCars;
-	int numPassengers;
+	public double width=2.65;
+	public double length = 32.2;
+	public double height=3.42;
+	public double speed;
+	public double currentSpeed;
+	public double acceleration=.5;
+	public double power;
+	public double trainSpeedLimit = 70;
+	public double serviceBrakeRate = 1.2;
+	public double speedLimit;
+	public String station;
+	public double blockLength;
+	public int blockId;
+	public int id;
+	public double emergencyBrakeRate = 2.73;
+	public double mass=56.7*907.185;
+	public int numCars;
+	public int numPassengers;
+	public int authority;
+	TrainControllerInterface trainController;
+	TrackModelInterface trackModel;
 	public Train() {
 		// TODO Auto-generated constructor stub
 		
@@ -29,14 +36,21 @@ public class Train implements TrainInterface {
 	public void setSpeed(double speed){
 		this.speed=speed;
 	}
-	
+	public void setCurrentSpeed(double speed){
+		this.currentSpeed = speed;
+	}
+	public double getCurrentSpeed(){
+		return currentSpeed;
+	}
 	public void setAcceleration(double acceleration){
 		this.acceleration = acceleration;
 	}
 	public void setSpeedLimit(double speedLimit){
+		trainController.setSpeedLimit(speedLimit);
 		this.speedLimit = speedLimit;
 	}
 	public void setStation(String station){
+		trainController.setStation(station);
 		this.station = station;
 	}
 	public void setBlockLength(double blockLength){
@@ -51,7 +65,7 @@ public class Train implements TrainInterface {
 	public double getAcceleration(){
 		return acceleration;
 	}
-	public int setNumPassengers(int numPassengers){
+	public void setNumPassengers(int numPassengers){
 		this.numPassengers = numPassengers;
 	}
 	public int getNumPassengers(){
@@ -80,8 +94,35 @@ public class Train implements TrainInterface {
 	public double getSpeedLimit(){
 		return speedLimit;	
 	}
+	public void setPower(double mass, double speed, double acceleration){
+		power = trainController.calculatePower(mass,speed,acceleration);
+	}
 	public double getPower(){
 		return power;
+	}
+	public void setAuthority(int authority){
+		this.authority = authority;
+	}
+	public void run(){
+		trainController.setAcceleration(getAcceleration());
+		trainController.setSpeed(getSpeed());
+		while(blockId<=authority){
+			trackModel.setBlockOccupied(blockId, id);
+			setSpeed(70*1000/3600);
+			double distance = 0;
+			while(distance <= blockLength){
+				distance+=speed*60;
+				getPower(mass,speed,0);
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			trackModel.setBlockUnoccupied(blockId);
+			blockId++;
+		}
 	}
 	
 

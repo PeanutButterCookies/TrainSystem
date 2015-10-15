@@ -2,6 +2,7 @@ package com.peanutbuttercookies.trainsystem.interfaces;
 
 public interface TrainInterface {
 	public void setSpeed(double speed);
+	public void setAuthority(int authority);
 	public void setAcceleration(double acceleration);
 	public void setSpeedLimit(double speedLimit);
 	public void setStation(String station);
@@ -19,5 +20,7 @@ public interface TrainInterface {
 	public void pullEmergencyBrake();
 	public double getBrakeLimit();
 	public double getSpeedLimit();
+	public void setPower(double mass, double velocity, double acceleration);
 	public double getPower();
+	public double getCurrentSpeed();
 }
