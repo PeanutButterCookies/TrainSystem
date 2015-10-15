@@ -1,12 +1,11 @@
 package com.peanutbuttercookies.trainsystem.trackcontroller;
-
 /**
  * 
  * @author Chris Good
  *
  *	This class is for the containment and management of data relating to the trains that are currently on the track
  */
-public class Train {
+public class TC_Train {
 	final private int 		trainId;
 	private int 			authority;
 	private int 			commandedSpeed;
@@ -21,7 +20,7 @@ public class Train {
 	 * @param initPresence  the initial train presence (e.g. location) of the train object
 	 * @param lineName  the permanent line on which the train object is confined
 	 */
-	public Train (int initTrainId, int initAuthority, int initCommandedSpeed, int initPresence, String lineName){
+	public TC_Train (int initTrainId, int initAuthority, int initCommandedSpeed, int initPresence, String lineName){
 		trainId			=initTrainId;
 		authority		=initAuthority;
 		commandedSpeed	=initCommandedSpeed;
