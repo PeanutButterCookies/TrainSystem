@@ -157,9 +157,13 @@ public class Train implements TrainInterface {
 		public void run() {
 			trainController.setAcceleration(getAcceleration());
 			trainController.setSpeed(getSpeed());
+			
+			System.out.println("Thread authority start: " + authority + " Speed: "+ speed);
+			
 			while(blockId<=authority){
-				trackModel.setBlockOccupied(blockId + 1, id);
-//				setSpeed(70*1000/3600);
+//				trackModel.setBlockOccupied(blockId + 1, id);
+				trackModel.setBlockOccupied(blockId + 1, 1);
+				setSpeed(getSpeed()*1000/3600);
 				double distance = 0;
 				while(distance <= blockLength){
 					distance+=speed*60;
@@ -171,18 +175,19 @@ public class Train implements TrainInterface {
 						e.printStackTrace();
 					}
 				}
+				System.out.println("Thread block id: " + blockId);
 				trackModel.setBlockUnoccupied(blockId);
 				blockId++;
 			}
 			setSpeed(0);
-			trainController.openDoors();
+			trainController.atStation();
 			try {
 				Thread.sleep(2000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			trainController.closeDoors();
+			trainController.leaveStation();
 
 		}
 		

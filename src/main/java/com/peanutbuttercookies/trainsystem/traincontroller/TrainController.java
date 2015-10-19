@@ -60,11 +60,13 @@ public class TrainController implements TrainControllerInterface{
 	
 	public void atStation(){
 		openDoors();
-		
+		System.out.println(station);
+		System.out.println("Open Doors");
 	}
 	
 	public void leaveStation(){
 		closeDoors();
+		System.out.println("Close doors");
 	}
 
 	@Override

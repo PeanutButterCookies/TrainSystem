@@ -41,11 +41,12 @@ public class TrackControllerModule implements TrackControllerInterface {
 
 	@Override
 	public boolean setTrainPresence(int trainId, int blockNum) {
-		System.out.println("train id setTrain presence: " + trainId);
+		System.out.println("track controller: train id setTrain presence: " + trainId + " blockNum: " + blockNum);
+		System.out.println("train list size : " + trainList.size());
 		//temp hack
 		trainId += 1;
 		// temp hack
-		if(trainId<trainList.size()){
+		if(trainId<=trainList.size()){
 			trainList.get(trainId-1).setPresence(blockNum);
 			ctc.setBlockOccupied(blockNum);
 			ui.updateTable();

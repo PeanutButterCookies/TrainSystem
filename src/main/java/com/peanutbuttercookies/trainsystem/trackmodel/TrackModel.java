@@ -59,13 +59,16 @@ public class TrackModel implements TrackModelInterface {
 //		blockId += 1;
 		// TEMP HACK
 		
+		System.out.println("setBlockOccupied blockId: " + blockId + " trainId: " + trainId);
+		
 		track.get(blockId-1).setOccupancy();
  		if(tmUI.currentView(blockId))
  			tmUI.display(blockId);
 		trackComm.setTrainPresence(trainId, blockId);
 		trainComm.setSpeedLimit(track.get(blockId-1).getSpeedLim());
-		if(!track.get(blockId-1).getInfra().equals("none"));
+		if(!track.get(blockId-1).getInfra().equals("none")) {
 			trainComm.setStation(track.get(blockId-1).getInfra());
+		}
 		trainComm.setBlockId(blockId);
 		trainComm.setBlockLength(track.get(blockId-1).getBlockLen());
 	}
@@ -102,7 +105,7 @@ public class TrackModel implements TrackModelInterface {
 		trainComm.setSpeed(speed);
 		trainComm.setAuthority(authority);
 		trainComm.run();
-		System.out.println("Speed Received " + trainId + " " + speed + " -Track Model");
+		System.out.println("Speed Received " + trainId + " " + speed + "  authority: " + authority + " -Track Model");
 
 	}
 	
