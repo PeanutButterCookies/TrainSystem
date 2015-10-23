@@ -25,13 +25,16 @@ public class TrackModel implements TrackModelInterface {
 		track = new ArrayList<Block>();
 		
 		try	{
-			BufferedReader br = new BufferedReader(new InputStreamReader(TrackModel.class.getResourceAsStream("/trackLayout.txt")));	
+			BufferedReader br = new BufferedReader(new InputStreamReader(TrackModel.class.getResourceAsStream("/trackLayout2.txt")));	
 			while(br.ready()) {
 				String line = br.readLine();
 				String delims = "[ ]+";
 				String[] tokens = line.split(delims);
+				System.out.println(line);
 				if(!tokens[0].equals("Line"))	{
-					setBlock(tokens[0], tokens[1], Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]), Integer.parseInt(tokens[4]), tokens[5], 0);
+					setBlock(tokens[0], tokens[1], Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]), Double.parseDouble(tokens[4]), 
+							Integer.parseInt(tokens[5]), tokens[6], Double.parseDouble(tokens[7]), Double.parseDouble(tokens[8]), 
+							tokens[9], tokens[10], 0);
 				}
 			}
 		}
@@ -59,7 +62,7 @@ public class TrackModel implements TrackModelInterface {
  			tmUI.display(blockId);
 		trackComm.setTrainPresence(trainId, blockId);
 		trainComm.setSpeedLimit(track.get(blockId-1).getSpeedLim());
-		if(!track.get(blockId-1).getInfra().equals("none"));
+		if(!track.get(blockId-1).getInfra().equals("none"))
 			trainComm.setStation(track.get(blockId-1).getInfra());
 		trainComm.setBlockId(blockId);
 		trainComm.setBlockLength(track.get(blockId-1).getBlockLen());
@@ -87,16 +90,15 @@ public class TrackModel implements TrackModelInterface {
 	}
 
 	@Override
-	public void setBlock(String line, String section, int blockId, int blockLen, int speedLim, String infra, int occupancy) {
-		Block newBlock = new Block(line, section, blockId, blockLen, speedLim, infra, occupancy);
+	public void setBlock(String line, String section, int blockId, int blockLen, double blockGrade, int speedLim, String infra, double elevation, double cumElev, String switchId, String direction, int occupancy) {
+		Block newBlock = new Block(line, section, blockId, blockLen, blockGrade, speedLim, infra, elevation, cumElev, switchId, direction, occupancy);
 		setLayout(newBlock);
 	}
 	
 	@Override
 	public void setSpeed(int trainId, int speed)	{
-		trainComm.setSpeed(speed);
-		System.out.println("Speed Received " + trainId + " " + speed + " -Track Model");
-
+		trainComm.setSpeed((double)speed);
+		//trainComm.run();
 	}
 	
 	@Override
