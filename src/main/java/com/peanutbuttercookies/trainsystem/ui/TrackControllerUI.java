@@ -29,37 +29,24 @@ import com.peanutbuttercookies.trainsystem.trackcontroller.TC_Train;
 
 public class TrackControllerUI extends JFrame {
 
-	private JPanel contentPane;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTable tableVariableDisplay;
-	private JTextField textField_2;
-	private JTable tableLineSelection;
+	private JPanel 		contentPane;
+	private JTextField 	textField;
+	private JTextField 	textField_1;
+	private JTable 		tableVariableDisplay;
+	private JTextField 	textField_2;
+	private JTable 		tableLineSelection;
 	
-	private TrackControllerInterface trackController;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					TrackControllerUI frame = new TrackControllerUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
+	private TrackControllerInterface 	trackController;
+	private String 						displayedLine=null;
+	
 	/**
 	 * Create the frame.
 	 */
-	public TrackControllerUI() {
+	public TrackControllerUI(TrackControllerInterface trackController) {
+		super("Track Controller");
+		this.trackController = trackController;
 		setTitle("Track Controller Module");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 1280, 720);
 		contentPane = new JPanel();
 		contentPane.setBorder(null);
@@ -218,20 +205,9 @@ public class TrackControllerUI extends JFrame {
 				
 				//*** Figure out tableVariableDisplay logic ***
 				if(selectedLine!=null && trackController.getLineInfo(selectedLine)!=null){
-					Vector<TC_Train> tableInfo=trackController.getLineInfo(selectedLine);
 					lblDisplayingLine.setText("- Displaying "+selectedLine+" Line -");
-					for(int i=0; i<tableInfo.size(); i++){
-						TC_Train temp=tableInfo.get(i);
-						tableVariableDisplay.setValueAt(temp.getTrainId(), i+1, 0);
-						tableVariableDisplay.setValueAt(temp.getAuthority(), i+1, 1);		//MUST BE CHANGED AFTER PROTOTYPE
-						tableVariableDisplay.setValueAt(temp.getCommandedSpeed(), i+1, 2);	//MUST BE CHANGED AFTER PROTOTYPE
-						tableVariableDisplay.setValueAt(temp.getPresence(), i+1, 3);
-						tableVariableDisplay.setValueAt(temp.getAuthority(), i+1, 4);
-						tableVariableDisplay.setValueAt(temp.getCommandedSpeed(), i+1, 5);
-						tableVariableDisplay.setValueAt(false, i+1, 6);						//MUST BE CHANGED AFTER PROTOTYPE
-						tableVariableDisplay.setValueAt(false, i+1, 7);						//MUST BE CHANGED AFTER PROTOTYPE
-						
-					}
+					displayedLine=selectedLine;
+					updateTable();
 				}
 				
 			}
@@ -371,5 +347,22 @@ public class TrackControllerUI extends JFrame {
 		);
 		panel.setLayout(gl_panel);
 		contentPane.setLayout(gl_contentPane);
+		setVisible(true);
+	}
+	
+	public void updateTable(){
+		Vector<TC_Train> tableInfo=trackController.getLineInfo(displayedLine);
+		for(int i=0; i<tableInfo.size(); i++){
+			TC_Train temp=tableInfo.get(i);
+			tableVariableDisplay.setValueAt(temp.getTrainId(), i+1, 0);
+			tableVariableDisplay.setValueAt(temp.getAuthority(), i+1, 1);		//MUST BE CHANGED AFTER PROTOTYPE
+			tableVariableDisplay.setValueAt(temp.getCommandedSpeed(), i+1, 2);	//MUST BE CHANGED AFTER PROTOTYPE
+			tableVariableDisplay.setValueAt(temp.getPresence(), i+1, 3);
+			tableVariableDisplay.setValueAt(temp.getAuthority(), i+1, 4);
+			tableVariableDisplay.setValueAt(temp.getCommandedSpeed(), i+1, 5);
+			tableVariableDisplay.setValueAt(false, i+1, 6);						//MUST BE CHANGED AFTER PROTOTYPE
+			tableVariableDisplay.setValueAt(false, i+1, 7);						//MUST BE CHANGED AFTER PROTOTYPE
+			
+		}
 	}
 }

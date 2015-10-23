@@ -135,14 +135,16 @@ public class CTCModuleUI extends JFrame implements ActionListener {
 		int train = getSelected(trainModel);
 		int authority = getSelected(blockModel);
 		if(module.send(speed.getText(), train, authority)) {
-			if(train ==0) {
-				train++;
+			if(train == 0) {
+				train = module.getMaxTrain();
 			}
+			System.out.println(train);
 			if(!trainSet.contains(train)) {
 				trainSet.add(train);
 				trainModel.addElement(train);
+				trainTableModel.addTrain(train);
 				System.out.println("element added");
-			}
+			} 
 		}
 	}
 

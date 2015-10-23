@@ -53,6 +53,7 @@ public class CTCModule implements CTCModuleInterface {
 
 	@Override
 	public void setBlockOccupied(int blockId) {
+		System.out.println("CTC setBlockOccupied blockId : " + blockId);
 		setBlockStatus(blockId, true);
 	}
 
@@ -87,11 +88,14 @@ public class CTCModule implements CTCModuleInterface {
 		}
 		if(train < 0 || train > maxTrain) {
 			return false;
-		} else if(train == maxTrain + 1) {
+		} else if(train == 0) {
 			maxTrain++;
 		}
-		tc.setSpeedAuthority(train, speedInt, authority);
-		return true;
+		if(tc.setSpeedAuthority(train + 1, speedInt, authority)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override

@@ -1,39 +1,46 @@
 package com.peanutbuttercookies.trainsystem.ui;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.io.IOException;
 import java.util.ArrayList;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-
-import com.peanutbuttercookies.trainsystem.trackmodel.Block;
 
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.JList;
-import javax.swing.JTable;
+import javax.swing.border.EmptyBorder;
+
+import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
+import com.peanutbuttercookies.trainsystem.trackmodel.Block;
 
 public class TrackModelUI extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5053069285583258597L;
 	private JPanel contentPane;
-	public ArrayList<Block> track;
+	private ArrayList<Block> track;
+	private TrackModelInterface module;
+	private DefaultListModel<String> infoList;
+	private JList list;
+	private JList list_2;
+	
 
 	/**
 	 * Create the frame.
 	 */
-	public TrackModelUI(ArrayList<Block> newTrack) {
-		track = newTrack;
+	public TrackModelUI(TrackModelInterface module) throws IOException {
+		super("TrackModel");
+		this.module = module;
+		module.setUI(this);
+		track = module.getTrack();
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -54,10 +61,10 @@ public class TrackModelUI extends JFrame {
 				
 		JList list_1 = new JList(sectionList);
 		
-		JList list_2 = new JList(blockList);
+		list_2 = new JList(blockList);
 		
         
-        DefaultListModel<String> infoList = new DefaultListModel<String>();
+        infoList = new DefaultListModel<String>();
         infoList.addElement("Section " + track.get(0).getSection());
         infoList.addElement("Block " + track.get(0).getBlockId());
         infoList.addElement("Block Length " + track.get(0).getBlockLen());
@@ -75,7 +82,7 @@ public class TrackModelUI extends JFrame {
 				        infoList.addElement("Block Length " + track.get(i).getBlockLen());
 				        infoList.addElement("Speed Limit " + track.get(i).getSpeedLim());
 				        infoList.addElement("Station " + track.get(i).getInfra());
-				        infoList.addElement("Occupancy 0");
+				        infoList.addElement("Occupancy " + track.get(i).getOccupancy());
 				        break;
 					}
 				}
@@ -85,22 +92,22 @@ public class TrackModelUI extends JFrame {
         list_2.addMouseListener(new MouseAdapter()	{
         	public void mouseClicked(MouseEvent e)	{
         		
-					Integer blockVal = (Integer)list_2.getSelectedValue();
-					
-					if(blockVal.equals(list_2.getSelectedValue()))	{
-						infoList.clear();
-						infoList.addElement("Section " + track.get(blockVal-1).getSection());
-				        infoList.addElement("Block " + track.get(blockVal-1).getBlockId());
-				        infoList.addElement("Block Length " + track.get(blockVal-1).getBlockLen());
-				        infoList.addElement("Speed Limit " + track.get(blockVal-1).getSpeedLim());
-				        infoList.addElement("Station " + track.get(blockVal-1).getInfra());
-				        infoList.addElement("Occupancy " + track.get(blockVal-1).getOccupancy());
-				    
+        		Integer blockVal = (Integer)list_2.getSelectedValue();
+				
+				if(blockVal.equals(list_2.getSelectedValue()))	{
+					infoList.clear();
+					infoList.addElement("Section " + track.get(blockVal-1).getSection());
+			        infoList.addElement("Block " + track.get(blockVal-1).getBlockId());
+			        infoList.addElement("Block Length " + track.get(blockVal-1).getBlockLen());
+			        infoList.addElement("Speed Limit " + track.get(blockVal-1).getSpeedLim());
+			        infoList.addElement("Station " + track.get(blockVal-1).getInfra());
+			        infoList.addElement("Occupancy " + track.get(blockVal-1).getOccupancy());
+			    
 				}
 			}
 		});
 		
-		JList list = new JList(infoList);
+		list = new JList(infoList);
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -134,9 +141,30 @@ public class TrackModelUI extends JFrame {
 					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 		);
 		contentPane.setLayout(gl_contentPane);
+		setVisible(true);
 	}
 	
-	public void loadTrack(ArrayList<Block> newTrack)	{
+	private void loadTrack(ArrayList<Block> newTrack)	{
 		track = newTrack;
+	}
+	
+	public void display(int blockVal)	{
+		infoList.clear();
+		infoList.addElement("Section " + track.get(blockVal-1).getSection());
+        infoList.addElement("Block " + track.get(blockVal-1).getBlockId());
+        infoList.addElement("Block Length " + track.get(blockVal-1).getBlockLen());
+        infoList.addElement("Speed Limit " + track.get(blockVal-1).getSpeedLim());
+        infoList.addElement("Station " + track.get(blockVal-1).getInfra());
+        infoList.addElement("Occupancy " + track.get(blockVal-1).getOccupancy());
+        list = new JList(infoList);
+	}
+	
+	public boolean currentView(Integer blockId)
+	{
+		Integer blockVal = (Integer) list_2.getSelectedValue();
+		if(blockId.equals(blockVal))
+			return true;
+		else 
+			return false;
 	}
 }
