@@ -1,9 +1,8 @@
 package com.peanutbuttercookies.trainsystem.trackcontroller;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.LinkedList;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -11,6 +10,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
+import com.peanutbuttercookies.trainsystem.interfaces.ExcelFileDownloaderInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 
@@ -18,8 +18,9 @@ public class TrackControllerModule implements TrackControllerInterface {
 	
 	private CTCModuleInterface ctc;
 	private TrackModelInterface trackModel;
+	private ExcelFileDownloaderInterface excelDownloader;
 	
-	private Vector<TC_Line> lines;
+	private LinkedList<TC_Line> lines;
 	
 
 	@Override
@@ -36,17 +37,11 @@ public class TrackControllerModule implements TrackControllerInterface {
 
 	@Override
 	public boolean setXlsxFileLocation(String fileLocation) {
-		try{
-			boolean success;
-			FileInputStream file=new FileInputStream(new File(fileLocation));
-			success=loadXlsxFile(file);
-			file.close();
-			return success;
+		boolean success=excelDownloader.setExcelFile(fileLocation);
+		if(success){
+			lines=excelDownloader.getLines();
 		}
-		catch(Exception e){
-			e.printStackTrace();
-			return false;
-		}
+		return success;
 	}
 	
 	private boolean loadXlsxFile(FileInputStream file){
