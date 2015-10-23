@@ -104,9 +104,9 @@ public class TrainControllerUI extends JFrame {
 		contentPane.add(textField_3);
 		textField_3.setColumns(10);
 		if(trainController.doorsOpen == false)
-			textField_3.setText("False");
+			textField_3.setText("Closed");
 		else
-			textField_3.setText("True");
+			textField_3.setText("Open");
 		
 		textField_4 = new JTextField();
 		textField_4.setEditable(false);
@@ -117,11 +117,11 @@ public class TrainControllerUI extends JFrame {
 		textField_4.setText(trainController.station);
 		
 		
-		JComboBox<TrainController> comboBox = new JComboBox<TrainController>();
+		JComboBox<Integer> comboBox = new JComboBox<Integer>();
 		sl_contentPane.putConstraint(SpringLayout.WEST, comboBox, 6, SpringLayout.EAST, lblSelectTrain);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, comboBox, 0, SpringLayout.SOUTH, lblSelectTrain);
 		contentPane.add(comboBox);
-		comboBox.addItem(trainController);
+		comboBox.addItem(1);
 		setVisible(true);
 	}
 }

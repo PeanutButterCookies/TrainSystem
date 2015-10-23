@@ -169,11 +169,11 @@ public class TrainUI extends JFrame {
 		sl_contentPane.putConstraint(SpringLayout.EAST, btnEmergencyBrake, -73, SpringLayout.EAST, contentPane);
 		contentPane.add(btnEmergencyBrake);
 		
-		JComboBox<TrainInterface> selectTrain = new JComboBox<TrainInterface>();
+		JComboBox<Integer> selectTrain = new JComboBox<Integer>();
 		sl_contentPane.putConstraint(SpringLayout.WEST, selectTrain, 6, SpringLayout.EAST, lblSelectTrain);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, selectTrain, 0, SpringLayout.SOUTH, lblSelectTrain);
 		contentPane.add(selectTrain);
-		selectTrain.addItem(train);
+		selectTrain.addItem(1);
 		setVisible(true);
 	}
 }
