@@ -22,7 +22,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
+import com.peanutbuttercookies.trainsystem.ctc.BlockTableModel;
 import com.peanutbuttercookies.trainsystem.ctc.CTCBlock;
+import com.peanutbuttercookies.trainsystem.ctc.TrainModel;
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
 
 public class CTCModuleUI extends JFrame implements ActionListener {
@@ -39,8 +41,6 @@ public class CTCModuleUI extends JFrame implements ActionListener {
 	private JButton sendButton;
 	private DefaultComboBoxModel<Integer> trainModel;
 	private DefaultComboBoxModel<Integer> blockModel;
-	private BlockTableModel blockTableModel;
-	private TrainTableModel trainTableModel;
 	private JScrollPane trainSP;
 	private JScrollPane blockSP;
 	
@@ -76,23 +76,12 @@ public class CTCModuleUI extends JFrame implements ActionListener {
 		setVisible(true);
 	}
 	
-	public void blockUpdated(int blockId) {
-		blockTableModel.fireTableRowsUpdated(0, blockTableModel.getRowCount() - 1);
-		trainTableModel.moveTrain(blockId);
-		trainTableModel.fireTableRowsUpdated(0, trainTableModel.getRowCount() - 1);
-	}
-
 	private void initializeTop(JPanel top) throws IOException {
 
 		blockTable = new JTable();
 		trainTable = new JTable();
-		blockTableModel = new BlockTableModel();
-		trainTableModel = new TrainTableModel();
-		for(CTCBlock block : module.getBlocks()) {
-			blockTableModel.addBlock(block);
-		}
-		blockTable.setModel(blockTableModel);
-		trainTable.setModel(trainTableModel);
+		blockTable.setModel(module.getBlockModel());
+		trainTable.setModel(module.getTableModel());
 		trainSP = new JScrollPane(trainTable);
 		blockSP = new JScrollPane(blockTable);
 		top.add(trainSP);

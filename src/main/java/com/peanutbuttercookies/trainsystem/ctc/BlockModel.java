@@ -12,32 +12,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+
+import javax.swing.table.AbstractTableModel;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.neo4j.graphdb.GraphDatabaseService;
 
-public class BlockModel {
+public class BlockModel extends AbstractTableModel {
 	
 	
-	// Neo4J Variables
-	
-	private GraphDatabaseService gds;
-	
-	// end neo4j
-	private List<CTCBlock> blocks;
 	private List<CTCTrain> trains;
+	private Map<String, CTCBlock> switchMap;
+	private Map<Integer, CTCBlock> blockMap;
 
-	private HashMap<Integer, CTCBlock> blockMap;
-	private HashMap<Integer, CTCTrain> trainMap;
-
-	private HashMap<Integer, Integer> trainToBlock;
 	
 	public BlockModel() {
-		blocks = new ArrayList<CTCBlock>();
 		trains = new LinkedList<CTCTrain>();
-		blockMap = new HashMap<Integer, CTCBlock>();
-		trainToBlock = new HashMap<Integer, Integer>();
+		blockMap = new HashMap<Integer, Block>();
+		switchMap = new HashMap<String, CTCBlock>();
 	}
 	
 	public boolean addBlock(int block) {
@@ -62,6 +55,24 @@ public class BlockModel {
 		HSSFSheet sheet = book.getSheetAt(sheetNum);
 		
 		return false;
+	}
+
+	@Override
+	public int getColumnCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getRowCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public Object getValueAt(int rowIndex, int columnIndex) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
 

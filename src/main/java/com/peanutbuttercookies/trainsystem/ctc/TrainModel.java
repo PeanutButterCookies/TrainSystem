@@ -1,4 +1,4 @@
-package com.peanutbuttercookies.trainsystem.ui;
+package com.peanutbuttercookies.trainsystem.ctc;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-public class TrainTableModel extends AbstractTableModel {
+public class TrainModel extends AbstractTableModel {
 
 	/**
 	 * 
@@ -15,7 +15,7 @@ public class TrainTableModel extends AbstractTableModel {
 	private List<Integer> trainList;
 	private HashMap<Integer, Integer> trainMap;
 	
-	public TrainTableModel() {
+	public TrainModel() {
 		trainList = new LinkedList<Integer>();
 		trainMap = new HashMap<Integer, Integer>();
 	}

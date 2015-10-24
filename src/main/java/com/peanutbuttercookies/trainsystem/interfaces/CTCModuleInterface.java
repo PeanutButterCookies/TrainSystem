@@ -8,6 +8,8 @@ package com.peanutbuttercookies.trainsystem.interfaces;
 
 import java.util.List;
 
+import javax.swing.table.AbstractTableModel;
+
 import com.peanutbuttercookies.trainsystem.ctc.CTCBlock;
 
 public interface CTCModuleInterface {
@@ -22,8 +24,9 @@ public interface CTCModuleInterface {
 	// for use by the CTCUI
 	public void markBlockForRepairs(Integer blockId);
 	public boolean send(String speed, Integer train, Integer authority);
-	public Integer getMaxTrain();
 	public List<CTCBlock> getBlocks();
+	public AbstractTableModel getBlockModel();
+	public AbstractTableModel getTableModel();
 	
 	// for use by the track controller
 	public void setBlockOccupied(int blockId);
