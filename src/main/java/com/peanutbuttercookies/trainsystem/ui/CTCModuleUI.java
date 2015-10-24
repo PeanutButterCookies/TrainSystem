@@ -22,7 +22,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
-import com.peanutbuttercookies.trainsystem.ctc.BlockTableModel;
 import com.peanutbuttercookies.trainsystem.ctc.CTCBlock;
 import com.peanutbuttercookies.trainsystem.ctc.TrainModel;
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
@@ -121,17 +120,18 @@ public class CTCModuleUI extends JFrame implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
+		//TODO FIX THIS
 		int train = getSelected(trainModel);
 		int authority = getSelected(blockModel);
 		if(module.send(speed.getText(), train, authority)) {
 			if(train == 0) {
-				train = module.getMaxTrain();
+//				train = module.getMaxTrain();
 			}
 			System.out.println(train);
 			if(!trainSet.contains(train)) {
 				trainSet.add(train);
 				trainModel.addElement(train);
-				trainTableModel.addTrain(train);
+//				trainTableModel.addTrain(train);
 				System.out.println("element added");
 			} 
 		}

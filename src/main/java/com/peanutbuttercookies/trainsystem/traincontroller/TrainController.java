@@ -21,12 +21,15 @@ public class TrainController implements TrainControllerInterface{
 	}
 	
 	public void setSpeedLimit(double speedLimit){
+		System.out.println("Speed Limit " + speedLimit);
 		this.speedLimit = speedLimit;
 	}
 	public void setSpeed(double speed){
+		System.out.println("Speed " + speed);
 		this.speed = speed;
 	}
 	public void setAcceleration(double acceleration){
+		System.out.println("Aceeleration " + acceleration);
 		this.acceleration = acceleration;
 	}
 	public void setAuthority(int authority){
