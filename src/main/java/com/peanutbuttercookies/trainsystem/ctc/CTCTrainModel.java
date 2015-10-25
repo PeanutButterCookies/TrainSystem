@@ -43,46 +43,28 @@ public class CTCTrainModel extends AbstractTableModel {
 
 		switch(columnIndex) {
 		case 0:
-			return train.;
+			return train.getTrainId();
 		case 1:
-			return trainList.get(rowIndex)
+			return train.getHead();
+		case 2:
+			return train.getTail();
+		case 3:
+			return train.getDirection();
+		default:
+			return null;
 		}
 		
-		return "error";
 	}
 	
-	public void addTrain(int trainId) {
-		if(trainMap.containsKey(trainId)) {
-			return;
-		}
+	public void addTrain(CTCTrain train) {
 
-		trainList.add(trainId);
-		trainMap.put(trainId, 0);
+		trainList.add(train);
 		fireTableRowsInserted(getRowCount() - 1, getRowCount() - 1);
 	}
 	
 	public void moveTrain(int blockId) {
-		int min = Integer.MAX_VALUE;
-		int trainId = -1;
-		int rowIndex = -1;
-		for(int i=0; i<trainList.size(); i++) {
-			int train = trainList.get(i);
-			int diff = blockId - train;
-			if(diff < 0) {
-				diff *= -1;
-			}
-			if(diff < min) {
-				trainId = train;
-				min = diff;
-				rowIndex = i;
-			}
-		}
-		int current = trainMap.get(trainId);
-		if(current < blockId) {
-			trainMap.put(trainId, min);
-		}
-		
-		fireTableCellUpdated(rowIndex, 1);
+		//TODO
+//		fireTableCellUpdated(rowIndex, 1);
 
 	}
 

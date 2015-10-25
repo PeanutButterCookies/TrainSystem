@@ -19,11 +19,11 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import com.peanutbuttercookies.trainsystem.ctc.CTCBlock;
-import com.peanutbuttercookies.trainsystem.ctc.CTCTrainModel;
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
 
 public class CTCModuleUI extends JFrame implements ActionListener {
@@ -42,6 +42,7 @@ public class CTCModuleUI extends JFrame implements ActionListener {
 	private DefaultComboBoxModel<Integer> blockModel;
 	private JScrollPane trainSP;
 	private JScrollPane blockSP;
+	private JTabbedPane lineTabs;
 	
 	private HashSet<Integer> trainSet;
 	
