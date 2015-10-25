@@ -6,33 +6,27 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-public class TrainModel extends AbstractTableModel {
+public class CTCTrainModel extends AbstractTableModel {
 
 	/**
-	 * 
+	 * I hate this shit
 	 */
 	private static final long serialVersionUID = 3648136737558041721L;
-	private List<Integer> trainList;
-	private HashMap<Integer, Integer> trainMap;
+
+	private List<CTCTrain> trainList;
 	
-	public TrainModel() {
-		trainList = new LinkedList<Integer>();
-		trainMap = new HashMap<Integer, Integer>();
+	public CTCTrainModel() {
+		trainList = new LinkedList<CTCTrain>();
 	}
 
 	@Override
 	public String getColumnName(int col) {
-		switch(col) {
-		case 0:
-			return "Train ID";
-		case 1:
-			return "Block Number";
-		}
-		return "error";
+		return CTCTrain.getField(col);
 	}
+
 	@Override
 	public int getColumnCount() {
-		return 2;
+		return CTCTrain.getFieldsSize();
 	}
 
 	@Override
@@ -42,20 +36,26 @@ public class TrainModel extends AbstractTableModel {
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
+		if(rowIndex > trainList.size()) {
+			return null;
+		}
+		CTCTrain train = trainList.get(rowIndex);
+
 		switch(columnIndex) {
 		case 0:
-			return trainList.get(rowIndex);
+			return train.;
 		case 1:
-			return trainMap.get(trainList.get(rowIndex));
+			return trainList.get(rowIndex)
 		}
 		
 		return "error";
 	}
 	
-	public void addTrain(int trainId ) {
+	public void addTrain(int trainId) {
 		if(trainMap.containsKey(trainId)) {
 			return;
 		}
+
 		trainList.add(trainId);
 		trainMap.put(trainId, 0);
 		fireTableRowsInserted(getRowCount() - 1, getRowCount() - 1);

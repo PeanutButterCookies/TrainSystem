@@ -23,7 +23,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import com.peanutbuttercookies.trainsystem.ctc.CTCBlock;
-import com.peanutbuttercookies.trainsystem.ctc.TrainModel;
+import com.peanutbuttercookies.trainsystem.ctc.CTCTrainModel;
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
 
 public class CTCModuleUI extends JFrame implements ActionListener {

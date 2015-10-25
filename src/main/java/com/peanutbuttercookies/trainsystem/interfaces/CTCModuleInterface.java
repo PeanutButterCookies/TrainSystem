@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
+import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.ctc.CTCBlock;
 
 public interface CTCModuleInterface {
@@ -31,4 +32,5 @@ public interface CTCModuleInterface {
 	// for use by the track controller
 	public void setBlockOccupied(int blockId);
 	public void setBlockUnoccupied(int blockId);
+	public void importTrack(List<Block> blocks);
 }

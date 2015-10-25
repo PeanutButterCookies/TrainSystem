@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.swing.table.AbstractTableModel;
+
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 
@@ -19,14 +21,14 @@ public class CTCModule implements CTCModuleInterface {
 
 	private TrackControllerInterface tc;
 	
-	private List<CTCBlock> blocks;
-	private HashMap<Integer, Integer> blockToTrain;
+	private CTCBlockModel blockModel;
+	private CTCTrainModel trainModel;
 
 	private int maxTrain = 0;
 
 	public CTCModule() throws IOException {
-		blocks = new ArrayList<CTCBlock>();
-		blockToTrain = new HashMap<Integer, Integer>();
+		blockModel = new CTCBlockModel();
+		trainModel = new CTCTrainModel();
 
 		// for prototype
 		BufferedReader reader = new BufferedReader(
@@ -106,6 +108,18 @@ public class CTCModule implements CTCModuleInterface {
 	@Override
 	public List<CTCBlock> getBlocks() {
 		return blocks;
+	}
+
+	@Override
+	public AbstractTableModel getBlockModel() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AbstractTableModel getTableModel() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

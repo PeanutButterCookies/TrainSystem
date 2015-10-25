@@ -7,10 +7,13 @@ public class CTCTrain extends AbstractCTCBean {
 	static {
 		fields = Arrays.asList(new String[]{
 				"Train ID",
-				"Block Number"
+				"Front Block",
+				"Tail Block"
 		});
 	}
 	
 	private int trainId;
-	private int block;
+	private int head;
+	private int tail;
+	private boolean direction;
 }
