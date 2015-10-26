@@ -16,13 +16,15 @@ public class CTCBlock extends AbstractCTCBean {
 	static {
 		fields = Arrays.asList(new String[] {
 			"Block Number",
+			"Section",
 			"Occupied",
 			"Switch"
 		});
 	}
 	
-	private int blockNumber;
+	private Integer blockNumber;
 	private String line;
+	private String section;
 	private boolean occupied;
 	private CTCBlock nextBlock;
 	private CTCBlock prevBlock;
@@ -35,20 +37,21 @@ public class CTCBlock extends AbstractCTCBean {
 		setOccupied(false);
 	}
 
-	public CTCBlock(int blockNumber, String line) {
+	public CTCBlock(int blockNumber, String line, String section) {
 		this();
 		setBlockNumber(blockNumber);
 		setLine(line);
+		setSection(section);
 	}
 	
 	public CTCBlock(Block block) {
-		this(block.getBlockNumber(), block.getLine());
+		this(block.getBlockNumber(), block.getLine(), block.getSection());
 	}
 	
-	public int getBlockNumber() {
+	public Integer getBlockNumber() {
 		return blockNumber;
 	}
-	public void setBlockNumber(int blockNumber) {
+	public void setBlockNumber(Integer blockNumber) {
 		this.blockNumber = blockNumber;
 	}
 	public boolean isOccupied() {
@@ -88,6 +91,18 @@ public class CTCBlock extends AbstractCTCBean {
 	
 	public boolean isSwitch() {
 		return possibleNext.size() > 1;
+	}
+
+	public String getSection() {
+		return section;
+	}
+
+	public void setSection(String section) {
+		this.section = section;
+	}
+	
+	public String toString() {
+		return blockNumber.toString();
 	}
 	
 }

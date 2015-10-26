@@ -70,8 +70,10 @@ public class CTCBlockModel extends AbstractTableModel {
 		case 0:
 			return blockMap.get(rowIndex).getBlockNumber();
 		case 1:
-			return blockMap.get(rowIndex).isOccupied();
+			return blockMap.get(rowIndex).getSection();
 		case 2:
+			return blockMap.get(rowIndex).isOccupied();
+		case 3:
 			return blockMap.get(rowIndex).isSwitch();
 		default:
 			return null;

@@ -13,27 +13,27 @@ public class CTCTrain extends AbstractCTCBean {
 		});
 	}
 	
-	private int trainId;
-	private int head;
-	private int tail;
+	private Integer trainId;
+	private Integer head;
+	private Integer tail;
 	private String direction;
 	
-	public int getTrainId() {
+	public Integer getTrainId() {
 		return trainId;
 	}
-	public void setTrainId(int trainId) {
+	public void setTrainId(Integer trainId) {
 		this.trainId = trainId;
 	}
-	public int getHead() {
+	public Integer getHead() {
 		return head;
 	}
-	public void setHead(int head) {
+	public void setHead(Integer head) {
 		this.head = head;
 	}
-	public int getTail() {
+	public Integer getTail() {
 		return tail;
 	}
-	public void setTail(int tail) {
+	public void setTail(Integer tail) {
 		this.tail = tail;
 	}
 	public String getDirection() {
@@ -41,5 +41,9 @@ public class CTCTrain extends AbstractCTCBean {
 	}
 	public void setDirection(String direction) {
 		this.direction = direction;
+	}
+	
+	public String toString() {
+		return trainId.toString();
 	}
 }
