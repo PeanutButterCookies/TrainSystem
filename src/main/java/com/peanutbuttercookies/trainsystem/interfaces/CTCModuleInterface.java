@@ -6,7 +6,6 @@
 
 package com.peanutbuttercookies.trainsystem.interfaces;
 
-import java.io.File;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
@@ -15,6 +14,7 @@ import javax.swing.table.AbstractTableModel;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.ctc.CTCBlock;
+import com.peanutbuttercookies.trainsystem.ctc.CTCSection;
 import com.peanutbuttercookies.trainsystem.ctc.CTCTrain;
 
 public interface CTCModuleInterface {
@@ -28,11 +28,12 @@ public interface CTCModuleInterface {
 
 	// for use by the CTCUI
 	public void markBlockForRepairs(Integer blockId);
-	public boolean perform(String line, File file, String speed);
+	public boolean perform(String line, String use, String filename, String speed);
 	public AbstractTableModel newBlockModel(String line, JTable table);
 	public AbstractTableModel newTrainModel(String line, JTable table);
+	public DefaultComboBoxModel<CTCSection> newSectionCombo(String line);
 	public DefaultComboBoxModel<CTCTrain> newTrainCombo(String line);
-	public DefaultComboBoxModel<CTCBlock> newBlockCombo(String line);
+	public DefaultComboBoxModel<CTCBlock> newBlockCombo(String line, CTCSection section);
 	
 	// for use by the track controller
 	public void setBlockOccupied(int blockId);

@@ -9,7 +9,6 @@ package com.peanutbuttercookies.trainsystem.ui;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.Arrays;
 import java.util.Vector;
 
@@ -26,6 +25,7 @@ import javax.swing.JTextField;
 
 import com.peanutbuttercookies.trainsystem.ctc.CTCBlock;
 import com.peanutbuttercookies.trainsystem.ctc.CTCModule;
+import com.peanutbuttercookies.trainsystem.ctc.CTCSection;
 import com.peanutbuttercookies.trainsystem.ctc.CTCTrain;
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
 
@@ -47,7 +47,7 @@ public class CTCModuleUI extends JFrame implements ActionListener {
 	private JTabbedPane lineTabs;
 	private JComboBox<String> usesCombo;
 	private JButton browse;
-	private File selectedFile = null;
+	private String selectedFile = null;
 	
 	public static void main(String[] args) {
 		CTCModule ctc = new CTCModule();
@@ -87,7 +87,7 @@ public class CTCModuleUI extends JFrame implements ActionListener {
 	          int option = chooser.showOpenDialog(frame);
 	          frame.setVisible(true);;
 	          if (option == JFileChooser.APPROVE_OPTION) {
-	            selectedFile = chooser.getSelectedFile();
+	            selectedFile = chooser.getSelectedFile().getAbsolutePath();
 	          }
 	        }
 	      });
@@ -110,13 +110,15 @@ public class CTCModuleUI extends JFrame implements ActionListener {
 		JPanel middle = new JPanel();
 		JPanel bottom = new JPanel();
 		JComboBox<CTCTrain> trainCBox = new JComboBox<CTCTrain>(module.newTrainCombo(line));
-		JComboBox<CTCBlock> blockCBox = new JComboBox<CTCBlock>(module.newBlockCombo(line));
+		JComboBox<CTCSection> sectionCBox = new JComboBox<CTCSection>(module.newSectionCombo(line));
+		JComboBox<CTCBlock> blockCBox = new JComboBox<CTCBlock>(module.newBlockCombo(line, sectionCBox.getItemAt(0)));
 		JButton button = new JButton("Send");
 		button.addActionListener(this);
 		trainCBox.setPreferredSize(new Dimension(150, 30));
 		blockCBox.setPreferredSize(new Dimension(150, 30));
 		middle.add(trainCBox);
 		middle.add(blockCBox);
+		middle.add(sectionCBox);
 		bottom.add(speed);
 		bottom.add(usesCombo);
 		bottom.add(button);
@@ -134,7 +136,8 @@ public class CTCModuleUI extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		String line = lineTabs.getTitleAt(lineTabs.getSelectedIndex());
-		module.perform(line, selectedFile, speed.getText());
+		String use = usesCombo.getItemAt(usesCombo.getSelectedIndex());
+		module.perform(line, use, selectedFile, speed.getText());
 
 	}
 

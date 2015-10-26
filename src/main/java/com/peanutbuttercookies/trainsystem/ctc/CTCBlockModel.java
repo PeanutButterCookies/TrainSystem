@@ -5,8 +5,9 @@
 
 package com.peanutbuttercookies.trainsystem.ctc;
 
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.table.AbstractTableModel;
@@ -23,10 +24,12 @@ public class CTCBlockModel extends AbstractTableModel {
 
 	private Map<Integer, CTCBlock> blockMap;
 	private Map<Integer, CTCBlock> switchMap;
+	private Map<String, CTCSection> sections;
 	
 	public CTCBlockModel() {
 		blockMap = new LinkedHashMap<Integer, CTCBlock>();
 		switchMap = new LinkedHashMap<Integer, CTCBlock>();
+		sections = new LinkedHashMap<String, CTCSection>();
 	}
 	
 	public boolean addBlock(Block block) {
@@ -37,11 +40,24 @@ public class CTCBlockModel extends AbstractTableModel {
 			System.out.println("Duplicate block number");
 			return false;
 		}
+		if(!sections.containsKey(ctcBlock.getSection())) {
+			sections.put(ctcBlock.getSection(), new CTCSection(ctcBlock.getSection()));
+		}
+		
+		sections.get(ctcBlock.getSection()).addBlock(ctcBlock);
 		if(ctcBlock.isSwitch()) {
 			switchMap.put(ctcBlock.getBlockNumber(), ctcBlock); 
 		}
 		
 		return true;
+	}
+	
+	public Collection<CTCSection> getSections() {
+		return sections.values();
+	}
+	
+	public List<CTCBlock> getBlocks(CTCSection section) {
+		return sections.get(section.getName()).getBlocks();
 	}
 	
 	public void removeBlock(int block, String line) {
@@ -75,6 +91,8 @@ public class CTCBlockModel extends AbstractTableModel {
 			return blockMap.get(rowIndex).isOccupied();
 		case 3:
 			return blockMap.get(rowIndex).isSwitch();
+		case 4:
+			return blockMap.get(rowIndex).getThroughput();
 		default:
 			return null;
 		}

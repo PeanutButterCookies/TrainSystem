@@ -112,12 +112,34 @@ public class CTCBlock extends AbstractCTCBean {
 		return blockNumber.toString();
 	}
 	
+	//TODO change this to work with scaling simulation time
 	public double getThroughput() {
 		long time = System.currentTimeMillis();
 		long diff = time - starttime;
 		double seconds = diff/1000;
+		double hours = seconds/60;
+		double throughput = numTrains/hours;
+		return throughput;
 		
 		
+	}
+	
+	@Override
+	/**
+	 * Equals makes blocks unique by number and line
+	 */
+	public boolean equals(Object other) {
+		if(!(other instanceof CTCBlock)) {
+			return false;
+		}
+		
+		return line.equals(((CTCBlock)other).getLine()) && blockNumber.equals(((CTCBlock)other).getBlockNumber());
+	}
+	
+	@Override
+	public int hashCode() {
+		String unique = line + blockNumber;
+		return unique.hashCode();
 	}
 	
 }

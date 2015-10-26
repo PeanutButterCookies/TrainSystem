@@ -5,8 +5,6 @@
 
 package com.peanutbuttercookies.trainsystem.ctc;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,13 +23,13 @@ public class CTCModule implements CTCModuleInterface {
 	
 	private Map<String, CTCBlockModel> lineBlockMap;
 	private Map<String, CTCTrainModel> lineTrainMap;
-
+	private Map<String, ComboBoxModelContainer> comboMap;
 	private int maxTrain = 0;
 
 	public CTCModule() {
 		lineBlockMap = new HashMap<String, CTCBlockModel>();
 		lineTrainMap = new HashMap<String, CTCTrainModel>();
-
+		comboMap = new HashMap<String, ComboBoxModelContainer>();
 	}
 	
 	@Override
@@ -54,7 +52,8 @@ public class CTCModule implements CTCModuleInterface {
 		// TODO Auto-generated method stub
 
 	}
-//
+
+// TODO
 //	@Override
 //	public boolean send(String speed, Integer train, Integer authority) {
 //		int speedInt = 0;
@@ -83,37 +82,90 @@ public class CTCModule implements CTCModuleInterface {
 	@Override
 	public void importTrack(List<Block> blocks) {
 		// TODO Auto-generated method stub
+		if(blocks.size() == 0) {
+			return;
+		}
+		addLine(blocks.get(0).getLine());
+		for(Block block : blocks) {
+			
+		}
 		
 	}
 
 	@Override
 	public AbstractTableModel newBlockModel(String line, JTable table) {
-		// TODO Auto-generated method stub
-		return null;
+		return lineBlockMap.get(line);
 	}
 
 	@Override
 	public AbstractTableModel newTrainModel(String line, JTable table) {
-		// TODO Auto-generated method stub
-		return null;
+		return lineTrainMap.get(line);
 	}
 
 	@Override
 	public DefaultComboBoxModel<CTCTrain> newTrainCombo(String line) {
-		// TODO Auto-generated method stub
-		return null;
+		DefaultComboBoxModel<CTCTrain> model = new DefaultComboBoxModel<CTCTrain>();
+		model.addElement(new NewCTCTrain());
+		comboMap.get(line).setTrainCombo(model);
+		return model;
 	}
 
 	@Override
-	public DefaultComboBoxModel<CTCBlock> newBlockCombo(String line) {
-		// TODO Auto-generated method stub
-		return null;
+	public DefaultComboBoxModel<CTCBlock> newBlockCombo(String line, CTCSection section) {
+		if(checkLineInit(line)) {
+			System.out.println("Line : " + line + ", not initialized");
+			return null;
+		}
+		DefaultComboBoxModel<CTCBlock> model = new DefaultComboBoxModel<CTCBlock>();
+		CTCBlockModel blockModel = lineBlockMap.get(line);
+		for(CTCBlock block: blockModel.getBlocks(section)) {
+			model.addElement(block);
+		}
+		comboMap.get(line).addBlockCombo(section, model);
+		return model;
+	}
+	
+	@Override
+	public DefaultComboBoxModel<CTCSection> newSectionCombo(String line) {
+		if(checkLineInit(line)) {
+			System.out.println("Line : " + line + ", not initialized");
+			return null;
+		}
+		DefaultComboBoxModel<CTCSection> model = new DefaultComboBoxModel<CTCSection>();
+		for(CTCSection section : lineBlockMap.get(line).getSections()) {
+			model.addElement(section);
+		}
+		comboMap.get(line).setSectionCombo(model);
+		return model;
 	}
 
 	@Override
-	public boolean perform(String line, File file, String speed) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean perform(String line, String use, String filename, String speed) {
+		//TODO
+		switch(use) {
+		case "Dispatch":
+		case "Mark for Repair":
+		case "Change switch":
+		case "Set schedule":
+		default:
+			return false;
+		}
+	}
+	
+	private void addLine(String line) {
+		if(!lineBlockMap.containsKey(line)) {
+			lineBlockMap.put(line, new CTCBlockModel());
+		}
+		if(!lineTrainMap.containsKey(line)) {
+			lineTrainMap.put(line, new CTCTrainModel());
+		}
+		if(!comboMap.containsKey(line)) {
+			comboMap.put(line, new ComboBoxModelContainer());
+		}
+	}
+	
+	private boolean checkLineInit(String line) {
+		return comboMap.containsKey(line);
 	}
 
 }

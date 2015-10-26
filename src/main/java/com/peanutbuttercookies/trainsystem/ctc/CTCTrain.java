@@ -46,4 +46,18 @@ public class CTCTrain extends AbstractCTCBean {
 	public String toString() {
 		return trainId.toString();
 	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if(!(other instanceof CTCTrain)) {
+			return false;
+		}
+		
+		return trainId.equals(((CTCTrain)other).getTrainId());
+	}
+	
+	@Override
+	public int hashCode() {
+		return trainId;
+	}
 }
