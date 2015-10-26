@@ -18,7 +18,8 @@ public class CTCBlock extends AbstractCTCBean {
 			"Block Number",
 			"Section",
 			"Occupied",
-			"Switch"
+			"Switch",
+			"Throughput"
 		});
 	}
 	
@@ -29,12 +30,15 @@ public class CTCBlock extends AbstractCTCBean {
 	private CTCBlock nextBlock;
 	private CTCBlock prevBlock;
 	private List<CTCBlock> possibleNext;
+	private long starttime;
+	private int numTrains;
 	
 	public CTCBlock() {
 		possibleNext = new ArrayList<CTCBlock>();
 		nextBlock = null;
 		prevBlock = null;
 		setOccupied(false);
+		starttime = System.currentTimeMillis();
 	}
 
 	public CTCBlock(int blockNumber, String line, String section) {
@@ -58,6 +62,9 @@ public class CTCBlock extends AbstractCTCBean {
 		return occupied;
 	}
 	public void setOccupied(boolean occupied) {
+		if(occupied) {
+			numTrains++;
+		}
 		this.occupied = occupied;
 	}
 
@@ -103,6 +110,14 @@ public class CTCBlock extends AbstractCTCBean {
 	
 	public String toString() {
 		return blockNumber.toString();
+	}
+	
+	public double getThroughput() {
+		long time = System.currentTimeMillis();
+		long diff = time - starttime;
+		double seconds = diff/1000;
+		
+		
 	}
 	
 }

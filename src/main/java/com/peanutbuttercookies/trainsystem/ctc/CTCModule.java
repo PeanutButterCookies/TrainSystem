@@ -25,7 +25,6 @@ public class CTCModule implements CTCModuleInterface {
 	
 	private Map<String, CTCBlockModel> lineBlockMap;
 	private Map<String, CTCTrainModel> lineTrainMap;
-	private String line;
 
 	private int maxTrain = 0;
 
