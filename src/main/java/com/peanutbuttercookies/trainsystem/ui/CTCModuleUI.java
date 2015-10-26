@@ -124,10 +124,9 @@ public class CTCModuleUI extends JFrame implements ActionListener {
 		bottom.add(button);
 		JPanel panel = new JPanel();
 		
-		//TODO decide size of panels
-		top.setPreferredSize(new Dimension(0,0));
-		middle.setPreferredSize(new Dimension(0,0));
-		bottom.setPreferredSize(new Dimension(0,0));
+		top.setPreferredSize(new Dimension(600,500));
+		middle.setPreferredSize(new Dimension(600,50));
+		bottom.setPreferredSize(new Dimension(600,50));
 		panel.add(top);
 		panel.add(bottom);
 		lineTabs.addTab(line, panel);
