@@ -21,6 +21,7 @@ public class Block {
 	private final int switchBlockId;		//switchBlockId=-1 for block without switch
 	private final int arrowDirectionA;		//head=1, none=0, tail=-1
 	private final int arrowDirectionB;		//head=1, none=0, tail=-1
+	private boolean twoWay;
 	
 	private LinkedList<Block> next;
 	private LinkedList<Block> prev;
@@ -32,7 +33,7 @@ public class Block {
 			float initBlockGrade, int initSpeedLimit, float initElevation, float initCumulativeElevation,
 			boolean initSwitchToYard, boolean initSwitchFromYard, boolean initInfrastructureSwitch,
 			boolean initInfrastructureUnderground, boolean initInfrastructureRRCrossing,
-			boolean initInfrastructureStation,String initStationName, String initSwitchBlockId,
+			boolean initInfrastructureStation,String initStationName, int initSwitchBlockId,
 			int initArrowDirectionA, int initArrowDirectionB){
 		
 		this.line						=initLine;
@@ -55,6 +56,7 @@ public class Block {
 		this.arrowDirectionB				=initArrowDirectionB;
 		this.blockOccupied				=false;
 		this.switchEngaged				=false;
+		this.twoWay = false;
 	}
 	
 	public String getLine(){
@@ -117,7 +119,7 @@ public class Block {
 		return stationName;
 	}
 	
-	public String getSwitchBlockId(){
+	public int getSwitchBlockId(){
 		return switchBlockId;
 	}
 	
@@ -189,6 +191,10 @@ public class Block {
 	
 	public void setPrev(Block newBlock)	{
 		prev.add(newBlock);
+	}
+	
+	public void getTwoWay(boolean twoWayIn)	{
+		this.twoWay = twoWayIn;
 	}
 	
 
