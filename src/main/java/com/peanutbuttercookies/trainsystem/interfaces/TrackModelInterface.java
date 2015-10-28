@@ -33,5 +33,6 @@ public interface TrackModelInterface {
 	public void setBeacon(); //sent to train controller
 	public void setStation(String station); //sent to train controller
 	public void setLayout(Block newBlock);
-	public void setBlock(String line, String section, int blockId, int blockLength, int speedLim, String infra, int occupancy);
+	public void setBlock(String line, String section, int blockId, int blockLen, double blockGrade, int speedLim, String infra,
+			double elevation, double cumElev, String switchId, String direction, int occupancy);
 }

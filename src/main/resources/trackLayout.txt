@@ -1,3 +1,13 @@
+<<<<<<< HEAD
+Line Section BlockNum BlockLength SpeedLim Infra
+Red A 1 50 70 none
+Red A 2 50 70 StationA
+Red B 3 50 70 none
+Red B 4 50 70 none
+Red C 5 50 70 StationB
+Red C 6 50 70 none
+Red C 7 50 70 none
+=======
 Line Section BlockNum BlockLength SpeedLim Infra
 Red A 1 50 70 none
 Red A 2 50 70 StationA
@@ -6,3 +16,4 @@ Red B 4 60 70 none
 Red C 5 70 70 StationB
 Red C 6 40 70 none
 Red C 7 50 70 none
+>>>>>>> branch 'master' of https://github.com/PeanutButterCookies/TrainSystem
