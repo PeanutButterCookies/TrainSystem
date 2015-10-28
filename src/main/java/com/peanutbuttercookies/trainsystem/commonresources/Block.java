@@ -18,7 +18,7 @@ public class Block {
 	private final boolean infrastructureRRCrossing;
 	private final boolean infrastructureStation;
 	private final String stationName;
-	private final String switchBlockId;		//switchBlockId=-1 for block without switch
+	private final int switchBlockId;		//switchBlockId=-1 for block without switch
 	private final int arrowDirectionA;		//head=1, none=0, tail=-1
 	private final int arrowDirectionB;		//head=1, none=0, tail=-1
 	
