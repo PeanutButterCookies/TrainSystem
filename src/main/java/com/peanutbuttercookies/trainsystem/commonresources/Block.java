@@ -1,5 +1,8 @@
 package com.peanutbuttercookies.trainsystem.commonresources;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class Block {
 	private final String line;
 	private final String section;
@@ -8,7 +11,7 @@ public class Block {
 	private final float blockGrade;
 	private final int speedLimit;
 	private final float elevation;
-	private final float cumaltiveElevation;
+	private final float cumulativeElevation;
 	private final boolean switchToYard;
 	private final boolean switchFromYard;
 	private final boolean infrastructureSwitch;
@@ -17,40 +20,47 @@ public class Block {
 	private final boolean infrastructureStation;
 	private final String stationName;
 	private final int switchBlockId;		//switchBlockId=-1 for block without switch
-	private final int arrowDirectionA;		//head=1, none=0, tail=-1
+	private final int arrowDirectionA;		//head=1, none=0, tail=-1, both = 2
 	private final int arrowDirectionB;		//head=1, none=0, tail=-1
+	private boolean twoWay;
+	
+	private List<Block> next; //list of ALL next possible blocks
+	private Block prev; //previous block train was on
 	
 	private boolean blockOccupied;
 	private boolean switchEngaged;
 	
-	
 	public Block(String initLine, String initSection, int initBlockNumber, int initBlockLength, 
-			float initBlockGrade, int initSpeedLimit, float initElevation, float initCumaltiveElevation,
+			float initBlockGrade, int initSpeedLimit, float initElevation, float initCumulativeElevation,
 			boolean initSwitchToYard, boolean initSwitchFromYard, boolean initInfrastructureSwitch,
 			boolean initInfrastructureUnderground, boolean initInfrastructureRRCrossing,
 			boolean initInfrastructureStation,String initStationName, int initSwitchBlockId,
 			int initArrowDirectionA, int initArrowDirectionB){
 		
-		line						=initLine;
-		section						=initSection;
-		blockNumber					=initBlockNumber;
-		blockLength					=initBlockLength;
-		blockGrade					=initBlockGrade;
-		speedLimit					=initSpeedLimit;
-		elevation					=initElevation;
-		cumaltiveElevation			=initCumaltiveElevation;
-		switchToYard				=initSwitchToYard;
-		switchFromYard				=initSwitchFromYard;
-		infrastructureSwitch		=initInfrastructureSwitch;
-		infrastructureUnderground	=initInfrastructureUnderground;
-		infrastructureRRCrossing	=initInfrastructureRRCrossing;
-		infrastructureStation		=initInfrastructureStation;
-		stationName					=initStationName;
-		switchBlockId				=initSwitchBlockId;
-		arrowDirectionA				=initArrowDirectionA;
-		arrowDirectionB				=initArrowDirectionB;
-		blockOccupied				=false;
-		switchEngaged				=false;
+		this.line						=initLine;
+		this.section						=initSection;
+		this.blockNumber					=initBlockNumber;
+		this.blockLength					=initBlockLength;
+		this.blockGrade					=initBlockGrade;
+		this.speedLimit					=initSpeedLimit;
+		this.elevation					=initElevation;
+		this.cumulativeElevation			=initCumulativeElevation;
+		this.switchToYard				=initSwitchToYard;
+		this.switchFromYard				=initSwitchFromYard;
+		this.infrastructureSwitch		=initInfrastructureSwitch;
+		this.infrastructureUnderground	=initInfrastructureUnderground;
+		this.infrastructureRRCrossing	=initInfrastructureRRCrossing;
+		this.infrastructureStation		=initInfrastructureStation;
+		this.stationName					=initStationName;
+		this.switchBlockId				=initSwitchBlockId;
+		this.arrowDirectionA				=initArrowDirectionA;
+		this.arrowDirectionB				=initArrowDirectionB;
+		this.blockOccupied				=false;
+		this.switchEngaged				=false;
+		this.twoWay = false;
+		if(this.arrowDirectionA == 3)
+			this.twoWay = true;
+		this.next = new LinkedList<Block>();
 	}
 	
 	public String getLine(){
@@ -81,8 +91,8 @@ public class Block {
 		return elevation;
 	}
 	
-	public float getCumaltiveElevation(){
-		return cumaltiveElevation;
+	public float getCumulativeElevation(){
+		return cumulativeElevation;
 	}
 	
 	public boolean isSwitchToYard(){
@@ -179,4 +189,36 @@ public class Block {
 		switchEngaged=engaged;
 	}
 	
+	public void setNext(Block newBlock)	{
+		boolean add = true;
+		for(int i = 0; i< next.size(); i++)
+		{
+			if(next.get(i).getBlockNumber() == newBlock.getBlockNumber())
+				add = false;
+		}
+		if(add)
+			next.add(newBlock);
+	}
+	
+	public List<Block> getNext()	{
+		return next;
+	}
+	
+	public void setPrev(Block newBlock)	{
+		this.prev = newBlock;
+	}
+	
+	public void unsetPrev(Block newBlock)	{
+		this.prev = null;
+	}
+	
+	public void setTwoWay(boolean twoWayIn)	{
+		this.twoWay = twoWayIn;
+	}
+	
+	public boolean getTwoWay()	{
+		return twoWay;
+	}
+	
+
 }

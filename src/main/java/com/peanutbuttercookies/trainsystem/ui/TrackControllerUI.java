@@ -29,6 +29,10 @@ import com.peanutbuttercookies.trainsystem.trackcontroller.TC_Train;
 
 public class TrackControllerUI extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -730006420600296656L;
 	private JPanel 		contentPane;
 	private JTextField 	textField;
 	private JTextField 	textField_1;
@@ -351,7 +355,7 @@ public class TrackControllerUI extends JFrame {
 	}
 	
 	public void updateTable(){
-		Vector<TC_Train> tableInfo=trackController.getLineInfo(displayedLine);
+		/*Vector<TC_Train> tableInfo=trackController.getLineInfo(displayedLine);
 		for(int i=0; i<tableInfo.size(); i++){
 			TC_Train temp=tableInfo.get(i);
 			tableVariableDisplay.setValueAt(temp.getTrainId(), i+1, 0);
@@ -363,6 +367,6 @@ public class TrackControllerUI extends JFrame {
 			tableVariableDisplay.setValueAt(false, i+1, 6);						//MUST BE CHANGED AFTER PROTOTYPE
 			tableVariableDisplay.setValueAt(false, i+1, 7);						//MUST BE CHANGED AFTER PROTOTYPE
 			
-		}
+		}*/
 	}
 }

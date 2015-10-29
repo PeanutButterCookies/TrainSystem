@@ -46,10 +46,18 @@ public class CTCBlock extends AbstractCTCBean {
 		setBlockNumber(blockNumber);
 		setLine(line);
 		setSection(section);
+
 	}
 	
 	public CTCBlock(Block block) {
-		this(block.getBlockNumber(), block.getLine(), block.getSection());
+		this();
+		setAll(block);
+	}
+	
+	public void setAll(Block block) {
+		setBlockNumber(block.getBlockNumber());
+		setLine(block.getLine());
+		setSection(block.getSection());
 	}
 	
 	public Integer getBlockNumber() {
@@ -77,6 +85,10 @@ public class CTCBlock extends AbstractCTCBean {
 	}
 	
 	public void addPossible(CTCBlock block) {
+		if(nextBlock == null) {
+			setNextBlock(block);
+			block.setPrevBlock(this);
+		}
 		possibleNext.add(block);
 	}
 

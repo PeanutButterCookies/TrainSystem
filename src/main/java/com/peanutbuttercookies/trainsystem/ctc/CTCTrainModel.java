@@ -1,6 +1,5 @@
 package com.peanutbuttercookies.trainsystem.ctc;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,10 +12,15 @@ public class CTCTrainModel extends AbstractTableModel {
 	 */
 	private static final long serialVersionUID = 3648136737558041721L;
 
-	private List<CTCTrain> trainList;
+	private List<CTCTrain> trains;
+	
+	public enum Side {
+		HEAD,
+		TAIL
+	}
 	
 	public CTCTrainModel() {
-		trainList = new LinkedList<CTCTrain>();
+		trains = new LinkedList<CTCTrain>();
 	}
 
 	@Override
@@ -31,15 +35,15 @@ public class CTCTrainModel extends AbstractTableModel {
 
 	@Override
 	public int getRowCount() {
-		return trainList.size();
+		return trains.size();
 	}
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		if(rowIndex > trainList.size()) {
+		if(rowIndex > trains.size()) {
 			return null;
 		}
-		CTCTrain train = trainList.get(rowIndex);
+		CTCTrain train = trains.get(rowIndex);
 
 		switch(columnIndex) {
 		case 0:
@@ -57,15 +61,26 @@ public class CTCTrainModel extends AbstractTableModel {
 	}
 	
 	public void addTrain(CTCTrain train) {
-
-		trainList.add(train);
-		fireTableRowsInserted(getRowCount() - 1, getRowCount() - 1);
+		trains.add(train);
+		fireTableDataChanged();
 	}
 	
-	public void moveTrain(int blockId) {
-		//TODO
-//		fireTableCellUpdated(rowIndex, 1);
-
+	public void moveTrain(int prevBlock, int newBlock, Side side) {
+		for(CTCTrain train : trains) {
+			switch(side) {
+			case HEAD:
+				if(train.getHead() == prevBlock) {
+					train.setHead(newBlock);
+				}
+				break;
+			case TAIL:
+				if(train.getTail() == prevBlock) {
+					train.setHead(newBlock);
+				}
+				break;
+			}
+		}
+		fireTableDataChanged();
 	}
 
 }

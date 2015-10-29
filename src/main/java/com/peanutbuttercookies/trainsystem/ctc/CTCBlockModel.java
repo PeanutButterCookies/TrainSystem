@@ -32,14 +32,15 @@ public class CTCBlockModel extends AbstractTableModel {
 		sections = new LinkedHashMap<String, CTCSection>();
 	}
 	
-	public boolean addBlock(Block block) {
-		CTCBlock ctcBlock = new CTCBlock(block);
-		
-		
-		if(blockMap.containsKey(ctcBlock.getBlockNumber())) {
-			System.out.println("Duplicate block number");
-			return false;
+	public void addBlock(Block block) {
+		CTCBlock ctcBlock = null;
+		if(blockMap.containsKey(block.getBlockNumber())) {
+			ctcBlock = blockMap.get(block.getBlockNumber());
+			ctcBlock.setAll(block);
+		} else {
+			ctcBlock = new CTCBlock(block);
 		}
+		
 		if(!sections.containsKey(ctcBlock.getSection())) {
 			sections.put(ctcBlock.getSection(), new CTCSection(ctcBlock.getSection()));
 		}
@@ -49,7 +50,15 @@ public class CTCBlockModel extends AbstractTableModel {
 			switchMap.put(ctcBlock.getBlockNumber(), ctcBlock); 
 		}
 		
-		return true;
+		for(Block b : block.getNext()) {
+			int num = b.getBlockNumber();
+			if(blockMap.containsKey(num)) {
+				ctcBlock.addPossible(blockMap.get(num));
+			} else {
+				ctcBlock.addPossible(new CTCBlock());
+			}
+		}
+		fireTableDataChanged();
 	}
 	
 	public Collection<CTCSection> getSections() {
@@ -63,7 +72,20 @@ public class CTCBlockModel extends AbstractTableModel {
 	public void removeBlock(int block, String line) {
 		blockMap.remove(block);
 		switchMap.remove(block);
-		
+		fireTableDataChanged();
+	}
+	
+	public void setOccupied(boolean occupied, int blockId) {
+		if(blockMap.containsKey(blockId)) {
+			blockMap.get(blockId).setOccupied(occupied);
+			fireTableDataChanged();
+		} else {
+			System.out.println("That block is not initialized");
+		}
+	}
+	
+	public int getPrevBlock(int blockId) {
+		return blockMap.get(blockId).getPrevBlock().getBlockNumber();
 	}
 	
 	@Override

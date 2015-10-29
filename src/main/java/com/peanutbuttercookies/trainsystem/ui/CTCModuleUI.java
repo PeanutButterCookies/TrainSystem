@@ -60,7 +60,7 @@ public class CTCModuleUI extends JFrame implements ActionListener {
 		this.module = module;
 
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setPreferredSize(new Dimension(600, 300));
+		setPreferredSize(new Dimension(600, 600));
 		lineTabs = new JTabbedPane(JTabbedPane.TOP);
 		lineTabs.setLayout(new BoxLayout(lineTabs, BoxLayout.Y_AXIS));
 		lineTabs.setPreferredSize(new Dimension(600, 600));

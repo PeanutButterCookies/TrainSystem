@@ -6,7 +6,6 @@
 package com.peanutbuttercookies.trainsystem.ctc;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.DefaultComboBoxModel;
@@ -14,6 +13,7 @@ import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
+import com.peanutbuttercookies.trainsystem.commonresources.Line;
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 
@@ -37,20 +37,19 @@ public class CTCModule implements CTCModuleInterface {
 		this .tc = tc;
 	}
 
+	//TODO train logic
 	@Override
-	public void setBlockOccupied(int blockId) {
-		//TODO
+	public void setBlockOccupied(String line, int blockId) {
+		CTCBlockModel model = lineBlockMap.get(line);
+		model.setOccupied(true, blockId);
+		lineTrainMap.get(line).moveTrain(model.getPrevBlock(blockId), blockId, CTCTrainModel.Side.HEAD);
 	}
 
 	@Override
-	public void setBlockUnoccupied(int blockId) {
-		//TODO
-	}
-
-	@Override
-	public void markBlockForRepairs(Integer blockId) {
-		// TODO Auto-generated method stub
-
+	public void setBlockUnoccupied(String line, int blockId) {
+		CTCBlockModel model = lineBlockMap.get(line);
+		model.setOccupied(true, blockId);
+		lineTrainMap.get(line).moveTrain(model.getPrevBlock(blockId), blockId, CTCTrainModel.Side.TAIL);
 	}
 
 // TODO
@@ -74,20 +73,15 @@ public class CTCModule implements CTCModuleInterface {
 //			return false;
 //		}
 //	}
-
 	public Integer getMaxTrain() {
 		return maxTrain;
 	}
 
 	@Override
-	public void importTrack(List<Block> blocks) {
-		// TODO Auto-generated method stub
-		if(blocks.size() == 0) {
-			return;
-		}
-		addLine(blocks.get(0).getLine());
-		for(Block block : blocks) {
-			
+	public void importLine(Line line) {
+		addLine(line.getLine());
+		for(Block block : line.getAllBlocks()) {
+			lineBlockMap.get(line.getLine()).addBlock(block);
 		}
 		
 	}
