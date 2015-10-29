@@ -3,19 +3,18 @@ package com.peanutbuttercookies.trainsystem.trackcontroller;
 import java.io.FileInputStream;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Vector;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import com.peanutbuttercookies.trainsystem.ui.TrackControllerUI;
-
-import java.util.Vector;
 
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.ExcelFileDownloaderInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
+import com.peanutbuttercookies.trainsystem.ui.TrackControllerUI;
 
 /**
  * 
@@ -49,7 +48,7 @@ public class TrackControllerModule implements TrackControllerInterface {
 	public boolean setXlsxFileLocation(String fileLocation) {
 		boolean success=excelDownloader.setExcelFile(fileLocation);
 		if(success){
-			lines=excelDownloader.getLines();
+			//lines=excelDownloader.getLines();
 		}
 		return success;
 	}
@@ -108,7 +107,7 @@ public class TrackControllerModule implements TrackControllerInterface {
 					counter++;
 				}
 				
-				lines.add(new TC_Line(lineName,tempBlocks.clone()));
+				//lines.add(new TC_Line(lineName,tempBlocks.clone()));
 			}
 			return hasALine;
 		}

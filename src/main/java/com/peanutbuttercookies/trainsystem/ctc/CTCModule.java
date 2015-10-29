@@ -34,7 +34,7 @@ public class CTCModule implements CTCModuleInterface {
 		reader.readLine();
 		while (reader.ready()) {
 			String[] line = reader.readLine().split(" ");
-			addBlock(Integer.parseInt(line[2]));
+			//addBlock(Integer.parseInt(line[2]));
 		}
 
 	}
@@ -78,8 +78,10 @@ public class CTCModule implements CTCModuleInterface {
 	}
 
 	@Override
+	
 	public boolean send(String speed, Integer train, Integer authority) {
 		int speedInt = 0;
+		/*
 		try {
 			speedInt = Integer.parseInt(speed);
 		} catch(NumberFormatException e) {
@@ -91,11 +93,11 @@ public class CTCModule implements CTCModuleInterface {
 		} else if(train == 0) {
 			maxTrain++;
 		}
-		if(tc.setSpeedAuthority(train + 1, speedInt, authority)) {
+		if(tc.setSpeedAuthority(train, speedInt, authority)) {
 			return true;
-		} else {
+		} else {	*/
 			return false;
-		}
+		//}
 	}
 
 	@Override
