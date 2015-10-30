@@ -8,12 +8,14 @@ package com.peanutbuttercookies.trainsystem.interfaces;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTable;
-import javax.swing.table.AbstractTableModel;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Line;
 import com.peanutbuttercookies.trainsystem.ctc.CTCBlock;
+import com.peanutbuttercookies.trainsystem.ctc.CTCBlockModel;
 import com.peanutbuttercookies.trainsystem.ctc.CTCSection;
 import com.peanutbuttercookies.trainsystem.ctc.CTCTrain;
+import com.peanutbuttercookies.trainsystem.ctc.CTCTrainModel;
+import com.peanutbuttercookies.trainsystem.ui.CTCModuleUI;
 
 public interface CTCModuleInterface {
 	
@@ -23,11 +25,12 @@ public interface CTCModuleInterface {
 
 	// for use by wrapper
 	public void setTC(TrackControllerInterface tc);
+	public void setUi(CTCModuleUI ui);
 
 	// for use by the CTCUI
 	public boolean perform(String line, String use, String filename, String speed);
-	public AbstractTableModel newBlockModel(String line, JTable table);
-	public AbstractTableModel newTrainModel(String line, JTable table);
+	public CTCBlockModel newBlockModel(String line);
+	public CTCTrainModel newTrainModel(String line);
 	public DefaultComboBoxModel<CTCSection> newSectionCombo(String line);
 	public DefaultComboBoxModel<CTCTrain> newTrainCombo(String line);
 	public DefaultComboBoxModel<CTCBlock> newBlockCombo(String line, CTCSection section);

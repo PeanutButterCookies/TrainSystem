@@ -9,17 +9,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JTable;
-import javax.swing.table.AbstractTableModel;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.commonresources.Line;
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
+import com.peanutbuttercookies.trainsystem.ui.CTCModuleUI;
 
 public class CTCModule implements CTCModuleInterface {
 
 	private TrackControllerInterface tc;
+	private CTCModuleUI ui;
 	
 	private Map<String, CTCBlockModel> lineBlockMap;
 	private Map<String, CTCTrainModel> lineTrainMap;
@@ -34,10 +34,9 @@ public class CTCModule implements CTCModuleInterface {
 	
 	@Override
 	public void setTC(TrackControllerInterface tc) {
-		this .tc = tc;
+		this.tc = tc;
 	}
 
-	//TODO train logic
 	@Override
 	public void setBlockOccupied(String line, int blockId) {
 		CTCBlockModel model = lineBlockMap.get(line);
@@ -79,20 +78,30 @@ public class CTCModule implements CTCModuleInterface {
 
 	@Override
 	public void importLine(Line line) {
-		addLine(line.getLine());
+
+		if(!lineBlockMap.containsKey(line.getLine())) {
+			lineBlockMap.put(line.getLine(), new CTCBlockModel());
+		}
+		if(!lineTrainMap.containsKey(line.getLine())) {
+			lineTrainMap.put(line.getLine(), new CTCTrainModel());
+		}
+		if(!comboMap.containsKey(line.getLine())) {
+			comboMap.put(line.getLine(), new ComboBoxModelContainer());
+		}
+
 		for(Block block : line.getAllBlocks()) {
 			lineBlockMap.get(line.getLine()).addBlock(block);
 		}
-		
+		ui.addLine(line.getLine());
 	}
 
 	@Override
-	public AbstractTableModel newBlockModel(String line, JTable table) {
+	public CTCBlockModel newBlockModel(String line) {
 		return lineBlockMap.get(line);
 	}
 
 	@Override
-	public AbstractTableModel newTrainModel(String line, JTable table) {
+	public CTCTrainModel newTrainModel(String line) {
 		return lineTrainMap.get(line);
 	}
 
@@ -106,7 +115,7 @@ public class CTCModule implements CTCModuleInterface {
 
 	@Override
 	public DefaultComboBoxModel<CTCBlock> newBlockCombo(String line, CTCSection section) {
-		if(checkLineInit(line)) {
+		if(!comboMap.containsKey(line)) {
 			System.out.println("Line : " + line + ", not initialized");
 			return null;
 		}
@@ -121,7 +130,7 @@ public class CTCModule implements CTCModuleInterface {
 	
 	@Override
 	public DefaultComboBoxModel<CTCSection> newSectionCombo(String line) {
-		if(checkLineInit(line)) {
+		if(!comboMap.containsKey(line)) {
 			System.out.println("Line : " + line + ", not initialized");
 			return null;
 		}
@@ -146,20 +155,8 @@ public class CTCModule implements CTCModuleInterface {
 		}
 	}
 	
-	private void addLine(String line) {
-		if(!lineBlockMap.containsKey(line)) {
-			lineBlockMap.put(line, new CTCBlockModel());
-		}
-		if(!lineTrainMap.containsKey(line)) {
-			lineTrainMap.put(line, new CTCTrainModel());
-		}
-		if(!comboMap.containsKey(line)) {
-			comboMap.put(line, new ComboBoxModelContainer());
-		}
-	}
-	
-	private boolean checkLineInit(String line) {
-		return comboMap.containsKey(line);
+	public void setUi(CTCModuleUI ui) {
+		this.ui = ui;
 	}
 
 }

@@ -4,8 +4,6 @@ import java.util.List;
 
 public abstract class AbstractCTCBean {
 
-	protected static List<String> fields;
-	
 	public static enum Direction {
 		POSITIVE {
 			public String toString() {
@@ -19,11 +17,5 @@ public abstract class AbstractCTCBean {
 		}
 	}
 
-	public static int getFieldsSize() {
-		return fields.size();
-	}
 	
-	public static String getField(int index) {
-		return fields.get(index);
-	}
 }

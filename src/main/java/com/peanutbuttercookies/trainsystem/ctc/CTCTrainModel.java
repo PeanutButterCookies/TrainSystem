@@ -82,5 +82,4 @@ public class CTCTrainModel extends AbstractTableModel {
 		}
 		fireTableDataChanged();
 	}
-
 }

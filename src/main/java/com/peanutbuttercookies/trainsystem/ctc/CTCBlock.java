@@ -12,7 +12,8 @@ import java.util.List;
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
 
 public class CTCBlock extends AbstractCTCBean {
-	
+	private static List<String> fields;
+
 	static {
 		fields = Arrays.asList(new String[] {
 			"Block Number",
@@ -152,6 +153,14 @@ public class CTCBlock extends AbstractCTCBean {
 	public int hashCode() {
 		String unique = line + blockNumber;
 		return unique.hashCode();
+	}
+	
+	public static int getFieldsSize() {
+		return fields.size();
+	}
+	
+	public static String getField(int index) {
+		return fields.get(index);
 	}
 	
 }

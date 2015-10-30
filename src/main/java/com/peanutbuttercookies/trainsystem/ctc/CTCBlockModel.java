@@ -16,10 +16,6 @@ import com.peanutbuttercookies.trainsystem.commonresources.Block;
 
 public class CTCBlockModel extends AbstractTableModel {
 	
-	
-	/**
-	 * Fuck eclipse idk what this does
-	 */
 	private static final long serialVersionUID = -3573813996444899446L;
 
 	private Map<Integer, CTCBlock> blockMap;
@@ -58,6 +54,7 @@ public class CTCBlockModel extends AbstractTableModel {
 				ctcBlock.addPossible(new CTCBlock());
 			}
 		}
+		blockMap.put(ctcBlock.getBlockNumber(), ctcBlock);
 		fireTableDataChanged();
 	}
 	
@@ -119,6 +116,11 @@ public class CTCBlockModel extends AbstractTableModel {
 			return null;
 		}
 
+	}
+	
+	@Override
+	public String getColumnName(int column) {
+		return CTCBlock.getField(column);
 	}
 }
 

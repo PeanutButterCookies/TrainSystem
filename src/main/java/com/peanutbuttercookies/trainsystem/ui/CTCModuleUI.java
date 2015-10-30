@@ -24,15 +24,12 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import com.peanutbuttercookies.trainsystem.ctc.CTCBlock;
-import com.peanutbuttercookies.trainsystem.ctc.CTCModule;
 import com.peanutbuttercookies.trainsystem.ctc.CTCSection;
 import com.peanutbuttercookies.trainsystem.ctc.CTCTrain;
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
 
 public class CTCModuleUI extends JFrame implements ActionListener {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 6499144261081785066L;
 	private static final Vector<String> uses = new Vector<String>(Arrays.asList(new String[] {
 			"Dispatch",
@@ -49,27 +46,21 @@ public class CTCModuleUI extends JFrame implements ActionListener {
 	private JButton browse;
 	private String selectedFile = null;
 	
-	public static void main(String[] args) {
-		CTCModule ctc = new CTCModule();
-		CTCModuleUI ui = new CTCModuleUI(ctc);
-	}
-	
-	
 	public CTCModuleUI(CTCModuleInterface module) {
-		super("CTCModule");
+		super("CTC Module");
 		this.module = module;
 
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setPreferredSize(new Dimension(600, 600));
-		lineTabs = new JTabbedPane(JTabbedPane.TOP);
-		lineTabs.setLayout(new BoxLayout(lineTabs, BoxLayout.Y_AXIS));
-		lineTabs.setPreferredSize(new Dimension(600, 600));
+		lineTabs = new JTabbedPane();
 		
 		usesCombo = new JComboBox<String>(uses);
+		usesCombo.setPreferredSize(new Dimension(150, 30));
 		speed = new JTextField();
 		speed.setPreferredSize(new Dimension(150, 30));
 		initBrowse();
 
+		add(lineTabs);
 		setContentPane(lineTabs);
 		pack();
 		setLocationByPlatform(true);
@@ -94,41 +85,54 @@ public class CTCModuleUI extends JFrame implements ActionListener {
 	}
 	
 	public void addLine(String line) {
-		//top panel
-		JScrollPane scroll1 = new JScrollPane();
-		JScrollPane scroll2 = new JScrollPane();
-		JTable blocks = new JTable();
-		blocks.setModel(module.newBlockModel(line, blocks));
-		JTable trains = new JTable();
-		trains.setModel(module.newTrainModel(line, trains));
-		JPanel top = new JPanel();
-		scroll1.add(trains);
-		scroll2.add(blocks);
-		top.add(scroll1);
-		top.add(scroll2);
 
-		JPanel middle = new JPanel();
-		JPanel bottom = new JPanel();
+		JTable blocks = new JTable(module.newBlockModel(line));
+		JTable trains = new JTable(module.newTrainModel(line));
+		JScrollPane scroll1 = new JScrollPane(trains);
+		JScrollPane scroll2 = new JScrollPane(blocks);
+
+		JPanel one = new JPanel();
+		JPanel two = new JPanel();
+		JPanel three = new JPanel();
+		JPanel four = new JPanel();
+		one.setLayout(new BoxLayout(one, BoxLayout.X_AXIS));
+		two.setLayout(new BoxLayout(two, BoxLayout.X_AXIS));
+		three.setLayout(new BoxLayout(three, BoxLayout.X_AXIS));
+		four.setLayout(new BoxLayout(four, BoxLayout.X_AXIS));
+		one.setPreferredSize(new Dimension(600,450));
+		two.setPreferredSize(new Dimension(600,50));
+		three.setPreferredSize(new Dimension(600,50));
+		four.setPreferredSize(new Dimension(600,50));
+
+		one.add(scroll1);
+		one.add(scroll2);
+		two.add(browse);
+
 		JComboBox<CTCTrain> trainCBox = new JComboBox<CTCTrain>(module.newTrainCombo(line));
 		JComboBox<CTCSection> sectionCBox = new JComboBox<CTCSection>(module.newSectionCombo(line));
 		JComboBox<CTCBlock> blockCBox = new JComboBox<CTCBlock>(module.newBlockCombo(line, sectionCBox.getItemAt(0)));
 		JButton button = new JButton("Send");
 		button.addActionListener(this);
-		trainCBox.setPreferredSize(new Dimension(150, 30));
-		blockCBox.setPreferredSize(new Dimension(150, 30));
-		middle.add(trainCBox);
-		middle.add(blockCBox);
-		middle.add(sectionCBox);
-		bottom.add(speed);
-		bottom.add(usesCombo);
-		bottom.add(button);
+
+		Dimension cBoxDim = new Dimension(150, 30);
+		trainCBox.setPreferredSize(cBoxDim);
+		blockCBox.setPreferredSize(cBoxDim);
+		sectionCBox.setPreferredSize(cBoxDim);
+		button.setPreferredSize(cBoxDim);
+
+		three.add(trainCBox);
+		three.add(sectionCBox);
+		three.add(blockCBox);
+		four.add(speed);
+		four.add(usesCombo);
+		four.add(button);
+
 		JPanel panel = new JPanel();
-		
-		top.setPreferredSize(new Dimension(600,500));
-		middle.setPreferredSize(new Dimension(600,50));
-		bottom.setPreferredSize(new Dimension(600,50));
-		panel.add(top);
-		panel.add(bottom);
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.add(one);
+		panel.add(two);
+		panel.add(three);
+		panel.add(four);
 		lineTabs.addTab(line, panel);
 	}
 
@@ -137,7 +141,6 @@ public class CTCModuleUI extends JFrame implements ActionListener {
 		String line = lineTabs.getTitleAt(lineTabs.getSelectedIndex());
 		String use = usesCombo.getItemAt(usesCombo.getSelectedIndex());
 		module.perform(line, use, selectedFile, speed.getText());
-
 	}
 
 }

@@ -1,9 +1,11 @@
 package com.peanutbuttercookies.trainsystem.ctc;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class CTCTrain extends AbstractCTCBean {
 	
+	private static List<String> fields;
 	static {
 		fields = Arrays.asList(new String[]{
 				"Train ID",
@@ -59,5 +61,13 @@ public class CTCTrain extends AbstractCTCBean {
 	@Override
 	public int hashCode() {
 		return trainId;
+	}
+	
+	public static int getFieldsSize() {
+		return fields.size();
+	}
+	
+	public static String getField(int index) {
+		return fields.get(index);
 	}
 }
