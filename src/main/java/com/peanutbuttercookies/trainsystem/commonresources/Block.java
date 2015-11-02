@@ -37,23 +37,23 @@ public class Block {
 			int initArrowDirectionA, int initArrowDirectionB){
 		
 		this.line						=initLine;
-		this.section						=initSection;
-		this.blockNumber					=initBlockNumber;
-		this.blockLength					=initBlockLength;
+		this.section					=initSection;
+		this.blockNumber				=initBlockNumber;
+		this.blockLength				=initBlockLength;
 		this.blockGrade					=initBlockGrade;
 		this.speedLimit					=initSpeedLimit;
 		this.elevation					=initElevation;
-		this.cumulativeElevation			=initCumulativeElevation;
+		this.cumulativeElevation		=initCumulativeElevation;
 		this.switchToYard				=initSwitchToYard;
 		this.switchFromYard				=initSwitchFromYard;
 		this.infrastructureSwitch		=initInfrastructureSwitch;
 		this.infrastructureUnderground	=initInfrastructureUnderground;
 		this.infrastructureRRCrossing	=initInfrastructureRRCrossing;
 		this.infrastructureStation		=initInfrastructureStation;
-		this.stationName					=initStationName;
+		this.stationName				=initStationName;
 		this.switchBlockId				=initSwitchBlockId;
-		this.arrowDirectionA				=initArrowDirectionA;
-		this.arrowDirectionB				=initArrowDirectionB;
+		this.arrowDirectionA			=initArrowDirectionA;
+		this.arrowDirectionB			=initArrowDirectionB;
 		this.blockOccupied				=false;
 		this.switchEngaged				=false;
 		this.twoWay = false;

@@ -17,18 +17,10 @@ public class TC_Line extends Line {
 	private final String lineName;
 	private final LinkedList<TC_Block> blocks;
 	
-	public TC_Line(String initLine, LinkedList<TC_Block> initBlocks) {
+	public TC_Line(String initLine, LinkedList initBlocks) {
 		super(initLine, initBlocks);
-		// TODO Auto-generated constructor stub
-		
-	}
-	
-	/*
-	
-	public TC_Line(LinkedList<TC_Block> initBlocks){
-		super(initLineName);
-		lineName=initLineName;
-		blocks=initBlocks;
+		lineName=initLine;
+		blocks	=initBlocks;
 	}
 	
 	public String getLineName(){
@@ -42,5 +34,5 @@ public class TC_Line extends Line {
 	public TC_Block getBlock(int index){
 		return (TC_Block)blocks.get(index);
 	}
-	*/
+	
 }

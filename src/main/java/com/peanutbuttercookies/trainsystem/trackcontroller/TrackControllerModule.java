@@ -1,21 +1,13 @@
 package com.peanutbuttercookies.trainsystem.trackcontroller;
 
-import java.io.FileInputStream;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.LinkedList;
-
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import com.peanutbuttercookies.trainsystem.ui.TrackControllerUI;
-
-import java.util.Vector;
 
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.ExcelFileDownloaderInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
+import com.peanutbuttercookies.trainsystem.ui.TrackControllerUI;
 
 /**
  * 
@@ -46,21 +38,6 @@ public class TrackControllerModule implements TrackControllerInterface {
 	}
 
 	@Override
-	public boolean setXlsxFileLocation(String fileLocation) {
-		boolean success=excelDownloader.setExcelFile(fileLocation);
-		if(success){
-			lines=excelDownloader.getLines();
-		}
-		return success;
-	}
-
-	@Override
-	public Vector<TC_Block> getLineInfo(String line) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void setCTC(CTCModuleInterface ctc) {
 		this.ctc = ctc;
 	}
@@ -74,6 +51,30 @@ public class TrackControllerModule implements TrackControllerInterface {
 	public void setTrackControllerUI(TrackControllerUI trackControllerUI) {
 		ui=trackControllerUI;
 		
+	}
+
+	@Override
+	public ArrayList<TC_Block> getControllerInfo(String line, String controller) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setSwitchEngaged(int switchNum, String line, String controller) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean setSwitchEngaged(int blockNum, String line) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	@Override
+	public boolean setPLCFileLocation(String file) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

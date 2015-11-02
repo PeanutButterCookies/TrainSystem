@@ -29,6 +29,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
+import com.peanutbuttercookies.trainsystem.trackcontroller.TC_Block;
 
 public class TrackControllerUI extends JFrame {
 
@@ -61,6 +62,10 @@ public class TrackControllerUI extends JFrame {
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(new Color(211, 211, 211));
 		panel_1.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		
+		JPanel panelColor = new JPanel();
+		panelColor.setBackground(Color.WHITE);
+		panelColor.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -69,16 +74,21 @@ public class TrackControllerUI extends JFrame {
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_contentPane.createSequentialGroup()
 							.addComponent(panel, GroupLayout.PREFERRED_SIZE, 622, GroupLayout.PREFERRED_SIZE)
-							.addContainerGap())
-						.addGroup(gl_contentPane.createSequentialGroup()
-							.addComponent(panel_1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-							.addGap(30))))
+							.addGap(18)
+							.addComponent(panelColor, GroupLayout.DEFAULT_SIZE, 584, Short.MAX_VALUE))
+						.addComponent(panel_1, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+					.addGap(30))
 		);
 		gl_contentPane.setVerticalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPane.createSequentialGroup()
-					.addGap(8)
-					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 108, GroupLayout.PREFERRED_SIZE)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addGap(8)
+							.addComponent(panel, GroupLayout.PREFERRED_SIZE, 108, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addGap(40)
+							.addComponent(panelColor, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(panel_1, GroupLayout.DEFAULT_SIZE, 548, Short.MAX_VALUE)
 					.addContainerGap())
@@ -173,17 +183,33 @@ public class TrackControllerUI extends JFrame {
 		tableVariableDisplay.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		tableVariableDisplay.setModel(new DefaultTableModel(
 			new Object[][] {
-				{"", "", "", "", "", "", "", "", ""},
+				{null, "", "", "", "", "", "", "", null, "", ""},
 			},
 			new String[] {
-				"Block ID", "Wayside Controller ID", "Authority Recieved (CTC)", "Speed Recieved (CTC)", "Sent Authority", "Commanded Speed", "Switch", "RR Crossing", "Lights"
+				"Line", "Block ID", "Wayside Controller ID", "Authority (From CTC)", "Speed (From CTC)", "Sent Authority", "Commanded Speed", "Switch ID", "Switch Engaged", "RR Crossing", "Lights"
 			}
 		));
-		tableVariableDisplay.getColumnModel().getColumn(0).setPreferredWidth(55);
-		tableVariableDisplay.getColumnModel().getColumn(1).setPreferredWidth(116);
-		tableVariableDisplay.getColumnModel().getColumn(2).setPreferredWidth(139);
-		tableVariableDisplay.getColumnModel().getColumn(3).setPreferredWidth(120);
-		tableVariableDisplay.getColumnModel().getColumn(5).setPreferredWidth(105);
+		tableVariableDisplay.getColumnModel().getColumn(0).setResizable(false);
+		tableVariableDisplay.getColumnModel().getColumn(0).setPreferredWidth(43);
+		tableVariableDisplay.getColumnModel().getColumn(1).setResizable(false);
+		tableVariableDisplay.getColumnModel().getColumn(1).setPreferredWidth(55);
+		tableVariableDisplay.getColumnModel().getColumn(2).setResizable(false);
+		tableVariableDisplay.getColumnModel().getColumn(2).setPreferredWidth(116);
+		tableVariableDisplay.getColumnModel().getColumn(3).setResizable(false);
+		tableVariableDisplay.getColumnModel().getColumn(3).setPreferredWidth(116);
+		tableVariableDisplay.getColumnModel().getColumn(4).setResizable(false);
+		tableVariableDisplay.getColumnModel().getColumn(4).setPreferredWidth(101);
+		tableVariableDisplay.getColumnModel().getColumn(5).setResizable(false);
+		tableVariableDisplay.getColumnModel().getColumn(5).setPreferredWidth(81);
+		tableVariableDisplay.getColumnModel().getColumn(6).setResizable(false);
+		tableVariableDisplay.getColumnModel().getColumn(6).setPreferredWidth(105);
+		tableVariableDisplay.getColumnModel().getColumn(7).setResizable(false);
+		tableVariableDisplay.getColumnModel().getColumn(7).setPreferredWidth(57);
+		tableVariableDisplay.getColumnModel().getColumn(8).setResizable(false);
+		tableVariableDisplay.getColumnModel().getColumn(8).setPreferredWidth(86);
+		tableVariableDisplay.getColumnModel().getColumn(9).setResizable(false);
+		tableVariableDisplay.getColumnModel().getColumn(10).setResizable(false);
+		tableVariableDisplay.getColumnModel().getColumn(10).setPreferredWidth(39);
 		panel_ControllerDisplay.setLayout(gl_panel_ControllerDisplay);
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
 		gl_panel_1.setHorizontalGroup(
@@ -223,6 +249,39 @@ public class TrackControllerUI extends JFrame {
 			public void actionPerformed(ActionEvent e){
 				JComboBox comboBox=(JComboBox)e.getSource();
 				displayedLine = (String)comboBox.getSelectedItem();
+				
+				switch(displayedLine.toLowerCase()){
+				case "red":{
+					panelColor.setBackground(Color.red);
+				}break;
+				case "blue":{
+					panelColor.setBackground(Color.blue);
+				}break;
+				case "green":{
+					panelColor.setBackground(Color.green);
+				}break;
+				case "yellow":{
+					panelColor.setBackground(Color.yellow);
+				}break;
+				case "orange":{
+					panelColor.setBackground(Color.orange);
+				}break;
+				case "purple":{
+					panelColor.setBackground(Color.magenta);
+				}break;
+				case "violet":{
+					panelColor.setBackground(Color.magenta);
+				}break;
+				case "gray":{
+					panelColor.setBackground(Color.darkGray);
+				}break;
+				case "black":{
+					panelColor.setBackground(Color.black);
+				}break;
+				default:{
+					panelColor.setBackground(Color.white);
+				}
+				}
 			}
 		});
 		
@@ -444,14 +503,22 @@ public class TrackControllerUI extends JFrame {
 	}
 	
 	public void updateTable(){
-		ArrayList<TC_Block> tableInfo=trackController.getControllerInfo(displayedLine);
+		ArrayList<TC_Block> tableInfo=trackController.getControllerInfo(displayedLine,displayedController);
 		for(int i=0; i<tableInfo.size(); i++){
-			TC_Train temp=tableInfo.get(i);
-			tableVariableDisplay.setValueAt(temp.getTrainId(), i+1, 0);
-			tableVariableDisplay.setValueAt(temp.getAuthority(), i+1, 1);		//MUST BE CHANGED AFTER PROTOTYPE
-			tableVariableDisplay.setValueAt(temp.getCommandedSpeed(), i+1, 2);	//MUST BE CHANGED AFTER PROTOTYPE
-			tableVariableDisplay.setValueAt(temp.getPresence(), i+1, 3);
-			tableVariableDisplay.setValueAt(temp.getAuthority(), i+1, 4);
+			TC_Block temp=tableInfo.get(i);
+			tableVariableDisplay.setValueAt(temp.getLine(), i+1, 0);
+			tableVariableDisplay.setValueAt(temp.getBlockNumber(), i+1, 1);
+			tableVariableDisplay.setValueAt(temp.getWaysideControllerId(), i+1, 2);
+			//authority recieved
+			//speed recieved
+			//authority
+			//speed
+			if(temp.hasSwitch()){
+				tableVariableDisplay.setValueAt(temp.getSwitchBlockId(), i+1, 7);
+			}
+			else{
+				tableVariableDisplay.setValueAt("N/A", i+1, 7);
+			}
 			tableVariableDisplay.setValueAt(temp.getCommandedSpeed(), i+1, 5);
 			tableVariableDisplay.setValueAt(false, i+1, 6);						//MUST BE CHANGED AFTER PROTOTYPE
 			tableVariableDisplay.setValueAt(false, i+1, 7);						//MUST BE CHANGED AFTER PROTOTYPE

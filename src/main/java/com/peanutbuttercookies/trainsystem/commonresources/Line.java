@@ -15,7 +15,7 @@ public class Line {
 		return line;
 	}
 	
-	public LinkedList<Block> getAllBlocks(){
+	public LinkedList getAllBlocks(){
 		return blocks;
 	}
 	
