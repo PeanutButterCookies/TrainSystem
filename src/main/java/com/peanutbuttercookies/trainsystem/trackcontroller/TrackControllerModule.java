@@ -77,4 +77,22 @@ public class TrackControllerModule implements TrackControllerInterface {
 		return false;
 	}
 
+	@Override
+	public ArrayList<TC_Block> getControllerInfo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ArrayList getSwitchInfo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setRRCrossingEngaged(String line, int blockNum, String controller) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
