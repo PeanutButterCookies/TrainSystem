@@ -28,6 +28,7 @@ public class Block {
 	
 	private boolean blockOccupied;
 	private boolean switchEngaged;
+	private boolean rrCrossingEngaged;
 	
 	public Block(String initLine, String initSection, int initBlockNumber, int initBlockLength, 
 			float initBlockGrade, int initSpeedLimit, float initElevation, float initCumulativeElevation,
@@ -56,6 +57,7 @@ public class Block {
 		this.arrowDirectionB			=initArrowDirectionB;
 		this.blockOccupied				=false;
 		this.switchEngaged				=false;
+		this.rrCrossingEngaged			=false;
 		this.twoWay = false;
 	}
 	
@@ -183,6 +185,14 @@ public class Block {
 	
 	public void setSwitchEngagement(boolean engaged){
 		switchEngaged=engaged;
+	}
+	
+	public boolean isRRCrossingEngaged(){
+		return rrCrossingEngaged;
+	}
+	
+	public void setRRCrossingEngagement(boolean engaged){
+		rrCrossingEngaged=engaged;
 	}
 	
 	public void setNext(Block newBlock)	{
