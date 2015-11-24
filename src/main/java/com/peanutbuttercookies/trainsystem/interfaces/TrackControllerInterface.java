@@ -19,9 +19,8 @@ public interface TrackControllerInterface {
 	public boolean 	setSwitchEngaged(int blockNum, String line);										//called by CTC module
 	
 	public ArrayList<TC_Block>	getControllerInfo(String line, String controller);						//called by TC UI
-	public void 				setSwitchEngaged(int switchNum, String line, String controller);		//called by TC UI
-	public ArrayList<TC_Block>	getControllerInfo();													//called by TC UI
-	public ArrayList			getSwitchInfo();														//called by TC UI
+	public void 				setSwitchEngaged(int switchNum, String line, String controller);		//called by TC UI												//called by TC UI
+	public ArrayList			getSwitchInfo(String line, String controller);														//called by TC UI
 	public void					setRRCrossingEngaged(String line, int blockNum, String controller);		//called by TC UI
 	public boolean 				setPLCFileLocation(String file);										//called by TC UI
 
