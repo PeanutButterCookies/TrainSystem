@@ -2,6 +2,8 @@ package com.peanutbuttercookies.trainsystem.commonresources;
 
 import java.util.LinkedList;
 
+import com.peanutbuttercookies.trainsystem.interfaces.BlockOccupationListener;
+
 public class Block {
 	private final String line;
 	private final String section;
@@ -29,6 +31,7 @@ public class Block {
 	private boolean blockOccupied;
 	private boolean switchEngaged;
 	private boolean rrCrossingEngaged;
+	private LinkedList<BlockOccupationListener> listeners;
 	
 	public Block(String initLine, String initSection, int initBlockNumber, int initBlockLength, 
 			float initBlockGrade, int initSpeedLimit, float initElevation, float initCumulativeElevation,
@@ -58,7 +61,8 @@ public class Block {
 		this.blockOccupied				=false;
 		this.switchEngaged				=false;
 		this.rrCrossingEngaged			=false;
-		this.twoWay = false;
+		this.twoWay 					= false;
+		this.listeners					=new LinkedList<BlockOccupationListener>();
 	}
 	
 	public String getLine(){
@@ -176,6 +180,9 @@ public class Block {
 	}
 	
 	public void setBlockOccupation(boolean occupied){
+		for(BlockOccupationListener i : listeners){
+			i.blockOccupied();
+		}
 		blockOccupied=occupied;
 	}
 	
@@ -207,5 +214,7 @@ public class Block {
 		this.twoWay = twoWayIn;
 	}
 	
-
+	public void addListener(BlockOccupationListener newListener){
+		listeners.add(newListener);
+	}
 }
