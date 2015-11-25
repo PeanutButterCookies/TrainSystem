@@ -14,9 +14,9 @@ import com.peanutbuttercookies.trainsystem.ui.TrackControllerUI;
 
 public interface TrackControllerInterface {
 	
-	public boolean 	setSpeedAuthority(String line, int blockNum, int suggestedSpeed, int authority);	//called by CTC module
-	public boolean 	setBlockOccupied(String line, int blockNum);										//called by track model module
-	public boolean 	setSwitchEngaged(int blockNum, String line);										//called by CTC module
+	public boolean 	setSpeedAuthority(int controllerID, int blockNum, int suggestedSpeed, int authority);	//called by CTC module
+	//public boolean 	setBlockOccupied(String line, int blockNum);										//called by track model module
+	public boolean 	setSwitchEngaged(int controllerID, int blockNum);										//called by CTC module
 	
 	public ArrayList<TC_Block>	getControllerInfo(String line, String controller);						//called by TC UI
 	public void 				setSwitchEngaged(int switchNum, String line, String controller);		//called by TC UI												//called by TC UI
