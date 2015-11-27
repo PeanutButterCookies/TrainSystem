@@ -23,13 +23,11 @@ public class CTCModule implements CTCModuleInterface {
 	
 	private Map<String, CTCBlockModel> lineBlockMap;
 	private Map<String, CTCTrainModel> lineTrainMap;
-	private Map<String, ComboBoxModelContainer> comboMap;
 	private int maxTrain = 0;
 
 	public CTCModule() {
 		lineBlockMap = new HashMap<String, CTCBlockModel>();
 		lineTrainMap = new HashMap<String, CTCTrainModel>();
-		comboMap = new HashMap<String, ComboBoxModelContainer>();
 	}
 	
 	@Override
@@ -85,9 +83,6 @@ public class CTCModule implements CTCModuleInterface {
 		if(!lineTrainMap.containsKey(line.getLine())) {
 			lineTrainMap.put(line.getLine(), new CTCTrainModel());
 		}
-		if(!comboMap.containsKey(line.getLine())) {
-			comboMap.put(line.getLine(), new ComboBoxModelContainer());
-		}
 
 		for(Block block : line.getAllBlocks()) {
 			lineBlockMap.get(line.getLine()).addBlock(block);
@@ -109,13 +104,12 @@ public class CTCModule implements CTCModuleInterface {
 	public DefaultComboBoxModel<CTCTrain> newTrainCombo(String line) {
 		DefaultComboBoxModel<CTCTrain> model = new DefaultComboBoxModel<CTCTrain>();
 		model.addElement(new NewCTCTrain());
-		comboMap.get(line).setTrainCombo(model);
 		return model;
 	}
 
 	@Override
 	public DefaultComboBoxModel<CTCBlock> newBlockCombo(String line, CTCSection section) {
-		if(!comboMap.containsKey(line)) {
+		if(!lineBlockMap.containsKey(line)) {
 			System.out.println("Line : " + line + ", not initialized");
 			return null;
 		}
@@ -124,13 +118,12 @@ public class CTCModule implements CTCModuleInterface {
 		for(CTCBlock block: blockModel.getBlocks(section)) {
 			model.addElement(block);
 		}
-		comboMap.get(line).addBlockCombo(section, model);
 		return model;
 	}
 	
 	@Override
 	public DefaultComboBoxModel<CTCSection> newSectionCombo(String line) {
-		if(!comboMap.containsKey(line)) {
+		if(!lineBlockMap.containsKey(line)) {
 			System.out.println("Line : " + line + ", not initialized");
 			return null;
 		}
@@ -138,25 +131,64 @@ public class CTCModule implements CTCModuleInterface {
 		for(CTCSection section : lineBlockMap.get(line).getSections()) {
 			model.addElement(section);
 		}
-		comboMap.get(line).setSectionCombo(model);
 		return model;
 	}
 
-	@Override
-	public boolean perform(String line, String use, String filename, String speed) {
-		//TODO
-		switch(use) {
-		case "Dispatch":
-		case "Mark for Repair":
-		case "Change switch":
-		case "Set schedule":
-		default:
-			return false;
-		}
-	}
-	
 	public void setUi(CTCModuleUI ui) {
 		this.ui = ui;
+	}
+
+	@Override
+	public boolean dispatch(String line, String speed, CTCBlock block) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean repair(String line, CTCBlock block) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean changeSwitch(String line, CTCBlock block) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean setSchedule(String line, String filename, ScheduleModel model) {
+		//TODO
+		return false;
+	}
+
+	@Override
+	public ScheduleModel newScheduleModel(String line) {
+		return new ScheduleModel();
+	}
+
+	@Override
+	public boolean setTrainComponent(ComponentContainer container) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setClockSpeed(double clockSpeed) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean engageRRCrossing(String line, int blockId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void switchChanged(String line, int switchId, int blockId) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

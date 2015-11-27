@@ -11,7 +11,7 @@ import java.util.List;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
 
-public class CTCBlock extends AbstractCTCBean {
+public class CTCBlock {
 	private static List<String> fields;
 
 	static {

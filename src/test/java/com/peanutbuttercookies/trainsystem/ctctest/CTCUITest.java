@@ -33,8 +33,8 @@ public class CTCUITest {
 		CTCModuleUI ui = new CTCModuleUI(ctc);
 		ctc.setUi(ui);
 		ctc.importLine(line);
-//		line = new Line("Test2", blocks);
-//		ctc.importLine(line);
+		line = new Line("Test2", blocks);
+		ctc.importLine(line);
 
 	}
 	

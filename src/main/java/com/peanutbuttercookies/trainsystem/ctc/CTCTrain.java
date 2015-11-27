@@ -3,7 +3,7 @@ package com.peanutbuttercookies.trainsystem.ctc;
 import java.util.Arrays;
 import java.util.List;
 
-public class CTCTrain extends AbstractCTCBean {
+public class CTCTrain {
 	
 	private static List<String> fields;
 	static {
