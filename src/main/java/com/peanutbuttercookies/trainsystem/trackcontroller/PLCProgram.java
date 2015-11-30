@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.peanutbuttercookies.trainsystem.commonresources.Block;
+
 public class PLCProgram implements PLCProgramInterface {
 	
 	
@@ -37,12 +39,21 @@ public class PLCProgram implements PLCProgramInterface {
 		RR,
 		SWITCH;
 		
-		private int multiplier;
-		void setMultiplier(int multiplier){
-			this.multiplier=multiplier;
+		private int nextMultiplier;
+		private int prevMultiplier;
+		
+		void setNextMultiplier(int multiplier){
+			this.nextMultiplier=multiplier;
 		}
-		int getMultiplier(){
-			return multiplier;
+		int getNextMultiplier(){
+			return nextMultiplier;
+		}
+		
+		void setPrevMultiplier(int multiplier){
+			this.prevMultiplier=multiplier;
+		}
+		int getPrevMultiplier(){
+			return prevMultiplier;
 		}
 	}
 
@@ -78,9 +89,31 @@ public class PLCProgram implements PLCProgramInterface {
 	//private ArrayList<PLCFunction> plcFunctionList=new ArrayList<PLCFunction>();
 
 	//private boolean runBooleanLogic(Input I1, Input I2,)
+	private boolean inputBoolean(Input input, Block currBlock){
+		switch(input){
+		case CURRBLOCK:{return currBlock.isBlockOccupied();}
+		case PREVBLOCK:{
+			Block prev=currBlock;
+			for(int i=1;i<input.prevMultiplier;i++){
+				prev=prev.getPrev();
+			}
+			return prev.isBlockOccupied();
+			}
+		case NEXTBLOCK:{
+			Block next=currBlock;
+			for(int i=1;i<input.nextMultiplier;i++){
+				next=next.getNext();
+			}
+			return next.isBlockOccupied();
+			}
+		case RR:{return currBlock.isRRCrossingEngaged();}
+		case SWITCH:{return currBlock.isSwitchEngaged();}
+		}
+	}
+	
 	
 	@Override
-	public boolean stop(int currentBlockId, int nextBlockId) {
+	public boolean stop(Block currBlock) {
 		if(stop.equals(null)){
 			System.err.println("ERROR: PLC PROGRAM NOT LOADED");
 			return false;
@@ -90,6 +123,17 @@ public class PLCProgram implements PLCProgramInterface {
 			Iterator<Input> inputIterator=stop.getInputs().iterator();
 			Iterator<Operator> opIterator=stop.getOperators().iterator();
 			boolean stopValue=false;
+			boolean I1=false;
+			boolean I2=false;
+			
+			while(inputIterator.hasNext() && opIterator.hasNext()){
+				Input currInput	=inputIterator.next();
+				Operator currOp=opIterator.next();
+				if(currOp.equals(Operator.NOT)){
+					currOp.operation(inputBoolean(currInput,currBlock))
+				}
+				
+			}
 			
 			
 			
