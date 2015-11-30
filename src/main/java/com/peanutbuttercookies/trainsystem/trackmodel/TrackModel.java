@@ -76,6 +76,7 @@ public class TrackModel implements TrackModelInterface {
 		            boolean hasUnderground = false;
 		            boolean hasToYard = false;
 		            boolean hasFromYard = false;
+		            boolean masterSwitch = false;
 		            String station = "";
 		            int arrowA = 0;
 		            int arrowB = 0;
@@ -90,6 +91,7 @@ public class TrackModel implements TrackModelInterface {
 		                	}
 		                	if(cell.getStringCellValue().contains("SWITCH"))	{
 		                		hasSwitch = true;
+		                		masterSwitch = true;
 		                	}
 		            		if(cell.getStringCellValue().contains("TO YARD"))	{
 		                    	hasToYard = true;
@@ -177,6 +179,7 @@ public class TrackModel implements TrackModelInterface {
 		                            }
 		                            if(cellInfo.contains("SWITCH"))	{
 		                            	hasSwitch = true;
+		                            	masterSwitch = true;
 		                            }
 		                            if(cellInfo.contains("UNDERGROUND"))	{
 		                                hasUnderground = true;
@@ -260,6 +263,9 @@ public class TrackModel implements TrackModelInterface {
 		            			switchMap.put(Integer.parseInt(switchId), newList);
 		            		}
 		            	}
+		            	if(masterSwitch)	{
+		            		newBlock.setMasterSwitch(true);
+		            	}
 		            	track.add(newBlock);
 		            }
 				}
@@ -298,32 +304,30 @@ public class TrackModel implements TrackModelInterface {
 					for(int k = 0; k < switches.size(); k++)	{
 						Block switchBlock = switches.get(k);
 						if(switchBlock.getBlockNumber() != curBlock.getBlockNumber())	{
-							if(curBlock.getArrowDirectionA() != -1 && (switchBlock.getTwoWay() || (switchBlock.getArrowDirectionA() == -1 || switchBlock.getArrowDirectionA() == 3 )))	{
-								curBlock.setNext(switchBlock);
-							}
+								curBlock.setSwitchList(switchBlock);
 						}
 					}
 				}
-				if(curBlock.hasSwitch() && nextBlock.hasSwitch() && curBlock.getSwitchBlockId() != nextBlock.getSwitchBlockId())	{
+				if(curBlock.hasSwitch() && nextBlock.hasSwitch())	{
 					switchEqualNext = false;
 				}
-				if(curBlock.hasSwitch() && prevBlock.hasSwitch() && curBlock.getSwitchBlockId() != prevBlock.getSwitchBlockId())	{
+				if(curBlock.hasSwitch() && prevBlock.hasSwitch())	{
 					switchEqualPrev = false;
 				}
 				
 				if(curBlock.getTwoWay())
 				{
 					if((nextBlock.getTwoWay() || nextBlock.getArrowDirectionA() == -1) && switchEqualNext)	{
-						curBlock.setNext(nextBlock);
+						curBlock.setNextPossible(nextBlock);
 					}
 					else if(nextBlock.getArrowDirectionA() == 1 && switchEqualNext)	{
-						nextBlock.setNext(curBlock);
+						nextBlock.setNextPossible(curBlock);
 					}
 					if((prevBlock.getTwoWay() || prevBlock.getArrowDirectionA() == -1) && switchEqualPrev)	{
-						curBlock.setNext(prevBlock);
+						curBlock.setNextPossible(prevBlock);
 					}
 					else if(prevBlock.getArrowDirectionA() == 1 && switchEqualPrev)	{
-						prevBlock.setNext(curBlock);
+						prevBlock.setNextPossible(curBlock);
 					}
 				}
 				else	{
@@ -332,16 +336,16 @@ public class TrackModel implements TrackModelInterface {
 						Block tempCurBlock = curBlock;
 						Block tempNextBlock = nextBlock;
 						while(tempNextBlock.getSection().equals(tempCurBlock.getSection()) && j+count < track.size())	{
-							tempNextBlock.setNext(tempCurBlock);
+							tempNextBlock.setNextPossible(tempCurBlock);
 							tempCurBlock = tempNextBlock;
 							tempNextBlock = track.get(j + count);
 							count++;
 						}
 						if(nextBlock.getArrowDirectionA() == -1)	{
-							curBlock.setNext(nextBlock);
+							curBlock.setNextPossible(nextBlock);
 						}
 						if(prevBlock.getArrowDirectionA() == -1)	{
-							curBlock.setNext(prevBlock);
+							curBlock.setNextPossible(prevBlock);
 						}
 					}
 					if(curBlock.getArrowDirectionA() == -1)	{
@@ -349,18 +353,28 @@ public class TrackModel implements TrackModelInterface {
 						Block tempCurBlock = curBlock;
 						Block tempNextBlock = nextBlock;
 						while(tempNextBlock.getSection().equals(tempCurBlock.getSection()) && j+count < track.size())	{
-							tempCurBlock.setNext(tempNextBlock);
+							tempCurBlock.setNextPossible(tempNextBlock);
 							tempCurBlock = tempNextBlock;
 							tempNextBlock = track.get(j + count);
 							count++;
 						}
 						if(nextBlock.getArrowDirectionA() == 1)	{
-							nextBlock.setNext(curBlock);
+							nextBlock.setNextPossible(curBlock);
 						}
 						if(prevBlock.getArrowDirectionA() == 1)	{
-							prevBlock.setNext(curBlock);
+							prevBlock.setNextPossible(curBlock);
 						}
 					}
+				}
+			}
+		}
+		for(int i = 0; i < lines.size(); i++)	{
+			track = lines.get(i).getAllBlocks();
+			for(int j = 0; j<track.size(); j++)
+			{
+				Block curBlock = track.get(j);
+				if(curBlock.hasSwitch())	{
+					curBlock.setSwitchEngagement();
 				}
 			}
 		}
@@ -492,6 +506,12 @@ public class TrackModel implements TrackModelInterface {
 
 	@Override
 	public void excelReader() throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setSwitch(int blockId) {
 		// TODO Auto-generated method stub
 		
 	}
