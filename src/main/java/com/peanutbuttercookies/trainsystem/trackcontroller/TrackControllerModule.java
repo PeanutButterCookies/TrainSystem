@@ -28,7 +28,6 @@ public class TrackControllerModule implements TrackControllerInterface {
 	private ExcelFileDownloaderInterface excelDownloader;
 	private TrackControllerUI ui;
 	
-	private LinkedList<TC_Line> lines;
 	
 
 	@Override
@@ -71,7 +70,6 @@ public class TrackControllerModule implements TrackControllerInterface {
 				}
 				else{
 					if(!hasALine){
-						lines.clear();
 						hasALine=true;
 					}
 				}
@@ -87,7 +85,6 @@ public class TrackControllerModule implements TrackControllerInterface {
 					rowIterator.next();
 				}
 				
-				TC_Block[] tempBlocks = new TC_Block[numBlocks];
 				
 				rowIterator=sheet.iterator();
 				rowIterator.next();
@@ -117,11 +114,7 @@ public class TrackControllerModule implements TrackControllerInterface {
 		}
 	}
 
-	@Override
-	public Vector<TC_Block> getLineInfo(String line) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 	@Override
 	public void setCTC(CTCModuleInterface ctc) {
@@ -138,5 +131,29 @@ public class TrackControllerModule implements TrackControllerInterface {
 		ui=trackControllerUI;
 		
 	}
+
+	@Override
+	public boolean setSpeedAuthority(int trainId, int suggestedSpeed, int authority) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	public boolean setTrainPresence(int trainId, int blockNum) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Object getLineInfo(String selectedLine) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	//@Override
+	/*public boolean setTrainPresence(int trainId, int blockNum) {
+		// TODO Auto-generated method stub
+		return false;
+	}*/
 
 }

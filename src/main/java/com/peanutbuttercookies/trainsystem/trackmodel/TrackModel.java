@@ -444,7 +444,7 @@ public class TrackModel implements TrackModelInterface {
 	
 	@Override
 	public void setSpeedAuthority(String line, int blockId, int speed, int authority)	{
-		trainComm.setSpeedAuthority(line, blockId, speed, authority);
+		//trainComm.setSpeedAuthority(line, blockId, speed, authority);
 		trainComm.run();
 		System.out.println("Speed Received " + blockId + " " + speed + "  authority: " + authority + " -Track Model");
 
