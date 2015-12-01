@@ -292,8 +292,10 @@ public class Block {
 	}
 	
 	public boolean getMasterSwitch()	{
-		return masterSwitch;
+		return this.masterSwitch;
 	}
 	
-
+	public Block getPrevBlock()	{
+		return this.prev;
+	}
 }

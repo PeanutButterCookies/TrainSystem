@@ -396,7 +396,7 @@ public class TrackModel implements TrackModelInterface {
 	}
 
 	@Override
-	public void setBlockOccupied(int blockId, int trainId) {
+	public void setBlockOccupied(String line, int blockId, int trainId) {
 	/*	
 		// TEMP HACK
 //		blockId += 1;
@@ -447,11 +447,10 @@ public class TrackModel implements TrackModelInterface {
 	}*/
 	
 	@Override
-	public void setSpeedAuthority(int trainId, int speed, int authority)	{
-		trainComm.setSpeed(speed);
-		trainComm.setAuthority(authority);
+	public void setSpeedAuthority(String line, int blockId, int speed, int authority)	{
+		trainComm.setSpeedAuthority(line, blockId, speed, authority);
 		trainComm.run();
-		System.out.println("Speed Received " + trainId + " " + speed + "  authority: " + authority + " -Track Model");
+		System.out.println("Speed Received " + blockId + " " + speed + "  authority: " + authority + " -Track Model");
 
 	}
 	

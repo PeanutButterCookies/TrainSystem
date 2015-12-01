@@ -38,4 +38,6 @@ public interface TrackModelInterface {
 	public void fileRead(String filename) throws IOException;
 	public LinkedList<Line> getLines();
 	public void setSwitch(int blockId);
+	public void setSpeedAuthority(String line, int blockId, int speed, int authority);
+	void setBlockOccupied(String line, int blockId, int trainId);
 }
