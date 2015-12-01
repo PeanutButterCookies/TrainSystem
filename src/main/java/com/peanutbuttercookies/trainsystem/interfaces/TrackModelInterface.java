@@ -20,7 +20,7 @@ public interface TrackModelInterface {
 	
 	//trackController uses these; assuming prototype does not care for switches and lights
 	//both go directly to train
-	public void setSpeedAuthority(int trainId, int speed, int authority); //sent to train controller
+	public void setSpeedAuthority(int blockId, int speed, int authority); //sent to train controller
 	
 	//train model uses
 	public void setBlockOccupied(int blockId, int trainId);
@@ -37,4 +37,5 @@ public interface TrackModelInterface {
 	public void excelReader() throws IOException;
 	public void fileRead(String filename) throws IOException;
 	public LinkedList<Line> getLines();
+	public void setSwitch(int blockId);
 }

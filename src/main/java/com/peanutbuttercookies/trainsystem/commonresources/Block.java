@@ -22,13 +22,16 @@ public class Block {
 	private final boolean infrastructureUnderground;
 	private final boolean infrastructureRRCrossing;
 	private final boolean infrastructureStation;
+	private boolean masterSwitch;
 	private final String stationName;
 	private final int switchBlockId;		//switchBlockId=-1 for block without switch
 	private final int arrowDirectionA;		//head=1, none=0, tail=-1, both = 2
 	private final int arrowDirectionB;		//head=1, none=0, tail=-1
 	private boolean twoWay;
 	
-	private List<Block> next; //list of ALL next possible blocks
+	private List<Block> switchList;
+	private List<Block> nextPossible; //list of ALL next possible blocks
+	private Block next;
 	private Block prev; //previous block train was on
 	
 	private boolean blockOccupied;
@@ -64,7 +67,9 @@ public class Block {
 		this.twoWay = false;
 		if(this.arrowDirectionA == 3)
 			this.twoWay = true;
-		this.next = new LinkedList<Block>();
+		this.nextPossible = new LinkedList<Block>();
+		this.switchList = new LinkedList<Block>();
+		this.switchEngaged = false;
 	}
 	
 	public String getLine(){
@@ -182,31 +187,93 @@ public class Block {
 	}
 	
 	public void setBlockOccupation(boolean occupied){
-		blockOccupied=occupied;
+		this.blockOccupied=occupied;
 	}
 	
 	public boolean isSwitchEngaged(){
 		return switchEngaged;
 	}
 	
-	public void setSwitchEngagement(boolean engaged){
-		switchEngaged=engaged;
+	public void setSwitchEngagement(){
+		if(masterSwitch)	{
+			if(this.switchEngaged)	{
+				switchEngaged = false;
+				for(int i = 0; i< nextPossible.size(); i++)
+				{
+					if(nextPossible.get(i).getBlockNumber() == switchList.get(0).getBlockNumber())	{
+						nextPossible.remove(i);
+					}
+				}
+				setNextPossible(switchList.get(1));
+				switchList.get(1).setNextPossible(this);
+				switchList.get(0).removeNextPossible(this);
+				switchList.get(0).setSwitchEngagement();
+				switchList.get(1).setSwitchEngagement();
+			}
+			else	{
+				switchEngaged = true;
+				for(int i = 0; i< nextPossible.size(); i++)
+				{
+					if(nextPossible.get(i).getBlockNumber() == switchList.get(1).getBlockNumber())	{
+						nextPossible.remove(i);
+					}
+				}
+				setNextPossible(switchList.get(0));
+				switchList.get(0).setNextPossible(this);
+				switchList.get(1).removeNextPossible(this);
+				switchList.get(0).setSwitchEngagement();
+				switchList.get(1).setSwitchEngagement();
+			}
+		}
+		else
+		{
+			if(this.switchEngaged)	{
+				switchEngaged = false;
+			}
+			else	{
+				switchEngaged = true;
+			}
+		}
 	}
 	
-	public void setNext(Block newBlock)	{
+	public void setNextPossible(Block newBlock)	{
 		boolean add = true;
-		for(int i = 0; i< next.size(); i++)
+		for(int i = 0; i< nextPossible.size(); i++)
 		{
-			if(next.get(i).getBlockNumber() == newBlock.getBlockNumber())
+			if(nextPossible.get(i).getBlockNumber() == newBlock.getBlockNumber())
 				add = false;
 		}
 		if(add)
-			next.add(newBlock);
+			nextPossible.add(newBlock);
 	}
 	
-	public List<Block> getNext()	{
-		return next;
+	public void removeNextPossible(Block newBlock)	{
+		for(int i = 0; i< nextPossible.size(); i++)
+		{
+			if(nextPossible.get(i).getBlockNumber() == newBlock.getBlockNumber())
+				nextPossible.remove(i);
+		}
 	}
+	
+	public void setSwitchList(Block newBlock)	{
+		boolean add = true;
+		for(int i = 0; i< switchList.size(); i++)
+		{
+			if(switchList.get(i).getBlockNumber() == newBlock.getBlockNumber())
+				add = false;
+		}
+		if(add)
+			switchList.add(newBlock);
+	}
+	
+	public List<Block> getNextPossible()	{
+		return nextPossible;
+	}
+	
+	public List<Block> getSwitchList()	{
+		return switchList;
+	}
+
 	
 	public void setPrev(Block newBlock)	{
 		this.prev = newBlock;
@@ -222,6 +289,14 @@ public class Block {
 	
 	public boolean getTwoWay()	{
 		return twoWay;
+	}
+	
+	public void setMasterSwitch(boolean input)	{
+		this.masterSwitch = input;
+	}
+	
+	public boolean getMasterSwitch()	{
+		return masterSwitch;
 	}
 	
 

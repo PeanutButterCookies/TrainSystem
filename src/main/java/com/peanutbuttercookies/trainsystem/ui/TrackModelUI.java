@@ -52,6 +52,8 @@ public class TrackModelUI extends JFrame {
 	private JPanel contentPane;
 	private LinkedList<Block> track;
 	private LinkedList<Line> lines;
+	private int curView;
+	private int curLine;
 
 	private TrackModelInterface module;
 	private DefaultListModel<String> infoList;
@@ -74,8 +76,9 @@ public class TrackModelUI extends JFrame {
 		module.setUI(this);
 		track = new LinkedList<Block>();
 		lines = new LinkedList<Line>();
+		int curLine = 0;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 575, 483);
+		setBounds(100, 100, 653, 469);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -106,11 +109,6 @@ public class TrackModelUI extends JFrame {
 		JScrollPane scrollPane_2 = new JScrollPane(list_3);
 		
 		JScrollPane scrollPane_3 = new JScrollPane(list);
-		list_3 = new JList(infoList);
-		scrollPane_2.setViewportView(list_3);
-		
-		list_2 = new JList(blockList);
-		scrollPane_1.setViewportView(list_2);
 		
 		list_1 = new JList(sectionList);
 		scrollPane.setViewportView(list_1);
@@ -140,6 +138,43 @@ public class TrackModelUI extends JFrame {
             }
         });
 		
+		JButton btnBreakBlock = new JButton("Break Block");
+		btnBreakBlock.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	for(int i = 0; i < track.size(); i++)	{
+            		if(i == curView)
+            			track.get(i).setBlockOccupation(true);
+            	}
+            	update(curView);
+            }
+        });
+		
+		JButton btnSwitchEngage = new JButton("Switch Engage");
+		btnSwitchEngage.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	for(int i = 0; i < track.size(); i++)	{
+            		if(i == curView)
+            			track.get(i).setSwitchEngagement();
+            	}
+            	update(curView);
+            }
+        });
+		
+		JButton btnFixBlock = new JButton("Fix Block");
+		btnFixBlock.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				for(int i = 0; i < track.size(); i++)	{
+            		if(i == curView)
+            			track.get(i).setBlockOccupation(false);
+            	}
+            	update(curView);
+			}
+		});
+		
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -150,9 +185,9 @@ public class TrackModelUI extends JFrame {
 							.addComponent(scrollPane_3, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
 							.addGap(20)
 							.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+							.addGap(18)
 							.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
-							.addGap(20)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addComponent(scrollPane_2, GroupLayout.PREFERRED_SIZE, 220, GroupLayout.PREFERRED_SIZE))
 						.addGroup(gl_contentPane.createSequentialGroup()
 							.addComponent(textPane, GroupLayout.PREFERRED_SIZE, 102, GroupLayout.PREFERRED_SIZE)
@@ -161,8 +196,19 @@ public class TrackModelUI extends JFrame {
 							.addGap(20)
 							.addComponent(lblTemperatureController)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(slider, GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)))
-					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+							.addComponent(slider, GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addComponent(btnFixBlock)
+							.addContainerGap())
+						.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+							.addGroup(gl_contentPane.createSequentialGroup()
+								.addComponent(btnBreakBlock)
+								.addGap(14))
+							.addGroup(gl_contentPane.createSequentialGroup()
+								.addComponent(btnSwitchEngage, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addContainerGap()))))
 		);
 		gl_contentPane.setVerticalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -174,14 +220,39 @@ public class TrackModelUI extends JFrame {
 							.addComponent(btnBrowse))
 						.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
 							.addComponent(lblTemperatureController)
-							.addComponent(slider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-					.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
+								.addComponent(btnBreakBlock)
+								.addComponent(slider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addComponent(scrollPane_3, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
-						.addComponent(scrollPane_2, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
-						.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
-						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)))
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
+								.addComponent(scrollPane_3, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
+								.addComponent(scrollPane, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
+								.addGroup(Alignment.LEADING, gl_contentPane.createParallelGroup(Alignment.BASELINE)
+									.addComponent(scrollPane_2, GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
+									.addComponent(btnFixBlock))
+								.addComponent(scrollPane_1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)))
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addGap(34)
+							.addComponent(btnSwitchEngage)
+							.addContainerGap())))
 		);
+		
+		list_2 = new JList(blockList);
+		scrollPane_1.setViewportView(list_2);
+		
+		 list_2.addMouseListener(new MouseAdapter()	{
+	        	public void mouseClicked(MouseEvent e)	{
+
+	        		Integer blockVal = (Integer)list_2.getSelectedValue();
+					if(blockVal.equals(list_2.getSelectedValue()))	{
+							update(blockVal-1);
+				        }
+					}
+			});
+		list_3 = new JList(infoList);
+		scrollPane_2.setViewportView(list_3);
 		
 		
 		contentPane.setLayout(gl_contentPane);
@@ -191,64 +262,11 @@ public class TrackModelUI extends JFrame {
         	public void mouseClicked(MouseEvent e)	{
 				for(int i = 0; i < track.size(); i++)	{
 					if(track.get(i).getSection().equals(list_1.getSelectedValue()))	{
-						infoList.clear();
-						infoList.addElement("Line " + track.get(0).getLine());
-						infoList.addElement("Section " + track.get(i).getSection());
-				        infoList.addElement("Block " + track.get(i).getBlockNumber());
-				        infoList.addElement("Block Length " + track.get(i).getBlockLength());
-				        infoList.addElement("Block Grade " + track.get(i).getBlockGrade());
-				        infoList.addElement("Speed Limit " + track.get(i).getSpeedLimit());
-				        infoList.addElement("Station " + track.get(i).getStationName());
-				        infoList.addElement("Elevation " + track.get(i).getElevation());
-				        infoList.addElement("Cumulative Elevation " + track.get(i).getCumulativeElevation());
-				        infoList.addElement("Switch " + track.get(i).getSwitchBlockId());
-				        infoList.addElement("Direction " + track.get(i).getArrowDirectionA());
-				        infoList.addElement("Direction " + track.get(i).getArrowDirectionB());
-				        infoList.addElement("Occupancy 0");
-				        infoList.addElement("Two Way: " + track.get(i).getTwoWay());
-				        infoList.addElement("NEXT POSSIBLE BLOCKS");
-				        LinkedList<Block> nextBlocks = new LinkedList<Block>(track.get(i).getNext());
-				        String nextPos = "";
-				        for(int j = 0; j < nextBlocks.size(); j++)	{
-				        	nextPos += nextBlocks.get(j).getBlockNumber() + " ";
-				        }
-				        infoList.addElement(nextPos);
-				        break;
+						update(i);
 					}
 				}
 			}
 		});
-		
-		 list_2.addMouseListener(new MouseAdapter()	{
-	        	public void mouseClicked(MouseEvent e)	{
-
-	        		Integer blockVal = (Integer)list_2.getSelectedValue();
-					if(blockVal.equals(list_2.getSelectedValue()))	{
-						infoList.clear();
-						infoList.addElement("Line " + track.get(blockVal-1).getLine());
-						infoList.addElement("Section " + track.get(blockVal-1).getSection());
-				        infoList.addElement("Block " + track.get(blockVal-1).getBlockNumber());
-				        infoList.addElement("Block Length " + track.get(blockVal-1).getBlockLength());
-				        infoList.addElement("Block Grade " + track.get(blockVal-1).getBlockGrade());
-				        infoList.addElement("Speed Limit " + track.get(blockVal-1).getSpeedLimit());
-				        infoList.addElement("Infrastructure " + track.get(blockVal-1).getStationName());
-				        infoList.addElement("Elevation " + track.get(blockVal-1).getElevation());
-				        infoList.addElement("Cumulative Elevation " + track.get(blockVal-1).getCumulativeElevation());
-				        infoList.addElement("Switch " + track.get(blockVal-1).getSwitchBlockId());
-				        infoList.addElement("Direction " + track.get(blockVal-1).getArrowDirectionA());
-				        infoList.addElement("Direction " + track.get(blockVal-1).getArrowDirectionB());
-				        infoList.addElement("Occupancy 0");
-				        infoList.addElement("Two Way: " + track.get(blockVal-1).getTwoWay());
-				        infoList.addElement("NEXT POSSIBLE BLOCKS");
-				        LinkedList<Block> nextBlocks = new LinkedList<Block>(track.get(blockVal-1).getNext());
-				        String nextPos = "";
-				        for(int i = 0; i < nextBlocks.size(); i++)	{
-				        	nextPos += nextBlocks.get(i).getBlockNumber() + " ";
-				        }
-				        infoList.addElement(nextPos);
-					}
-				}
-			});
 		 
 		 list.addMouseListener(new MouseAdapter()	{
 	        	public void mouseClicked(MouseEvent e)	{
@@ -275,7 +293,7 @@ public class TrackModelUI extends JFrame {
 		lineList.clear();
 		sectionList.clear(); 
 		blockList.clear(); 
-		
+		curView = 0;
 		infoList.addElement("Line " + track.get(0).getLine());
 		infoList.addElement("Section " + track.get(0).getSection());
         infoList.addElement("Block " + track.get(0).getBlockNumber());
@@ -286,17 +304,27 @@ public class TrackModelUI extends JFrame {
         infoList.addElement("Elevation " + track.get(0).getElevation());
         infoList.addElement("Cumulative Elevation " + track.get(0).getCumulativeElevation());
         infoList.addElement("Switch " + track.get(0).getSwitchBlockId());
+        infoList.addElement("Master Switch: " + track.get(0).getMasterSwitch());
         infoList.addElement("Direction " + track.get(0).getArrowDirectionA());
         infoList.addElement("Direction " + track.get(0).getArrowDirectionB());
-        infoList.addElement("Occupancy 0");
+        infoList.addElement("Occupancy " + track.get(0).isBlockOccupied());
         infoList.addElement("Two Way: " + track.get(0).getTwoWay());
         infoList.addElement("NEXT POSSIBLE BLOCKS");
-        LinkedList<Block> nextBlocks = new LinkedList<Block>(track.get(0).getNext());
+        LinkedList<Block> nextBlocks = new LinkedList<Block>(track.get(0).getNextPossible());
         String nextPos = "";
         for(int i = 0; i < nextBlocks.size(); i++)	{
         	nextPos += nextBlocks.get(i).getBlockNumber() + " ";
         }
         infoList.addElement(nextPos);
+        if(track.get(0).getSwitchList() != null)	{
+	        infoList.addElement("SWITCH LIST");
+	        nextBlocks = new LinkedList<Block>(track.get(0).getSwitchList());
+	        nextPos = "";
+	        for(int i = 0; i < nextBlocks.size(); i++)	{
+	        	nextPos += nextBlocks.get(i).getBlockNumber() + " ";
+	        }
+	        infoList.addElement(nextPos);
+        }
 
        
         for(int i = 0; i < lines.size(); i++)	{
@@ -320,5 +348,42 @@ public class TrackModelUI extends JFrame {
 			return true;
 		else 
 			return false;
+	}
+	
+	public void update(int blockNum)
+	{
+		infoList.clear();
+		curView = blockNum;
+		infoList.addElement("Line " + track.get(blockNum).getLine());
+		infoList.addElement("Section " + track.get(blockNum).getSection());
+        infoList.addElement("Block " + track.get(blockNum).getBlockNumber());
+        infoList.addElement("Block Length " + track.get(blockNum).getBlockLength());
+        infoList.addElement("Block Grade " + track.get(blockNum).getBlockGrade());
+        infoList.addElement("Speed Limit " + track.get(blockNum).getSpeedLimit());
+        infoList.addElement("Infrastructure " + track.get(blockNum).getStationName());
+        infoList.addElement("Elevation " + track.get(blockNum).getElevation());
+        infoList.addElement("Cumulative Elevation " + track.get(blockNum).getCumulativeElevation());
+        infoList.addElement("Switch " + track.get(blockNum).getSwitchBlockId());
+        infoList.addElement("Master Switch: " + track.get(blockNum).getMasterSwitch());
+        infoList.addElement("Direction " + track.get(blockNum).getArrowDirectionA());
+        infoList.addElement("Direction " + track.get(blockNum).getArrowDirectionB());
+        infoList.addElement("Occupancy " + track.get(blockNum).isBlockOccupied());
+        infoList.addElement("Two Way: " + track.get(blockNum).getTwoWay());
+        infoList.addElement("NEXT POSSIBLE BLOCKS");
+        LinkedList<Block> nextBlocks = new LinkedList<Block>(track.get(blockNum).getNextPossible());
+        String nextPos = "";
+        for(int i = 0; i < nextBlocks.size(); i++)	{
+        	nextPos += nextBlocks.get(i).getBlockNumber() + " ";
+        }
+        infoList.addElement(nextPos);
+        if(track.get(blockNum).getSwitchList() != null)	{
+	        infoList.addElement("SWITCH LIST");
+	        nextBlocks = new LinkedList<Block>(track.get(blockNum).getSwitchList());
+	        nextPos = "";
+	        for(int i = 0; i < nextBlocks.size(); i++)	{
+	        	nextPos += nextBlocks.get(i).getBlockNumber() + " ";
+	        }
+	        infoList.addElement(nextPos);
+        }
 	}
 }
