@@ -105,8 +105,8 @@ public class PLCProgram implements PLCProgramInterface {
 				}
 				return next.isBlockOccupied();
 				}
-			case RR:{return currBlock.isRRCrossingEngaged();}
-			case SWITCH:{return currBlock.isSwitchEngaged();}
+			case RR:{return currBlock.hasRRCrossing();}
+			case SWITCH:{return currBlock.hasSwitch();}
 			default:{
 				System.err.println("ERROR: INPUTBOOLEAN FAILED");
 				return false;
