@@ -1,7 +1,7 @@
 package com.peanutbuttercookies.trainsystem.interfaces;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Line;
-import com.peanutbuttercookies.trainsystem.ui.TrackControllerUI;
+import com.peanutbuttercookies.trainsystem.trackcontroller.TrackControllerUI;
 
 public interface TrackControllerStaticInterface {
 	

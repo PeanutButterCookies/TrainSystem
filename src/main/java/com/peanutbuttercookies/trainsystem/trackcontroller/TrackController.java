@@ -100,10 +100,10 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 		if(blockId>=this.startBlock && blockId<=this.endBlock && this.startBlock!=this.overlapBlock){
 			boolean occupied=section.get(blockId-startBlock+1).isBlockOccupied();
 			if(occupied){
-				ctc.setBlockOccupied(blockId);
+				this.ctc.setBlockOccupied(this.line,blockId);
 			}
 			else{
-				ctc.setBlockUnoccupied(blockId);
+				this.ctc.setBlockUnoccupied(this.line,blockId);
 			}
 		}
 	}

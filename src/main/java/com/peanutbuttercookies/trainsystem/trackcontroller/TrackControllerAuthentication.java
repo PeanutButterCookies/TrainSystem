@@ -1,4 +1,4 @@
-package com.peanutbuttercookies.trainsystem.ui;
+package com.peanutbuttercookies.trainsystem.trackcontroller;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;

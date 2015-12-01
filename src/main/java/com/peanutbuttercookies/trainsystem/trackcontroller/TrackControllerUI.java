@@ -1,4 +1,4 @@
-package com.peanutbuttercookies.trainsystem.ui;
+package com.peanutbuttercookies.trainsystem.trackcontroller;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -13,6 +13,7 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -44,6 +45,7 @@ public class TrackControllerUI extends JFrame {
 	private TrackControllerInterface 	trackController;
 	private String 						displayedLine=null;
 	private String						displayedController=null;
+	private LinkedList<Line>			lines;
 	private JTable table;
 	
 	/**
@@ -104,7 +106,7 @@ public class TrackControllerUI extends JFrame {
 		JPanel panel_ControllerDisplay = new JPanel();
 		panel_ControllerDisplay.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		
-		JLabel lblDisplayingController = new JLabel("- Displaying Unidentified Wayside Controller -");
+		JLabel lblDisplayingController = new JLabel("- Displaying Unidentified Track Controller -");
 		lblDisplayingController.setHorizontalAlignment(SwingConstants.CENTER);
 		lblDisplayingController.setFont(new Font("Tahoma", Font.BOLD, 14));
 		
@@ -235,9 +237,9 @@ public class TrackControllerUI extends JFrame {
 					.addContainerGap())
 		);
 		
-		JLabel lblLineSelection = new JLabel("Wayside Controller");
-		lblLineSelection.setHorizontalAlignment(SwingConstants.CENTER);
-		lblLineSelection.setFont(new Font("Tahoma", Font.BOLD, 14));
+		JLabel lblTrackControllerSelection = new JLabel("Track Controller");
+		lblTrackControllerSelection.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTrackControllerSelection.setFont(new Font("Tahoma", Font.BOLD, 14));
 		
 		JSeparator separator = new JSeparator();
 		
@@ -297,9 +299,9 @@ public class TrackControllerUI extends JFrame {
 		
 		JButton btnNextLine = new JButton("Next");
 		
-		JLabel lblSelectWaysideController = new JLabel("Select Wayside Controller");
-		lblSelectWaysideController.setHorizontalAlignment(SwingConstants.CENTER);
-		lblSelectWaysideController.setFont(new Font("Tahoma", Font.BOLD, 11));
+		JLabel lblSelectTrackController = new JLabel("Select Track Controller");
+		lblSelectTrackController.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSelectTrackController.setFont(new Font("Tahoma", Font.BOLD, 11));
 		
 		JComboBox comboBoxWaysideController_2 = new JComboBox();
 		comboBoxWaysideController_2.setModel(new DefaultComboBoxModel(new String[] {"All"}));
@@ -377,9 +379,9 @@ public class TrackControllerUI extends JFrame {
 						.addComponent(comboBoxSwitchList, 0, 153, Short.MAX_VALUE)
 						.addComponent(separator_2, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
 						.addComponent(comboBoxLine_2, 0, 153, Short.MAX_VALUE)
-						.addComponent(lblSelectWaysideController, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
+						.addComponent(lblSelectTrackController, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
 						.addComponent(lblWaysideController, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
-						.addComponent(lblLineSelection, GroupLayout.PREFERRED_SIZE, 153, Short.MAX_VALUE)
+						.addComponent(lblTrackControllerSelection, GroupLayout.PREFERRED_SIZE, 153, Short.MAX_VALUE)
 						.addComponent(separator, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
 						.addComponent(comboBoxWaysideController_2, 0, 153, Short.MAX_VALUE)
 						.addComponent(lblSelectLine, GroupLayout.PREFERRED_SIZE, 151, GroupLayout.PREFERRED_SIZE)
@@ -400,7 +402,7 @@ public class TrackControllerUI extends JFrame {
 			gl_panel_ControllerSelection.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel_ControllerSelection.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(lblLineSelection, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)
+					.addComponent(lblTrackControllerSelection, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(lblWaysideController)
 					.addPreferredGap(ComponentPlacement.RELATED)
@@ -414,7 +416,7 @@ public class TrackControllerUI extends JFrame {
 						.addComponent(btnPrevLine)
 						.addComponent(btnNextLine))
 					.addGap(49)
-					.addComponent(lblSelectWaysideController)
+					.addComponent(lblSelectTrackController)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(comboBoxWaysideController_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
@@ -445,7 +447,7 @@ public class TrackControllerUI extends JFrame {
 		textField = new JTextField();
 		textField.setColumns(10);
 		
-		JLabel lblEnterWaysideController = new JLabel("Wayside Controller ID:");
+		JLabel lblEnterTrackController = new JLabel("Track Controller ID:");
 		
 		JButton btnLoadProgram = new JButton("Load Program");
 		
@@ -456,6 +458,24 @@ public class TrackControllerUI extends JFrame {
 		JComboBox comboBoxLine_1 = new JComboBox();
 		
 		JButton btnBrowse = new JButton("Browse");
+		btnBrowse.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				JFileChooser chooser = new JFileChooser();
+				chooser.setCurrentDirectory(new java.io.File("."));
+				chooser.setDialogTitle("Choose PLC file to load");
+				chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+				chooser.setAcceptAllFileFilterUsed(false);
+				
+				if(chooser.showOpenDialog(null)==JFileChooser.APPROVE_OPTION){
+					System.out.println("getCurrentDirectory(): "+chooser.getCurrentDirectory());
+					System.out.println("getSelectedFile(): "+chooser.getSelectedFile());
+				}
+				else{
+					System.out.println("No Selection");
+				}
+			}
+		});
+		
 		GroupLayout gl_panel = new GroupLayout(panel);
 		gl_panel.setHorizontalGroup(
 			gl_panel.createParallelGroup(Alignment.LEADING)
@@ -464,7 +484,7 @@ public class TrackControllerUI extends JFrame {
 					.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
 						.addComponent(lblEnterPlcProgram)
 						.addComponent(lblEnterLineName)
-						.addComponent(lblEnterWaysideController))
+						.addComponent(lblEnterTrackController))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
 						.addComponent(textField, GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
@@ -493,7 +513,7 @@ public class TrackControllerUI extends JFrame {
 								.addComponent(comboBoxLine_1, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE))
 							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-								.addComponent(lblEnterWaysideController)
+								.addComponent(lblEnterTrackController)
 								.addComponent(comboBoxWaysideController_1, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE))
 							.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 						.addGroup(gl_panel.createSequentialGroup()
