@@ -1,6 +1,7 @@
 package com.peanutbuttercookies.trainsystem.commonresources;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import com.peanutbuttercookies.trainsystem.interfaces.BlockOccupationListener;
 
@@ -11,6 +12,10 @@ public class Block {
 	private final int blockLength;
 	private final float blockGrade;
 	private final int speedLimit;
+	public Block getPrev() {
+		return prev;
+	}
+
 	private final float elevation;
 	private final float cumulativeElevation;
 	private final boolean switchToYard;
@@ -19,17 +24,29 @@ public class Block {
 	private final boolean infrastructureUnderground;
 	private final boolean infrastructureRRCrossing;
 	private final boolean infrastructureStation;
+	private boolean masterSwitch;
 	private final String stationName;
 	private final int switchBlockId;		//switchBlockId=-1 for block without switch
-	private final int arrowDirectionA;		//head=1, none=0, tail=-1
+	private final int arrowDirectionA;		//head=1, none=0, tail=-1, both = 2
 	private final int arrowDirectionB;		//head=1, none=0, tail=-1
 	private boolean twoWay;
 	
-	private LinkedList<Block> next;
-	private LinkedList<Block> prev;
+	private List<Block> switchList;
+	private List<Block> nextPossible; //list of ALL next possible blocks
+	private Block next;
+	private Block prev; //previous block train was on
 	
 	private boolean blockOccupied;
 	private boolean switchEngaged;
+	
+	public Block getNext() {
+		return next;
+	}
+
+	public void setNext(Block next) {
+		this.next = next;
+	}
+
 	private boolean rrCrossingEngaged;
 	private LinkedList<BlockOccupationListener> listeners;
 	
@@ -190,8 +207,109 @@ public class Block {
 		return switchEngaged;
 	}
 	
-	public void setSwitchEngagement(boolean engaged){
-		switchEngaged=engaged;
+	public void setSwitchEngagement(){
+		if(masterSwitch)	{
+			if(this.switchEngaged)	{
+				switchEngaged = false;
+				for(int i = 0; i< nextPossible.size(); i++)
+				{
+					if(nextPossible.get(i).getBlockNumber() == switchList.get(0).getBlockNumber())	{
+						nextPossible.remove(i);
+					}
+				}
+				setNextPossible(switchList.get(1));
+				switchList.get(1).setNextPossible(this);
+				switchList.get(0).removeNextPossible(this);
+				switchList.get(0).setSwitchEngagement();
+				switchList.get(1).setSwitchEngagement();
+			}
+			else	{
+				switchEngaged = true;
+				for(int i = 0; i< nextPossible.size(); i++)
+				{
+					if(nextPossible.get(i).getBlockNumber() == switchList.get(1).getBlockNumber())	{
+						nextPossible.remove(i);
+					}
+				}
+				setNextPossible(switchList.get(0));
+				switchList.get(0).setNextPossible(this);
+				switchList.get(1).removeNextPossible(this);
+				switchList.get(0).setSwitchEngagement();
+				switchList.get(1).setSwitchEngagement();
+			}
+		}
+		else
+		{
+			if(this.switchEngaged)	{
+				switchEngaged = false;
+			}
+			else	{
+				switchEngaged = true;
+			}
+		}
+	}
+	
+	public void setNextPossible(Block newBlock)	{
+		boolean add = true;
+		for(int i = 0; i< nextPossible.size(); i++)
+		{
+			if(nextPossible.get(i).getBlockNumber() == newBlock.getBlockNumber())
+				add = false;
+		}
+		if(add)
+			nextPossible.add(newBlock);
+	}
+	
+	public void removeNextPossible(Block newBlock)	{
+		for(int i = 0; i< nextPossible.size(); i++)
+		{
+			if(nextPossible.get(i).getBlockNumber() == newBlock.getBlockNumber())
+				nextPossible.remove(i);
+		}
+	}
+	
+	public void setSwitchList(Block newBlock)	{
+		boolean add = true;
+		for(int i = 0; i< switchList.size(); i++)
+		{
+			if(switchList.get(i).getBlockNumber() == newBlock.getBlockNumber())
+				add = false;
+		}
+		if(add)
+			switchList.add(newBlock);
+	}
+	
+	public List<Block> getNextPossible()	{
+		return nextPossible;
+	}
+	
+	public List<Block> getSwitchList()	{
+		return switchList;
+	}
+
+	
+	public void setPrev(Block newBlock)	{
+		this.prev = newBlock;
+	}
+	
+	public void unsetPrev()	{
+		this.prev = null;
+	}
+	
+	public void setTwoWay(boolean twoWayIn)	{
+		this.twoWay = twoWayIn;
+	}
+	
+	public boolean getTwoWay()	{
+		return twoWay;
+	}
+	
+	public void setMasterSwitch(boolean input)	{
+		this.masterSwitch = input;
+	}
+	
+	public boolean getMasterSwitch()	{
+		return masterSwitch;
 	}
 	
 	public boolean isRRCrossingEngaged(){
@@ -200,14 +318,6 @@ public class Block {
 	
 	public void setRRCrossingEngagement(boolean engaged){
 		rrCrossingEngaged=engaged;
-	}
-	
-	public void setNext(Block newBlock)	{
-		next.add(newBlock);
-	}
-	
-	public void setPrev(Block newBlock)	{
-		prev.add(newBlock);
 	}
 	
 	public void getTwoWay(boolean twoWayIn)	{

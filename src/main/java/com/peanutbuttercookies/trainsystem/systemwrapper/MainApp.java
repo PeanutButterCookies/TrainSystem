@@ -25,26 +25,26 @@ import com.peanutbuttercookies.trainsystem.ui.TrainUI;
 
 public class MainApp {
 	public static void main(String[] args) throws IOException {
-		CTCModuleInterface ctc = new CTCModule();
-		TrackControllerInterface tc = new TrackControllerModule();
+		//CTCModuleInterface ctc = new CTCModule();
+		//TrackControllerInterface tc = new TrackControllerModule();
 		TrackModelInterface tm = new TrackModel();
-		TrainInterface ti = new Train();
-		TrainController trainController = new TrainController();
+		//TrainInterface ti = new Train();
+		//TrainController trainController = new TrainController();
 		
-		ctc.setTC(tc);
-		tc.setCTC(ctc);
-		tc.setTrackModel(tm);
-		tm.setTC(tc);
-		tm.setTI(ti);
-		ti.setTrainController(trainController);
-		ti.setTrackModel(tm);
-		trainController.setTrainModel(ti);
+		//ctc.setTC(tc);
+		//tc.setCTC(ctc);
+		//tc.setTrackModel(tm);
+		//tm.setTC(tc);
+		//tm.setTI(ti);
+		//ti.setTrainController(trainController);
+		//ti.setTrackModel(tm);
+		//trainController.setTrainModel(ti);
 		
-		CTCModuleUI ctcUI = new CTCModuleUI(ctc);
+		//CTCModuleUI ctcUI = new CTCModuleUI(ctc);
 		TrackModelUI tmUI = new TrackModelUI(tm);
-		TrackControllerUI tcUI = new TrackControllerUI(tc);
-		TrainUI tUI = new TrainUI(ti);
-		TrainControllerUI trainControllerUI = new TrainControllerUI(trainController);
+		//TrackControllerUI tcUI = new TrackControllerUI(tc);
+		//TrainUI tUI = new TrainUI(ti);
+		//TrainControllerUI trainControllerUI = new TrainControllerUI(trainController);
 
 	}
 }
