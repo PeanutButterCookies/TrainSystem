@@ -38,19 +38,23 @@ public class CTCModule implements CTCModuleInterface {
 	@Override
 	public void setBlockOccupied(String line, int blockId) {
 		CTCBlockModel model = lineBlockMap.get(line);
-		boolean newTrain = model.setOccupied(true, blockId);
+		boolean newTrain = model.setOccupied(blockId);
 		if (newTrain) {
 			lineTrainMap.get(line).addTrain(new NewCTCTrain());
 		} else {
-			lineTrainMap.get(line).moveTrain(model.getPrevBlock(blockId), blockId, true);
+			lineTrainMap.get(line).moveHead(model.getPrevBlock(blockId), blockId);
 		}
 	}
 
 	@Override
 	public void setBlockUnoccupied(String line, int blockId) {
 		CTCBlockModel model = lineBlockMap.get(line);
-		boolean removeTrain = model.setOccupied(false, blockId);
-		lineTrainMap.get(line).moveTrain(model.getPrevBlock(blockId), blockId, false);
+		boolean removeTrain = model.setUnoccupied(blockId);
+		if(!removeTrain) {
+		lineTrainMap.get(line).moveTail(model.getPrevBlock(blockId), blockId);
+		} else {
+			lineTrainMap.get(line).removeTrain();
+		}
 	}
 
 	public Integer getMaxTrain() {

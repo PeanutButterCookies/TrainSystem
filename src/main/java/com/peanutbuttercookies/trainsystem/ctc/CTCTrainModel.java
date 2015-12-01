@@ -1,5 +1,6 @@
 package com.peanutbuttercookies.trainsystem.ctc;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -57,19 +58,33 @@ public class CTCTrainModel extends AbstractTableModel {
 		fireTableDataChanged();
 	}
 	
-	public void moveTrain(Integer prevBlock, Integer newBlock, boolean side) {
+	public void moveHead(Integer prevBlock, Integer newBlock) {
 		for(CTCTrain train : trains) {
-			if(side) {
-				System.out.println("head: " + train.getHead() + ", prev: " + prevBlock + ", new: " + newBlock);
-				if(train.getHead().equals(prevBlock)) {
-					System.out.println("Setting head: " + newBlock);
-					train.setHead(newBlock);
-				}
-				break;
-			} else {
-				if(train.getTail().equals(prevBlock)) {
-					train.setHead(newBlock);
-				}
+			System.out.println("head: " + train.getHead() + ", prev: " + prevBlock + ", new: " + newBlock);
+			if(train.getHead().equals(prevBlock)) {
+				System.out.println("Setting head: " + newBlock);
+				train.setHead(newBlock);
+			}
+		}
+		fireTableDataChanged();
+	}
+	
+	public void moveTail(Integer prevBlock, Integer newBlock) {
+		for(CTCTrain train : trains) {
+			System.out.println("tail: " + train.getHead() + ", prev: " + prevBlock + ", new: " + newBlock);
+			if(train.getTail().equals(prevBlock)) {
+				train.setTail(newBlock);
+			}
+		}
+		fireTableDataChanged();
+	}
+	
+	public void removeTrain() {
+		Iterator<CTCTrain> iterator = trains.iterator();
+		while(iterator.hasNext()) {
+			CTCTrain train = iterator.next();
+			if(train.getTail().equals(0)) {
+				iterator.remove();
 				break;
 			}
 		}
