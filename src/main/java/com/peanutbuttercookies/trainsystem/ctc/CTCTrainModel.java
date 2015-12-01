@@ -65,7 +65,11 @@ public class CTCTrainModel extends AbstractTableModel {
 		fireTableDataChanged();
 	}
 	
-	public void moveTrain(int prevBlock, int newBlock, Side side) {
+	public void moveTrain(Integer prevBlock, Integer newBlock, Side side) {
+		if(prevBlock == null) {
+			addTrain(new NewCTCTrain());
+			return;
+		}
 		for(CTCTrain train : trains) {
 			switch(side) {
 			case HEAD:

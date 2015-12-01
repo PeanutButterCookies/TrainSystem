@@ -10,6 +10,10 @@ public class Block {
 	private final int blockLength;
 	private final float blockGrade;
 	private final int speedLimit;
+	public Block getPrev() {
+		return prev;
+	}
+
 	private final float elevation;
 	private final float cumulativeElevation;
 	private final boolean switchToYard;

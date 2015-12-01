@@ -39,37 +39,18 @@ public class CTCModule implements CTCModuleInterface {
 	public void setBlockOccupied(String line, int blockId) {
 		CTCBlockModel model = lineBlockMap.get(line);
 		model.setOccupied(true, blockId);
+		System.out.println(model.getPrevBlock(1));
+		System.out.println(model.getPrevBlock(2));
 		lineTrainMap.get(line).moveTrain(model.getPrevBlock(blockId), blockId, CTCTrainModel.Side.HEAD);
 	}
 
 	@Override
 	public void setBlockUnoccupied(String line, int blockId) {
 		CTCBlockModel model = lineBlockMap.get(line);
-		model.setOccupied(true, blockId);
+		model.setOccupied(false, blockId);
 		lineTrainMap.get(line).moveTrain(model.getPrevBlock(blockId), blockId, CTCTrainModel.Side.TAIL);
 	}
 
-// TODO
-//	@Override
-//	public boolean send(String speed, Integer train, Integer authority) {
-//		int speedInt = 0;
-//		try {
-//			speedInt = Integer.parseInt(speed);
-//		} catch(NumberFormatException e) {
-//			System.out.println("Not a number");
-//			return false;
-//		}
-//		if(train < 0 || train > maxTrain) {
-//			return false;
-//		} else if(train == 0) {
-//			maxTrain++;
-//		}
-//		if(tc.setSpeedAuthority(line , train + 1, speedInt, authority)) {
-//			return true;
-//		} else {
-//			return false;
-//		}
-//	}
 	public Integer getMaxTrain() {
 		return maxTrain;
 	}
@@ -87,7 +68,9 @@ public class CTCModule implements CTCModuleInterface {
 		for(Block block : line.getAllBlocks()) {
 			lineBlockMap.get(line.getLine()).addBlock(block);
 		}
-		ui.addLine(line.getLine());
+		if(ui != null) {
+			ui.addLine(line.getLine());
+		}
 	}
 
 	@Override
@@ -139,9 +122,15 @@ public class CTCModule implements CTCModuleInterface {
 	}
 
 	@Override
-	public boolean dispatch(String line, String speed, CTCBlock block) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean dispatch(String line, String speed, CTCBlock block, CTCTrain train) {
+
+		int speedInt = 0;
+		try {
+		speedInt = Integer.parseInt(speed.replaceAll("[^\\d]", ""));
+		} catch(Exception e) {
+			return false;
+		}
+		return tc.setSpeedAuthority(line, train.getHead(), speedInt, block.getBlockNumber());
 	}
 
 	@Override
@@ -189,6 +178,16 @@ public class CTCModule implements CTCModuleInterface {
 	public void switchChanged(String line, int switchId, int blockId) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	//FOR TESTING ONLY 
+
+	public CTCTrainModel getTrainModel(String line) {
+		return lineTrainMap.get(line);
+	}
+	
+	public CTCBlockModel getBlockModel(String line) {
+		return lineBlockMap.get(line);
 	}
 
 }

@@ -29,7 +29,7 @@ public interface CTCModuleInterface {
 	public void setUi(CTCModuleUI ui);
 
 	// for use by the CTCUI	
-	public boolean dispatch(String line, String speed, CTCBlock block);
+	public boolean dispatch(String line, String speed, CTCBlock block, CTCTrain train);
 	public boolean repair(String line, CTCBlock block);
 	public boolean changeSwitch(String line, CTCBlock block);
 	public boolean setSchedule(String line, String filename, ScheduleModel model);

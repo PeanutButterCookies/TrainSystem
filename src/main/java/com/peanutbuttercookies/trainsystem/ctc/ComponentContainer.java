@@ -26,21 +26,17 @@ public class ComponentContainer extends JPanel implements ActionListener {
 	private static final long serialVersionUID = -2735446569205978989L;
 
 	private static int width = 900;
-	private static final Dimension TAB_DIM= new Dimension(width/3, 450);
-	private static final Dimension BUTTON_DIM = new Dimension(width/4, 30);
-	private static final Dimension COMBO_DIM = new Dimension(width/4, 30);
-	private static final Dimension ONE_DIM = new Dimension(width,450);
-	private static final Dimension TWO_DIM = new Dimension(width,50);
-	private static final Dimension THREE_DIM = new Dimension(width,50);
-	private static final Dimension FOUR_DIM = new Dimension(width,50);
+	private static final Dimension TAB_DIM = new Dimension(width / 3, 450);
+	private static final Dimension BUTTON_DIM = new Dimension(width / 4, 30);
+	private static final Dimension COMBO_DIM = new Dimension(width / 4, 30);
+	private static final Dimension ONE_DIM = new Dimension(width, 450);
+	private static final Dimension TWO_DIM = new Dimension(width, 50);
+	private static final Dimension THREE_DIM = new Dimension(width, 50);
+	private static final Dimension FOUR_DIM = new Dimension(width, 50);
 
-	private static final Vector<String> uses = new Vector<String>(Arrays.asList(new String[] {
-			"Dispatch",
-			"Mark for Repair",
-			"Change switch",
-			"Set schedule"
-	}));
-	
+	private static final Vector<String> uses = new Vector<String>(
+			Arrays.asList(new String[] { "Dispatch", "Mark for Repair", "Change switch", "Set schedule" }));
+
 	private CTCModuleInterface module;
 	private DefaultComboBoxModel<CTCTrain> trainModel;
 	private DefaultComboBoxModel<CTCSection> sectionModel;
@@ -51,6 +47,8 @@ public class ComponentContainer extends JPanel implements ActionListener {
 	private String selectedFile;
 	private String line;
 	private JTextField fileDisplay;
+	private JComboBox<CTCBlock> blockCBox;
+	private JComboBox<CTCTrain> trainCBox;
 
 	public ComponentContainer(String line, CTCModuleInterface module) {
 		this.line = line;
@@ -62,7 +60,6 @@ public class ComponentContainer extends JPanel implements ActionListener {
 		speed = new JTextField();
 		speed.setPreferredSize(COMBO_DIM);
 		setPreferredSize(TAB_DIM);
-
 
 		JTable blocks = new JTable(module.newBlockModel(line));
 		JTable trains = new JTable(module.newTrainModel(line));
@@ -94,13 +91,20 @@ public class ComponentContainer extends JPanel implements ActionListener {
 
 		trainModel = module.newTrainCombo(line);
 		sectionModel = module.newSectionCombo(line);
-		JComboBox<CTCTrain> trainCBox = new JComboBox<CTCTrain>(module.newTrainCombo(line));
+		trainCBox = new JComboBox<CTCTrain>(module.newTrainCombo(line));
 		JComboBox<CTCSection> sectionCBox = new JComboBox<CTCSection>(module.newSectionCombo(line));
-		for(int i=0; i<sectionModel.getSize(); i++) {
+
+		for (int i = 0; i < sectionModel.getSize(); i++) {
 			CTCSection section = sectionModel.getElementAt(i);
 			blockModels.put(section, module.newBlockCombo(line, section));
 		}
-		JComboBox<CTCBlock> blockCBox = new JComboBox<CTCBlock>(blockModels.get(sectionModel.getSelectedItem()));
+		blockCBox = new JComboBox<CTCBlock>(blockModels.get(sectionModel.getSelectedItem()));
+		sectionCBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				blockCBox.setModel(blockModels.get((CTCSection) sectionCBox.getSelectedItem()));
+			}
+		});
+
 		JButton button = new JButton("Send");
 		button.addActionListener(this);
 
@@ -124,66 +128,38 @@ public class ComponentContainer extends JPanel implements ActionListener {
 
 	}
 
-	public Map<CTCSection, DefaultComboBoxModel<CTCBlock>> getBlockCombos() {
-		return blockModels;
+	public String getLine() {
+		return line;
 	}
 
-	public JTextField getSpeed() {
-		return speed;
-	}
-
-	public JComboBox<String> getUsesCombo() {
-		return usesCombo;
-	}
-
-	public JButton getBrowse() {
-		return browse;
-	}
-
-	public String getSelectedFile() {
-		return selectedFile;
-	}
-
-	public DefaultComboBoxModel<CTCTrain> getTrainCombo() {
-		return trainModel;
-	}
-
-	public DefaultComboBoxModel<CTCBlock> getBlockCombo(CTCSection section) {
-		return blockModels.get(section);
-	}
-
-	public void addBlockCombo(CTCSection section, DefaultComboBoxModel<CTCBlock> blockCombo) {
-		blockModels.put(section, blockCombo);
-	}
-
-	public DefaultComboBoxModel<CTCSection> getSectionCombo() {
-		return sectionModel;
-	}
-	
 	private void initBrowse() {
 		browse = new JButton("Browse");
 		browse.setPreferredSize(BUTTON_DIM);
-	    browse.addActionListener(new ActionListener() {
-	        public void actionPerformed(ActionEvent ae) {
-	          JFileChooser chooser = new JFileChooser();
-	          JFrame frame = new JFrame("File Chooser");
-	          frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-	          frame.setPreferredSize(new Dimension(400, 400));
-	          chooser.setPreferredSize(new Dimension(400, 400));
-	          int option = chooser.showOpenDialog(frame);
-	          frame.setVisible(true);;
-	          if (option == JFileChooser.APPROVE_OPTION) {
-	            selectedFile = chooser.getSelectedFile().getAbsolutePath();
-	            fileDisplay.setText(selectedFile);
-	            frame.dispose();
-	          }
-	        }
-	      });
+		browse.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				JFileChooser chooser = new JFileChooser();
+				JFrame frame = new JFrame("File Chooser");
+				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				frame.setPreferredSize(new Dimension(400, 400));
+				chooser.setPreferredSize(new Dimension(400, 400));
+				int option = chooser.showOpenDialog(frame);
+				frame.setVisible(true);
+				;
+				if (option == JFileChooser.APPROVE_OPTION) {
+					selectedFile = chooser.getSelectedFile().getAbsolutePath();
+					fileDisplay.setText(selectedFile);
+					frame.dispose();
+				}
+			}
+		});
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
-		
+		switch ((String) usesCombo.getSelectedItem()) {
+		case "Dispatch":
+			module.dispatch(line, speed.getText(), (CTCBlock) blockCBox.getSelectedItem(),
+					(CTCTrain) trainCBox.getSelectedItem());
+		}
 	}
 }

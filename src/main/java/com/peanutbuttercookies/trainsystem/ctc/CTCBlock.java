@@ -121,10 +121,6 @@ public class CTCBlock {
 		this.section = section;
 	}
 	
-	public String toString() {
-		return blockNumber.toString();
-	}
-	
 	//TODO change this to work with scaling simulation time
 	public double getThroughput() {
 		long time = System.currentTimeMillis();
@@ -163,4 +159,9 @@ public class CTCBlock {
 		return fields.get(index);
 	}
 	
+	public String toString() {
+		return "prev: " + ((prevBlock == null)? "null": prevBlock.getBlockNumber())
+				+ "\ncurr: " + blockNumber
+				+ "\nnext: " + ((nextBlock == null)? "null": nextBlock.getBlockNumber());
+	}
 }

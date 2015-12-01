@@ -2,6 +2,11 @@ package com.peanutbuttercookies.trainsystem.ctc;
 
 public class NewCTCTrain extends CTCTrain {
 
+	public NewCTCTrain() {
+		setHead(0);
+		setTail(0);
+	}
+
 	@Override
 	public boolean equals(Object other) {
 		return other instanceof NewCTCTrain;

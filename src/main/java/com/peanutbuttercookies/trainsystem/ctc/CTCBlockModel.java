@@ -51,7 +51,22 @@ public class CTCBlockModel extends AbstractTableModel {
 			if(blockMap.containsKey(num)) {
 				ctcBlock.addPossible(blockMap.get(num));
 			} else {
-				ctcBlock.addPossible(new CTCBlock());
+				CTCBlock newBlock = new CTCBlock();
+				blockMap.put(num, newBlock);
+				ctcBlock.addPossible(newBlock);
+			}
+		}
+		
+		if(block.getPrev() == null) {
+			ctcBlock.setPrevBlock(null);
+		} else {
+			Integer prev = block.getPrev().getBlockNumber();
+			if(blockMap.containsKey(prev)) {
+				ctcBlock.setPrevBlock(blockMap.get(prev));
+			} else {
+				CTCBlock newBlock = new CTCBlock();
+				blockMap.put(prev, newBlock);
+				ctcBlock.setPrevBlock(newBlock);
 			}
 		}
 		blockMap.put(ctcBlock.getBlockNumber(), ctcBlock);
@@ -81,8 +96,15 @@ public class CTCBlockModel extends AbstractTableModel {
 		}
 	}
 	
-	public int getPrevBlock(int blockId) {
-		return blockMap.get(blockId).getPrevBlock().getBlockNumber();
+	public Integer getPrevBlock(int blockId) {
+		CTCBlock block = blockMap.get(blockId);
+		if(block == null) {
+			return null;
+		} else if(block.getPrevBlock() == null) {
+			return null;
+		} else {
+			return block.getPrevBlock().getBlockNumber();
+		}
 	}
 	
 	@Override
@@ -121,6 +143,11 @@ public class CTCBlockModel extends AbstractTableModel {
 	@Override
 	public String getColumnName(int column) {
 		return CTCBlock.getField(column);
+	}
+	
+	//FOR TESTING
+	public Map<Integer, CTCBlock> getBlockMap() {
+		return blockMap;
 	}
 }
 
