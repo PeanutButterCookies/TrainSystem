@@ -1,4 +1,6 @@
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
 package com.peanutbuttercookies.trainsystem.trackmodel;
 
 import java.io.BufferedReader;
@@ -148,6 +150,7 @@ public class TrackModel implements TrackModelInterface {
 	}
 }
 =======
+>>>>>>> refs/remotes/origin/master
 package com.peanutbuttercookies.trainsystem.trackmodel;
 
 import java.io.BufferedReader;
@@ -164,7 +167,11 @@ public class TrackModel implements TrackModelInterface {
 	private TrackControllerInterface trackComm;
 	private TrainInterface trainComm;
 	private ArrayList<Block> track;
+<<<<<<< HEAD
+	private TrackModelUI newUI;
+=======
 	private TrackModelUI tmUI;
+>>>>>>> refs/remotes/origin/master
 	
 	public TrackModel() {
 		fileRead();
@@ -204,6 +211,14 @@ public class TrackModel implements TrackModelInterface {
 
 	@Override
 	public void setBlockOccupied(int blockId, int trainId) {
+<<<<<<< HEAD
+		track.get(blockId-1).setOccupancy();
+		trackComm.setTrainPresence(trainId, blockId);
+		//trainComm.setSpeedLimit(track.get(blockId-1).getSpeedLim());
+		//trainComm.setStation(track.get(blockId-1).getInfra());
+		//trainComm.setBlockId(blockId);
+		//trainComm.setBlockLength(track.get(blockId-1).getBlockLen());
+=======
 		
 		// TEMP HACK
 //		blockId += 1;
@@ -221,6 +236,7 @@ public class TrackModel implements TrackModelInterface {
 		}
 		trainComm.setBlockId(blockId);
 		trainComm.setBlockLength(track.get(blockId-1).getBlockLen());
+>>>>>>> refs/remotes/origin/master
 	}
 
 	@Override
@@ -228,8 +244,11 @@ public class TrackModel implements TrackModelInterface {
 		for(int i =0; i<track.size(); i++)	{
 			if(track.get(i).getBlockId() == blockId)	{
 				track.get(i).setOccupancy();
+<<<<<<< HEAD
+=======
 				if(tmUI.currentView(blockId))
 		 			tmUI.display(blockId);
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 	}
@@ -246,11 +265,28 @@ public class TrackModel implements TrackModelInterface {
 
 	@Override
 	public void setBlock(String line, String section, int blockId, int blockLen, int speedLim, String infra, int occupancy) {
+<<<<<<< HEAD
+		// TODO Auto-generated method stub
+		//@SuppressWarnings("unused")
+=======
+>>>>>>> refs/remotes/origin/master
 		Block newBlock = new Block(line, section, blockId, blockLen, speedLim, infra, occupancy);
 		setLayout(newBlock);
 	}
 	
 	@Override
+<<<<<<< HEAD
+	public void setSpeed(int trainId, int speed)	{
+		//trainComm.setSpeed(trainId, speed);
+	}
+	
+	@Override
+	public void setAuthority(int trainId, int authority)	{
+		//trainComm.setAuthority(trainId, authority);
+	}
+
+	@Override
+=======
 	public void setSpeedAuthority(int trainId, int speed, int authority)	{
 		trainComm.setSpeed(speed);
 		trainComm.setAuthority(authority);
@@ -260,6 +296,7 @@ public class TrackModel implements TrackModelInterface {
 	}
 	
 	@Override
+>>>>>>> refs/remotes/origin/master
 	public int getBeacon(int trainId) {
 		// TODO Auto-generated method stub
 		return 0;
@@ -267,9 +304,16 @@ public class TrackModel implements TrackModelInterface {
 
 	@Override
 	public void setStation(String station) {
+<<<<<<< HEAD
+		// TODO Auto-generated method stub
+		if(!station.equals("none"))	{
+			setBeacon();
+			//trainComm.getStation(station);
+=======
 		if(!station.equals("none"))	{
 			setBeacon();
 			trainComm.setStation(station);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -291,6 +335,9 @@ public class TrackModel implements TrackModelInterface {
 	public ArrayList<Block> getTrack() {
 		return track;
 	}
+<<<<<<< HEAD
+}
+=======
 
 
 	@Override
@@ -300,3 +347,4 @@ public class TrackModel implements TrackModelInterface {
 	}
 }
 >>>>>>> branch 'master' of https://github.com/PeanutButterCookies/TrainSystem
+>>>>>>> refs/remotes/origin/master

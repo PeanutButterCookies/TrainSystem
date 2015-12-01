@@ -106,6 +106,22 @@ public class Train implements TrainInterface {
 		this.authority = authority;
 	}
 	public void run(){
+<<<<<<< HEAD
+		trainController.setAcceleration(getAcceleration());
+		trainController.setSpeed(getSpeed());
+		while(blockId<=authority){
+			trackModel.setBlockOccupied(blockId, id);
+			setSpeed(70*1000/3600);
+			double distance = 0;
+			while(distance <= blockLength){
+				distance+=speed*60;
+				setPower(mass,speed,0.0);
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+=======
 		Thread t = new Thread(new MovementThread());
 		t.start();
 
@@ -174,6 +190,7 @@ public class Train implements TrainInterface {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+>>>>>>> refs/remotes/origin/master
 				}
 				System.out.println("Thread block id: " + blockId);
 				trackModel.setBlockUnoccupied(blockId);

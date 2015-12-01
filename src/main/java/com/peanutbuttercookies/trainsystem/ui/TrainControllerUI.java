@@ -24,6 +24,13 @@ public class TrainControllerUI extends JFrame {
 	private JTextField textField_3;
 	private JTextField textField_4;
 
+<<<<<<< HEAD
+	/**
+	 * Launch the application.
+	 */
+	
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/**
 	 * Create the frame.
@@ -121,7 +128,13 @@ public class TrainControllerUI extends JFrame {
 		sl_contentPane.putConstraint(SpringLayout.WEST, comboBox, 6, SpringLayout.EAST, lblSelectTrain);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, comboBox, 0, SpringLayout.SOUTH, lblSelectTrain);
 		contentPane.add(comboBox);
+<<<<<<< HEAD
+		comboBox.addItem(trainController);
+		
+=======
 		comboBox.addItem(1);
+>>>>>>> refs/remotes/origin/master
 		setVisible(true);
 	}
+	
 }

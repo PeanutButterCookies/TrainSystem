@@ -1,4 +1,6 @@
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
 package com.peanutbuttercookies.trainsystem.trackmodel;
 
 public class Block {
@@ -87,6 +89,7 @@ public class Block {
 
 }
 =======
+>>>>>>> refs/remotes/origin/master
 package com.peanutbuttercookies.trainsystem.trackmodel;
 
 public class Block {
@@ -143,4 +146,7 @@ public class Block {
 	}
 
 }
+<<<<<<< HEAD
+=======
 >>>>>>> branch 'master' of https://github.com/PeanutButterCookies/TrainSystem
+>>>>>>> refs/remotes/origin/master
