@@ -27,4 +27,5 @@ public interface TrainInterface {
 	public double getCurrentSpeed();
 	public void setTrainController(TrainController tc);
 	public void setTrackModel(TrackModelInterface tm);
+	public void run();
 }
