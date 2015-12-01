@@ -56,7 +56,7 @@ public class TrackController implements BlockOccupationListener {
 		return overlapBlock;
 	}
 	
-	public LinkedList getSection(){
+	public LinkedList<Block> getSection(){
 		return section;
 	}
 	
