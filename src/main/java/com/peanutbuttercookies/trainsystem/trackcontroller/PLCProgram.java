@@ -9,29 +9,61 @@ import com.peanutbuttercookies.trainsystem.commonresources.Block;
 
 public class PLCProgram implements PLCProgramInterface {
 	
-	
+	/**
+	 * 
+	 * PLCFunctionType
+	 * The PLCFunctionType enum serves to limit the functions that
+	 * the PLC program is allowed to have
+	 *
+	 */
 	private enum PLCFunctionType{
-		SWITCH,STOP,SLOWDOWN,ENGAGESWITCH,ENGAGERR;
+		SWITCH("SWITCH"),
+		STOP("STOP"),
+		SLOWDOWN("SLOWDOWN"),
+		ENGAGESWITCH("ENGAGESWITCH"),
+		ENGAGERR("ENGAGERR");
+		
+		private String value;
+		PLCFunctionType(String value){
+			this.value=value;
+		}
+		String getString(){
+			return value;
+		}
 	}
 	
+	/**
+	 * 
+	 * Operator
+	 * The Operator enum is to limit the logical operators that the
+	 * PLC program can use, as well as ease the use of the read in
+	 * logical operators in real time use
+	 *
+	 */
 	private enum Operator{
-		AND{
-			public boolean operation(boolean I1,boolean I2){
-				return I1 && I2;
+		AND,OR,NOT;
+		
+		boolean operation(boolean i1, boolean i2){
+			switch(this){
+			case AND:{return i1 && i2;}
+			case OR:{return i1 || i2;}
+			case NOT:{return !i1;}
+			default:{
+				System.err.println("ERROR: OPERATION FAILED");
+				return false;
 			}
-		},
-		OR{
-			public boolean operation(boolean I1,boolean I2){
-				return I1 || I2;
 			}
-		},
-		NOT{
-			public boolean operation(boolean I1){
-				return !I1;
-			}
-		};
+		}
 	}
 	
+	/**
+	 * 
+	 * Input
+	 * The Input enum is used in establishing the allowed 'inputs' that the
+	 * read-in PLC program can use. The inputBoolean function makes it easier
+	 * to extract the necessary logical value from the track data structure
+	 *
+	 */
 	private enum Input{
 		CURRBLOCK,
 		PREVBLOCK,
@@ -55,8 +87,41 @@ public class PLCProgram implements PLCProgramInterface {
 		int getPrevMultiplier(){
 			return prevMultiplier;
 		}
+		
+		boolean inputBoolean(Block currBlock){
+			switch(this){
+			case CURRBLOCK:{return currBlock.isBlockOccupied();}
+			case PREVBLOCK:{
+				Block prev=currBlock;
+				for(int i=1;i<this.prevMultiplier;i++){
+					prev=prev.getPrev();
+				}
+				return prev.isBlockOccupied();
+				}
+			case NEXTBLOCK:{
+				Block next=currBlock;
+				for(int i=1;i<this.nextMultiplier;i++){
+					next=next.getNext();
+				}
+				return next.isBlockOccupied();
+				}
+			case RR:{return currBlock.isRRCrossingEngaged();}
+			case SWITCH:{return currBlock.isSwitchEngaged();}
+			default:{
+				System.err.println("ERROR: INPUTBOOLEAN FAILED");
+				return false;
+			}
+			}
+		}
 	}
-
+	
+	/**
+	 * 
+	 * PLCFunction
+	 * This class serves as a data structure to hold the input and operator values
+	 * read in from the PLC program file
+	 *
+	 */
 	private class PLCFunction{
 		private final ArrayList<Input> input;
 		private final ArrayList<Operator> ops;
@@ -81,86 +146,71 @@ public class PLCProgram implements PLCProgramInterface {
 		}
 	}
 	
+	//PLCFunction objects corresponding to the interface methods (excluding loadPLCProgram)
 	private PLCFunction stop				=null;
 	private PLCFunction slowDown			=null;
 	private PLCFunction engageSwitch		=null;
 	private PLCFunction engageRRCrossing	=null;
 	
-	//private ArrayList<PLCFunction> plcFunctionList=new ArrayList<PLCFunction>();
-
-	//private boolean runBooleanLogic(Input I1, Input I2,)
-	private boolean inputBoolean(Input input, Block currBlock){
-		switch(input){
-		case CURRBLOCK:{return currBlock.isBlockOccupied();}
-		case PREVBLOCK:{
-			Block prev=currBlock;
-			for(int i=1;i<input.prevMultiplier;i++){
-				prev=prev.getPrev();
-			}
-			return prev.isBlockOccupied();
-			}
-		case NEXTBLOCK:{
-			Block next=currBlock;
-			for(int i=1;i<input.nextMultiplier;i++){
-				next=next.getNext();
-			}
-			return next.isBlockOccupied();
-			}
-		case RR:{return currBlock.isRRCrossingEngaged();}
-		case SWITCH:{return currBlock.isSwitchEngaged();}
-		}
-	}
-	
-	
-	@Override
-	public boolean stop(Block currBlock) {
-		if(stop.equals(null)){
+	/**
+	 * 
+	 * @param plc - The PLCFunction object that the function is to be run for
+	 * @param currBlock - the current block that the logical function is to be run on
+	 * @return the boolean results of the logical function
+	 */
+	private boolean runPLCFunction(PLCFunction plc, Block currBlock){
+		if(plc.equals(null)){
 			System.err.println("ERROR: PLC PROGRAM NOT LOADED");
 			return false;
 		}
-		else if((stop.getInputs().size()==1 && stop.getOperators().size()>0 && stop.getOperators().get(1).equals(Operator.NOT))
-				|| (stop.getInputs().size()>1 && stop.getOperators().size()>0)){
-			Iterator<Input> inputIterator=stop.getInputs().iterator();
-			Iterator<Operator> opIterator=stop.getOperators().iterator();
-			boolean stopValue=false;
-			boolean I1=false;
-			boolean I2=false;
-			
+		else if((plc.getInputs().size()==1 && plc.getOperators().size()>0 && plc.getOperators().get(1).equals(Operator.NOT))
+				|| (plc.getInputs().size()>1 && plc.getOperators().size()>0)){
+			Iterator<Input> inputIterator	=plc.getInputs().iterator();
+			Iterator<Operator> opIterator	=plc.getOperators().iterator();
+			Input currInput					=inputIterator.next();
+			boolean stopValue				=currInput.inputBoolean(currBlock);
+
 			while(inputIterator.hasNext() && opIterator.hasNext()){
-				Input currInput	=inputIterator.next();
 				Operator currOp=opIterator.next();
 				if(currOp.equals(Operator.NOT)){
-					currOp.operation(inputBoolean(currInput,currBlock))
+					stopValue=currOp.operation(stopValue,false);
 				}
-				
+				else{
+					currInput=inputIterator.next();
+					stopValue=currOp.operation(stopValue, currInput.inputBoolean(currBlock));
+				}
+			}
+			if(inputIterator.hasNext() || opIterator.hasNext()){
+				System.err.println("ERROR: PLC LOGIC INCORRECTLY READ - INPUTS OR OPERATIONS NOT FULLY READ");
+				return false;
 			}
 			
-			
-			
-			return true;
+			return stopValue;
 		}
 		else{
-			System.err.println("ERROR: PLC STOP FUNCTION INPUTS AND OPERATORS DO NOT EXIST");
+			System.err.println("ERROR: PLC "+plc.getFunctionType().getString()+" FUNCTION INPUTS AND OPERATORS DO NOT EXIST");
 			return false;
 		}
 	}
-
+	
 	@Override
-	public boolean slowDown(int currentBlockId, int nextBlockId) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean stop(Block currBlock) {
+		return runPLCFunction(stop,currBlock);
 	}
 
 	@Override
-	public boolean engageSwitch(int currentBlockId, int nextBlockId) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean slowDown(Block currBlock) {
+		return runPLCFunction(slowDown,currBlock);
 	}
 
 	@Override
-	public boolean engageRRCrossing(int currentBlockId, int nextBlockId) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean engageSwitch(Block currBlock) {
+		return runPLCFunction(engageSwitch,currBlock);
+	}
+
+	@Override
+	public boolean engageRRCrossing(Block currBlock) {
+		return runPLCFunction(engageRRCrossing,currBlock);
 	}
 
 	@Override
