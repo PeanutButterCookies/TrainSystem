@@ -58,6 +58,7 @@ public class CTCBlockModel extends AbstractTableModel {
 		}
 		
 		if(block.getPrev() == null) {
+			System.out.println("Previous block is null");
 			ctcBlock.setPrevBlock(null);
 		} else {
 			Integer prev = block.getPrev().getBlockNumber();
