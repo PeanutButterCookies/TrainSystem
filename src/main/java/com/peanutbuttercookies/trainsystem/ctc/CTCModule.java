@@ -53,6 +53,7 @@ public class CTCModule implements CTCModuleInterface {
 
 	@Override
 	public void setBlockOccupied(int blockId) {
+		System.out.println("CTC setBlockOccupied blockId : " + blockId);
 		setBlockStatus(blockId, true);
 	}
 

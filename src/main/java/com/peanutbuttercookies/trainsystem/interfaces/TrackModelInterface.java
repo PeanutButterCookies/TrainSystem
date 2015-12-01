@@ -7,6 +7,7 @@ package com.peanutbuttercookies.trainsystem.interfaces;
 import java.util.ArrayList;
 
 import com.peanutbuttercookies.trainsystem.trackmodel.Block;
+import com.peanutbuttercookies.trainsystem.ui.TrackModelUI;
 
 public interface TrackModelInterface {
 	//for train access, but should not need it
@@ -17,8 +18,7 @@ public interface TrackModelInterface {
 	
 	//trackController uses these; assuming prototype does not care for switches and lights
 	//both go directly to train
-	public void setSpeed(int trainId, int speed); //sent to train controller
-	public void setAuthority(int trainId, int authority); //sent to train controller
+	public void setSpeedAuthority(int trainId, int speed, int authority); //sent to train controller
 	
 	//train model uses
 	public void setBlockOccupied(int blockId, int trainId);
@@ -26,11 +26,13 @@ public interface TrackModelInterface {
 	
 	
 	//only handled by track model
+	public void setUI(TrackModelUI tmUI);
 	public ArrayList<Block> getTrack();
 	public void setTC(TrackControllerInterface trackComm);
 	public void setTI(TrainInterface trainComm);
 	public void setBeacon(); //sent to train controller
 	public void setStation(String station); //sent to train controller
 	public void setLayout(Block newBlock);
-	public void setBlock(String line, String section, int blockId, int blockLength, int speedLim, String infra, int occupancy);
+	public void setBlock(String line, String section, int blockId, int blockLen, double blockGrade, int speedLim, String infra,
+			double elevation, double cumElev, String switchId, String direction, int occupancy);
 }

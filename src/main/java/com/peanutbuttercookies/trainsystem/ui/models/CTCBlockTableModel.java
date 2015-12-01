@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 package com.peanutbuttercookies.trainsystem.ui.models;
 
 import java.io.BufferedReader;
@@ -75,4 +78,8 @@ public class CTCBlockTableModel extends AbstractTableModel {
 		}
 	}
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> refs/remotes/origin/master

@@ -3,6 +3,7 @@ package com.peanutbuttercookies.trainsystem.train;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrainControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrainInterface;
+import com.peanutbuttercookies.trainsystem.traincontroller.TrainController;
 
 public class Train implements TrainInterface {
 
@@ -101,9 +102,11 @@ public class Train implements TrainInterface {
 		return power;
 	}
 	public void setAuthority(int authority){
+		trainController.setAuthority(authority);
 		this.authority = authority;
 	}
 	public void run(){
+<<<<<<< HEAD
 		trainController.setAcceleration(getAcceleration());
 		trainController.setSpeed(getSpeed());
 		while(blockId<=authority){
@@ -118,11 +121,94 @@ public class Train implements TrainInterface {
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+=======
+		Thread t = new Thread(new MovementThread());
+		t.start();
+
+//		trainController.setAcceleration(getAcceleration());
+//		trainController.setSpeed(getSpeed());
+//		while(blockId<=authority){
+//			trackModel.setBlockOccupied(blockId, id);
+//			setSpeed(70*1000/3600);
+//			double distance = 0;
+//			while(distance <= blockLength){
+//				distance+=speed*60;
+//				setPower(mass,speed,0);
+//				try {
+//					Thread.sleep(1000);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+//			trackModel.setBlockUnoccupied(blockId);
+//			blockId++;
+//		}
+//		setSpeed(0);
+//		trainController.openDoors();
+//		try {
+//			Thread.sleep(2000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		trainController.closeDoors();
+	}
+
+
+	@Override
+	public void setTrainController(TrainController tc) {
+		this.trainController = tc;
+	}
+
+
+	@Override
+	public void setTrackModel(TrackModelInterface tm) {
+		trackModel = tm;
+	}
+	
+	public class MovementThread implements Runnable {
+
+		@Override
+		public void run() {
+			trainController.setAcceleration(getAcceleration());
+			trainController.setSpeed(getSpeed());
+			
+			System.out.println("Thread authority start: " + authority + " Speed: "+ speed);
+			
+			while(blockId<=authority){
+//				trackModel.setBlockOccupied(blockId + 1, id);
+				trackModel.setBlockOccupied(blockId + 1, 1);
+				setSpeed(getSpeed()*1000/3600);
+				double distance = 0;
+				while(distance <= blockLength){
+					distance+=speed*60;
+					setPower(mass,speed,0);
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+>>>>>>> refs/remotes/origin/master
 				}
+				System.out.println("Thread block id: " + blockId);
+				trackModel.setBlockUnoccupied(blockId);
+				blockId++;
 			}
-			trackModel.setBlockUnoccupied(blockId);
-			blockId++;
+			setSpeed(0);
+			trainController.atStation();
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			trainController.leaveStation();
+
 		}
+		
+		
 	}
 	
 

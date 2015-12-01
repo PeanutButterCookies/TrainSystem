@@ -28,10 +28,13 @@ public class TrainUI extends JFrame {
 	private JTextField acceleration;
 	private JTextField power;
 
+<<<<<<< HEAD
 	/**
 	 * Launch the application.
 	 */
 	
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/**
 	 * Create the frame.
@@ -173,12 +176,16 @@ public class TrainUI extends JFrame {
 		sl_contentPane.putConstraint(SpringLayout.EAST, btnEmergencyBrake, -73, SpringLayout.EAST, contentPane);
 		contentPane.add(btnEmergencyBrake);
 		
-		JComboBox<TrainInterface> selectTrain = new JComboBox<TrainInterface>();
+		JComboBox<Integer> selectTrain = new JComboBox<Integer>();
 		sl_contentPane.putConstraint(SpringLayout.WEST, selectTrain, 6, SpringLayout.EAST, lblSelectTrain);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, selectTrain, 0, SpringLayout.SOUTH, lblSelectTrain);
 		contentPane.add(selectTrain);
+<<<<<<< HEAD
 		selectTrain.addItem(train);
 		
+=======
+		selectTrain.addItem(1);
+>>>>>>> refs/remotes/origin/master
 		setVisible(true);
 	}
 }
