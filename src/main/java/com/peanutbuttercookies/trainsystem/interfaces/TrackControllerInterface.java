@@ -1,7 +1,9 @@
 package com.peanutbuttercookies.trainsystem.interfaces;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
+import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.trackcontroller.TC_Block;
 import com.peanutbuttercookies.trainsystem.ui.TrackControllerUI;
 
@@ -14,6 +16,7 @@ import com.peanutbuttercookies.trainsystem.ui.TrackControllerUI;
 
 public interface TrackControllerInterface {
 	
+	public LinkedList<Block> getSection();
 	public boolean 	setSpeedAuthority(int blockNum, int suggestedSpeed, int authority);	//called by CTC module
 	//public boolean 	setBlockOccupied(String line, int blockNum);										//called by track model module
 	public boolean 	setSwitchEngaged(int controllerID, int blockNum);										//called by CTC module

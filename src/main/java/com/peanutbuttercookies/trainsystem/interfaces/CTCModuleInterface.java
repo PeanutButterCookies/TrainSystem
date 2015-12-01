@@ -25,7 +25,6 @@ public interface CTCModuleInterface {
 	*/
 
 	// for use by wrapper
-	public void setTC(TrackControllerInterface tc);
 	public void setUi(CTCModuleUI ui);
 
 	// for use by the CTCUI	

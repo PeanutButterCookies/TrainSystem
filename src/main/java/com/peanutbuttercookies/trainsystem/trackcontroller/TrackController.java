@@ -6,9 +6,10 @@ import java.util.LinkedList;
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.interfaces.BlockOccupationListener;
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
+import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 
-public class TrackController implements BlockOccupationListener {
+public class TrackController implements BlockOccupationListener, TrackControllerInterface {
 	private final CTCModuleInterface ctc;
 	private final TrackModelInterface trackModel;
 	
