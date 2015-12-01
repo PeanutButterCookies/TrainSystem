@@ -4,11 +4,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
+import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.BlockOccupationListener;
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 
-public class TrackController implements BlockOccupationListener {
+public class TrackController implements TrackControllerInterface,BlockOccupationListener {
 	private final CTCModuleInterface ctc;
 	private final TrackModelInterface trackModel;
 	
@@ -36,54 +37,75 @@ public class TrackController implements BlockOccupationListener {
 		switchList		=setSwitchList(section);
 	}
 	
+	@Override
 	public String getLine(){
-		return line;
+		return this.line;
 	}
 	
+	@Override
 	public int getControllerId(){
-		return controllerId;
+		return this.controllerId;
 	}
 	
+	@Override
 	public int getStartBlock(){
-		return startBlock;
+		return this.startBlock;
 	}
 	
+	@Override
 	public int getEndBlock(){
-		return endBlock;
+		return this.endBlock;
 	}
 	
+	@Override
 	public int getOverlapBlock(){
-		return overlapBlock;
+		return this.overlapBlock;
 	}
 	
-	public LinkedList getSection(){
-		return section;
+	@Override
+	public LinkedList<Block> getSection(){
+		return this.section;
 	}
 	
+	@Override
 	public Block getBlock(int index){
-		int i=index-startBlock;
+		int i=index-this.startBlock+1;
 		if(i>0){
-			return section.get(i);
+			return this.section.get(i);
 		}
 		else
 		{
+			System.err.println("ERROR: THIS TC DOES NOT HANDLE THAT BLOCK");
 			return null;
 		}
 	}
 	
-	public void engageSwitch(){
+	@Override
+	public void engageSwitch(int switchNum){
 		
 	}
 	
+	@Override
 	public void setPLCProgram(PLCProgram newPlcProgram){
-		plcProgram=newPlcProgram;
+		this.plcProgram=newPlcProgram;
+	}
+	
+	@Override
+	public void setSpeedAuthority(int speed, int authority){
+		
 	}
 
 	@Override
 	public void blockOccupied(int blockId) {
-		if(ifblockId<=endBlock)
-		boolean occupied=section.get(blockId)
-		
+		if(blockId>=this.startBlock && blockId<=this.endBlock && this.startBlock!=this.overlapBlock){
+			boolean occupied=section.get(blockId-startBlock+1).isBlockOccupied();
+			if(occupied){
+				ctc.setBlockOccupied(blockId);
+			}
+			else{
+				ctc.setBlockUnoccupied(blockId);
+			}
+		}
 	}
 	
 	private HashMap setSwitchList(LinkedList<Block> blockSection){
