@@ -1,5 +1,5 @@
 package com.peanutbuttercookies.trainsystem.interfaces;
 
 public interface BlockOccupationListener {
-	public void blockOccupied();
+	public void blockOccupied(int blockId);
 }

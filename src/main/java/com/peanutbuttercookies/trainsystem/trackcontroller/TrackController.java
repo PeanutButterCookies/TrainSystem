@@ -80,8 +80,9 @@ public class TrackController implements BlockOccupationListener {
 	}
 
 	@Override
-	public void blockOccupied() {
-		// TODO Auto-generated method stub
+	public void blockOccupied(int blockId) {
+		if(ifblockId<=endBlock)
+		boolean occupied=section.get(blockId)
 		
 	}
 	

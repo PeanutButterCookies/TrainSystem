@@ -180,10 +180,10 @@ public class Block {
 	}
 	
 	public void setBlockOccupation(boolean occupied){
-		for(BlockOccupationListener i : listeners){
-			i.blockOccupied();
-		}
 		blockOccupied=occupied;
+		for(BlockOccupationListener i : listeners){
+			i.blockOccupied(this.blockNumber);
+		}
 	}
 	
 	public boolean isSwitchEngaged(){
