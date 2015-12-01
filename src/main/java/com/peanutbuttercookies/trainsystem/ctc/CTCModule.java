@@ -136,7 +136,7 @@ public class CTCModule implements CTCModuleInterface {
 		} catch (Exception e) {
 			return false;
 		}
-		return tc.setSpeedAuthority(line, train.getHead(), speedInt, block.getBlockNumber());
+		return tc.setSpeedAuthority(train.getHead(), speedInt, block.getBlockNumber());
 	}
 
 	@Override
