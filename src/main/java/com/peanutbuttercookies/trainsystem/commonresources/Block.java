@@ -306,4 +306,12 @@ public class Block {
 			}
 		}
 	}
+
+	public Block getNext() {
+		return next;
+	}
+
+	public void setNext(Block next) {
+		this.next = next;
+	}
 }
