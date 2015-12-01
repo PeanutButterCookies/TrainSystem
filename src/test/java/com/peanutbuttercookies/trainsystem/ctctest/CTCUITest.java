@@ -18,16 +18,18 @@ public class CTCUITest {
 	
 	public static void main(String[] args) throws InterruptedException {
 		LinkedList<Block> blocks = new LinkedList<Block>();
-		Block block1 = initBlock(0);
-		Block block2 = initBlock(1);
-		Block block3 = initBlock(2);
-		block2.setNext(block2);
-		block2.setPrev(block1);
-		block3.setPrev(block2);
-		block2.setNext(block3);
-		blocks.add(block1);
-		blocks.add(block2);
-		blocks.add(block3);
+		Block prev = null;
+		Block next = initBlock(0);
+		Block curr = null;
+		for(int i=1; i<11; i++) {
+			curr = next;
+			curr.setPrev(prev);
+			next = initBlock(i);
+			curr.setNext(next);
+			prev = curr;
+			blocks.add(curr);
+		}
+		curr.setNext(null);
 		
 		Line line = new Line(LINE, blocks);
 		CTCModule ctc = new CTCModule();
@@ -36,21 +38,14 @@ public class CTCUITest {
 		ctc.importLine(line);
 //		line = new Line("Test2", blocks);
 //		ctc.importLine(line);
-		Thread.sleep(1000);
 		ctc.setBlockOccupied(LINE, 0);
-
-		Thread.sleep(1000);
-		ctc.setBlockOccupied(LINE, 1);
-		ctc.setBlockUnoccupied(LINE, 0);
-
-		Thread.sleep(1000);
-		ctc.setBlockOccupied(LINE, 2);
-		ctc.setBlockUnoccupied(LINE, 1);
-
-		CTCBlockModel model = ctc.getBlockModel(LINE);
-		for(CTCBlock block : model.getBlockMap().values()) {
-			System.out.println(block);
+		for(int i=1; i<10; i++) {
+			Thread.sleep(500);
+			ctc.setBlockOccupied(LINE, i);
+			Thread.sleep(500);
+			ctc.setBlockUnoccupied(LINE, i-1);
 		}
+		
 	}
 	
 	private static Block initBlock(int blockNum) {

@@ -20,7 +20,7 @@ public class CTCModule implements CTCModuleInterface {
 
 	private TrackControllerInterface tc;
 	private CTCModuleUI ui;
-	
+
 	private Map<String, CTCBlockModel> lineBlockMap;
 	private Map<String, CTCTrainModel> lineTrainMap;
 	private int maxTrain = 0;
@@ -29,7 +29,7 @@ public class CTCModule implements CTCModuleInterface {
 		lineBlockMap = new HashMap<String, CTCBlockModel>();
 		lineTrainMap = new HashMap<String, CTCTrainModel>();
 	}
-	
+
 	@Override
 	public void setTC(TrackControllerInterface tc) {
 		this.tc = tc;
@@ -38,17 +38,19 @@ public class CTCModule implements CTCModuleInterface {
 	@Override
 	public void setBlockOccupied(String line, int blockId) {
 		CTCBlockModel model = lineBlockMap.get(line);
-		model.setOccupied(true, blockId);
-		System.out.println(model.getPrevBlock(1));
-		System.out.println(model.getPrevBlock(2));
-		lineTrainMap.get(line).moveTrain(model.getPrevBlock(blockId), blockId, CTCTrainModel.Side.HEAD);
+		boolean newTrain = model.setOccupied(true, blockId);
+		if (newTrain) {
+			lineTrainMap.get(line).addTrain(new NewCTCTrain());
+		} else {
+			lineTrainMap.get(line).moveTrain(model.getPrevBlock(blockId), blockId, true);
+		}
 	}
 
 	@Override
 	public void setBlockUnoccupied(String line, int blockId) {
 		CTCBlockModel model = lineBlockMap.get(line);
-		model.setOccupied(false, blockId);
-		lineTrainMap.get(line).moveTrain(model.getPrevBlock(blockId), blockId, CTCTrainModel.Side.TAIL);
+		boolean removeTrain = model.setOccupied(false, blockId);
+		lineTrainMap.get(line).moveTrain(model.getPrevBlock(blockId), blockId, false);
 	}
 
 	public Integer getMaxTrain() {
@@ -58,17 +60,17 @@ public class CTCModule implements CTCModuleInterface {
 	@Override
 	public void importLine(Line line) {
 
-		if(!lineBlockMap.containsKey(line.getLine())) {
+		if (!lineBlockMap.containsKey(line.getLine())) {
 			lineBlockMap.put(line.getLine(), new CTCBlockModel());
 		}
-		if(!lineTrainMap.containsKey(line.getLine())) {
+		if (!lineTrainMap.containsKey(line.getLine())) {
 			lineTrainMap.put(line.getLine(), new CTCTrainModel());
 		}
 
-		for(Block block : line.getAllBlocks()) {
+		for (Block block : line.getAllBlocks()) {
 			lineBlockMap.get(line.getLine()).addBlock(block);
 		}
-		if(ui != null) {
+		if (ui != null) {
 			ui.addLine(line.getLine());
 		}
 	}
@@ -92,26 +94,26 @@ public class CTCModule implements CTCModuleInterface {
 
 	@Override
 	public DefaultComboBoxModel<CTCBlock> newBlockCombo(String line, CTCSection section) {
-		if(!lineBlockMap.containsKey(line)) {
+		if (!lineBlockMap.containsKey(line)) {
 			System.out.println("Line : " + line + ", not initialized");
 			return null;
 		}
 		DefaultComboBoxModel<CTCBlock> model = new DefaultComboBoxModel<CTCBlock>();
 		CTCBlockModel blockModel = lineBlockMap.get(line);
-		for(CTCBlock block: blockModel.getBlocks(section)) {
+		for (CTCBlock block : blockModel.getBlocks(section)) {
 			model.addElement(block);
 		}
 		return model;
 	}
-	
+
 	@Override
 	public DefaultComboBoxModel<CTCSection> newSectionCombo(String line) {
-		if(!lineBlockMap.containsKey(line)) {
+		if (!lineBlockMap.containsKey(line)) {
 			System.out.println("Line : " + line + ", not initialized");
 			return null;
 		}
 		DefaultComboBoxModel<CTCSection> model = new DefaultComboBoxModel<CTCSection>();
-		for(CTCSection section : lineBlockMap.get(line).getSections()) {
+		for (CTCSection section : lineBlockMap.get(line).getSections()) {
 			model.addElement(section);
 		}
 		return model;
@@ -126,8 +128,8 @@ public class CTCModule implements CTCModuleInterface {
 
 		int speedInt = 0;
 		try {
-		speedInt = Integer.parseInt(speed.replaceAll("[^\\d]", ""));
-		} catch(Exception e) {
+			speedInt = Integer.parseInt(speed.replaceAll("[^\\d]", ""));
+		} catch (Exception e) {
 			return false;
 		}
 		return tc.setSpeedAuthority(line, train.getHead(), speedInt, block.getBlockNumber());
@@ -147,7 +149,7 @@ public class CTCModule implements CTCModuleInterface {
 
 	@Override
 	public boolean setSchedule(String line, String filename, ScheduleModel model) {
-		//TODO
+		// TODO
 		return false;
 	}
 
@@ -165,7 +167,7 @@ public class CTCModule implements CTCModuleInterface {
 	@Override
 	public void setClockSpeed(double clockSpeed) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -177,15 +179,15 @@ public class CTCModule implements CTCModuleInterface {
 	@Override
 	public void switchChanged(String line, int switchId, int blockId) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
-	//FOR TESTING ONLY 
+
+	// FOR TESTING ONLY
 
 	public CTCTrainModel getTrainModel(String line) {
 		return lineTrainMap.get(line);
 	}
-	
+
 	public CTCBlockModel getBlockModel(String line) {
 		return lineBlockMap.get(line);
 	}

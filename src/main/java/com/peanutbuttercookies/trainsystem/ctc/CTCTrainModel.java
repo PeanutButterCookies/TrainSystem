@@ -7,17 +7,9 @@ import javax.swing.table.AbstractTableModel;
 
 public class CTCTrainModel extends AbstractTableModel {
 
-	/**
-	 * I hate this shit
-	 */
 	private static final long serialVersionUID = 3648136737558041721L;
 
 	private List<CTCTrain> trains;
-	
-	public enum Side {
-		HEAD,
-		TAIL
-	}
 	
 	public CTCTrainModel() {
 		trains = new LinkedList<CTCTrain>();
@@ -65,20 +57,17 @@ public class CTCTrainModel extends AbstractTableModel {
 		fireTableDataChanged();
 	}
 	
-	public void moveTrain(Integer prevBlock, Integer newBlock, Side side) {
-		if(prevBlock == null) {
-			addTrain(new NewCTCTrain());
-			return;
-		}
+	public void moveTrain(Integer prevBlock, Integer newBlock, boolean side) {
 		for(CTCTrain train : trains) {
-			switch(side) {
-			case HEAD:
-				if(train.getHead() == prevBlock) {
+			if(side) {
+				System.out.println("head: " + train.getHead() + ", prev: " + prevBlock + ", new: " + newBlock);
+				if(train.getHead().equals(prevBlock)) {
+					System.out.println("Setting head: " + newBlock);
 					train.setHead(newBlock);
 				}
 				break;
-			case TAIL:
-				if(train.getTail() == prevBlock) {
+			} else {
+				if(train.getTail().equals(prevBlock)) {
 					train.setHead(newBlock);
 				}
 				break;

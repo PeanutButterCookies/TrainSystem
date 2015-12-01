@@ -21,11 +21,14 @@ public class CTCBlockModel extends AbstractTableModel {
 	private Map<Integer, CTCBlock> blockMap;
 	private Map<Integer, CTCBlock> switchMap;
 	private Map<String, CTCSection> sections;
+	private Thread update;
 	
 	public CTCBlockModel() {
 		blockMap = new LinkedHashMap<Integer, CTCBlock>();
 		switchMap = new LinkedHashMap<Integer, CTCBlock>();
 		sections = new LinkedHashMap<String, CTCSection>();
+		update = new Thread(new TableUpdateThread(this));
+		update.start();
 	}
 	
 	public void addBlock(Block block) {
@@ -46,7 +49,7 @@ public class CTCBlockModel extends AbstractTableModel {
 			switchMap.put(ctcBlock.getBlockNumber(), ctcBlock); 
 		}
 		
-		for(Block b : block.getNext()) {
+		for(Block b : block.getNextPossible()) {
 			int num = b.getBlockNumber();
 			if(blockMap.containsKey(num)) {
 				ctcBlock.addPossible(blockMap.get(num));
@@ -70,6 +73,20 @@ public class CTCBlockModel extends AbstractTableModel {
 				ctcBlock.setPrevBlock(newBlock);
 			}
 		}
+		
+		if(block.getNext() == null) {
+			System.out.println("Next block is null");
+			ctcBlock.setNextBlock(null);
+		} else {
+			Integer next = block.getNext().getBlockNumber();
+			if(blockMap.containsKey(next)) {
+				ctcBlock.setNextBlock(blockMap.get(next));
+			} else {
+				CTCBlock newBlock = new CTCBlock();
+				blockMap.put(next, newBlock);
+				ctcBlock.setNextBlock(newBlock);
+			}
+		}
 		blockMap.put(ctcBlock.getBlockNumber(), ctcBlock);
 		fireTableDataChanged();
 	}
@@ -88,12 +105,33 @@ public class CTCBlockModel extends AbstractTableModel {
 		fireTableDataChanged();
 	}
 	
-	public void setOccupied(boolean occupied, int blockId) {
+	public boolean setOccupied(int blockId) {
 		if(blockMap.containsKey(blockId)) {
-			blockMap.get(blockId).setOccupied(occupied);
+			blockMap.get(blockId).setOccupied(true);
 			fireTableDataChanged();
+			if(blockId == 0 && !blockMap.get(0).getNextBlock().isOccupied()) {
+				return true;
+			} else {
+				return false;
+			}
 		} else {
 			System.out.println("That block is not initialized");
+			return false;
+		}
+	}
+	
+	public boolean setUnoccupied(int blockId) {
+		if(blockMap.containsKey(blockId)) {
+			blockMap.get(blockId).setOccupied(false);
+			fireTableDataChanged();
+			if(blockId == 0 && !blockMap.get(0).getNextBlock().isOccupied()) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			System.out.println("That block is not initialized");
+			return false;
 		}
 	}
 	

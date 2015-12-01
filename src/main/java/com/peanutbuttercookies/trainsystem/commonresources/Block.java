@@ -37,6 +37,14 @@ public class Block {
 	private boolean blockOccupied;
 	private boolean switchEngaged;
 	
+	public Block getNext() {
+		return next;
+	}
+
+	public void setNext(Block next) {
+		this.next = next;
+	}
+
 	public Block(String initLine, String initSection, int initBlockNumber, int initBlockLength, 
 			float initBlockGrade, int initSpeedLimit, float initElevation, float initCumulativeElevation,
 			boolean initSwitchToYard, boolean initSwitchFromYard, boolean initInfrastructureSwitch,

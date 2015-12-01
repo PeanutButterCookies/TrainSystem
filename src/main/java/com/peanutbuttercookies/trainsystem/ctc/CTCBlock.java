@@ -126,7 +126,11 @@ public class CTCBlock {
 		long time = System.currentTimeMillis();
 		long diff = time - starttime;
 		double seconds = diff/1000;
-		double hours = seconds/60;
+		double minutes = seconds/60;
+		double hours = minutes/60;
+		if(hours < 1) {
+			hours = 1;
+		}
 		double throughput = numTrains/hours;
 		return throughput;
 		
@@ -160,6 +164,9 @@ public class CTCBlock {
 	}
 	
 	public String toString() {
+		return blockNumber.toString();
+	}
+	public String state() {
 		return "prev: " + ((prevBlock == null)? "null": prevBlock.getBlockNumber())
 				+ "\ncurr: " + blockNumber
 				+ "\nnext: " + ((nextBlock == null)? "null": nextBlock.getBlockNumber());
