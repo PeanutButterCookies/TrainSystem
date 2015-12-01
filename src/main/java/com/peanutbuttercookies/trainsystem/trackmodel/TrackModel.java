@@ -396,29 +396,25 @@ public class TrackModel implements TrackModelInterface {
 	}
 
 	@Override
-	public void setBlockOccupied(String line, int blockId, int trainId) {
-	/*	
-		// TEMP HACK
-//		blockId += 1;
-		// TEMP HACK
-		
-		System.out.println("setBlockOccupied blockId: " + blockId + " trainId: " + trainId);
-		
-		track.get(blockId-1).setOccupancy();
- 		if(tmUI.currentView(blockId))
- 			tmUI.display(blockId);
-		//trackComm.setTrainPresence(trainId, blockId);
-		trainComm.setSpeedLimit(track.get(blockId-1).getSpeedLim());
-		if(!track.get(blockId-1).getInfra().equals("none")) {
-			trainComm.setStation(track.get(blockId-1).getInfra());
+	public void setBlockOccupied(String line, int blockId) {
+		for(int i = 0; i < lines.size(); i++)
+		{
+			if(lines.get(i).getLine().equals(line))
+				track = lines.get(i).getAllBlocks();
 		}
-		trainComm.setBlockId(blockId);
-		trainComm.setBlockLength(track.get(blockId-1).getBlockLen());
-	*/
+		for(int i = 0; i < track.size(); i++)
+		{
+			Block curBlock = track.get(i);
+			if(curBlock.getBlockNumber() == blockId)	{
+				curBlock.setBlockOccupation(true);
+				curBlock.setNext();
+			}
+		}
+		
 	}
 
 	@Override
-	public void setBlockUnoccupied(int blockId) {
+	public void setBlockUnoccupied(String line, int blockId) {
 		/*
 		for(int i =0; i<track.size(); i++)	{
 			if(track.get(i).getBlockId() == blockId)	{
@@ -514,6 +510,14 @@ public class TrackModel implements TrackModelInterface {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void setSpeedAuthority(int blockId, int speed, int authority) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
 
 
 	

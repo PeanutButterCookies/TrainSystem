@@ -298,4 +298,12 @@ public class Block {
 	public Block getPrevBlock()	{
 		return this.prev;
 	}
+	
+	public void setNext()	{
+		for(int i = 0; i<nextPossible.size(); i++)	{
+			if(nextPossible.get(i) != prev){
+				next = nextPossible.get(i);
+			}
+		}
+	}
 }

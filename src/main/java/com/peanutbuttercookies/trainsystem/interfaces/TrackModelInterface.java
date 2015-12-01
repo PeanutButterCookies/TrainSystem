@@ -23,8 +23,7 @@ public interface TrackModelInterface {
 	public void setSpeedAuthority(int blockId, int speed, int authority); //sent to train controller
 	
 	//train model uses
-	public void setBlockOccupied(int blockId, int trainId);
-	public void setBlockUnoccupied(int blockId);
+	public void setBlockUnoccupied(String line, int blockId);
 	
 	
 	//only handled by track model
@@ -39,5 +38,5 @@ public interface TrackModelInterface {
 	public LinkedList<Line> getLines();
 	public void setSwitch(int blockId);
 	public void setSpeedAuthority(String line, int blockId, int speed, int authority);
-	void setBlockOccupied(String line, int blockId, int trainId);
+	public void setBlockOccupied(String line, int blockId);
 }
