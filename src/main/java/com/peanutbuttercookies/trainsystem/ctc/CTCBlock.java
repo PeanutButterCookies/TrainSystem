@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
+import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 
 public class CTCBlock {
 	private static List<String> fields;
@@ -33,7 +34,16 @@ public class CTCBlock {
 	private List<CTCBlock> possibleNext;
 	private long starttime;
 	private int numTrains;
+	private TrackControllerInterface tc;
 	
+	public TrackControllerInterface getTc() {
+		return tc;
+	}
+
+	public void setTc(TrackControllerInterface tc) {
+		this.tc = tc;
+	}
+
 	public CTCBlock() {
 		possibleNext = new ArrayList<CTCBlock>();
 		nextBlock = null;

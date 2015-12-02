@@ -18,7 +18,6 @@ import com.peanutbuttercookies.trainsystem.ui.CTCModuleUI;
 
 public class CTCModule implements CTCModuleInterface {
 
-	private TrackControllerInterface tc;
 	private CTCModuleUI ui;
 
 	private Map<String, CTCBlockModel> lineBlockMap;
@@ -28,11 +27,6 @@ public class CTCModule implements CTCModuleInterface {
 	public CTCModule() {
 		lineBlockMap = new HashMap<String, CTCBlockModel>();
 		lineTrainMap = new HashMap<String, CTCTrainModel>();
-	}
-
-	@Override
-	public void setTC(TrackControllerInterface tc) {
-		this.tc = tc;
 	}
 
 	@Override
@@ -71,8 +65,10 @@ public class CTCModule implements CTCModuleInterface {
 			lineTrainMap.put(line.getLine(), new CTCTrainModel());
 		}
 
-		for (Block block : line.getAllBlocks()) {
-			lineBlockMap.get(line.getLine()).addBlock(block);
+		for(TrackControllerInterface tc : line.getAllTrackControllers()) {
+			for (Block block : tc.getSection()) {
+				lineBlockMap.get(line.getLine()).addBlock(block, tc);
+			}
 		}
 		if (ui != null) {
 			ui.addLine(line.getLine());
@@ -136,7 +132,8 @@ public class CTCModule implements CTCModuleInterface {
 		} catch (Exception e) {
 			return false;
 		}
-		return tc.setSpeedAuthority(train.getHead(), speedInt, block.getBlockNumber());
+		block.getTc().setSpeedAuthority(train.getHead(), speedInt, block.getBlockNumber());
+		return true;
 	}
 
 	@Override

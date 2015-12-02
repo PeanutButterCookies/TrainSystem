@@ -1,30 +1,47 @@
 package com.peanutbuttercookies.trainsystem.trackmodel;
 
 import java.io.File;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.LinkedList;
+import java.util.Map;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
+import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.commonresources.Line;
+import com.peanutbuttercookies.trainsystem.commonresources.Line;
+import com.peanutbuttercookies.trainsystem.interfaces.ExcelFileDownloaderInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.ExcelFileDownloaderInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
+import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
+import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
+import com.peanutbuttercookies.trainsystem.interfaces.TrainInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrainInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrainInterface;
 import com.peanutbuttercookies.trainsystem.train.TrainModelInterface;
-import com.peanutbuttercookies.trainsystem.traincontroller.TrainControllerInterface;
 import com.peanutbuttercookies.trainsystem.ui.TrackModelUI;
 import com.peanutbuttercookies.trainsystem.ui.TrackModelUI;
 
@@ -37,9 +54,9 @@ public class TrackModel implements TrackModelInterface {
     private LinkedList<Line> lines;
     private Map<Integer, LinkedList<Block>> switchMap;
 
-
 	
 	public TrackModel()throws IOException {
+
 	}
 	
 	public void fileRead(String filename) throws IOException
@@ -382,6 +399,7 @@ public class TrackModel implements TrackModelInterface {
 		}
     }
 		
+
 	
 		
 	@Override
@@ -413,7 +431,21 @@ public class TrackModel implements TrackModelInterface {
 			}
 		}
 		
-	}
+/*
+		System.out.println("setBlockOccupied blockId: " + blockId + " trainId: " + trainId);
+		
+		track.get(blockId-1).setOccupancy();
+ 		if(tmUI.currentView(blockId))
+ 			tmUI.display(blockId);
+		//trackComm.setTrainPresence(trainId, blockId);
+		trainComm.setSpeedLimit(track.get(blockId-1).getSpeedLim());
+		if(!track.get(blockId-1).getInfra().equals("none")) {
+			trainComm.setStation(track.get(blockId-1).getInfra());
+		}
+		trainComm.setBlockId(blockId);
+		trainComm.setBlockLength(track.get(blockId-1).getBlockLen());
+	*/
+}
 
 	@Override
 	public void setBlockUnoccupied(String line, int blockId) {
@@ -485,7 +517,6 @@ public class TrackModel implements TrackModelInterface {
 	@Override
 	public void setUI(TrackModelUI tmUI) {
 		this.tmUI = tmUI;
-		
 	}
 
 	@Override
@@ -522,13 +553,5 @@ public class TrackModel implements TrackModelInterface {
 	public TrainInterface getTI() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-
-	
-
-
-	
-
-	
+	}	
 }

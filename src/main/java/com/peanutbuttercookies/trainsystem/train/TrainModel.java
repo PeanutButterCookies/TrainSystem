@@ -1,6 +1,6 @@
 package com.peanutbuttercookies.trainsystem.train;
 
-import train.controller.TrainControllerInterface;
+import com.peanutbuttercookies.trainsystem.commonresources.Block;
 
 public class TrainModel implements TrainModelInterface {
 

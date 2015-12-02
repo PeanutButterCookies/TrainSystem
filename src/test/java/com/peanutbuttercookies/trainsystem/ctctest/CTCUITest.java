@@ -4,8 +4,6 @@ import java.util.LinkedList;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.commonresources.Line;
-import com.peanutbuttercookies.trainsystem.ctc.CTCBlock;
-import com.peanutbuttercookies.trainsystem.ctc.CTCBlockModel;
 import com.peanutbuttercookies.trainsystem.ctc.CTCModule;
 import com.peanutbuttercookies.trainsystem.ui.CTCModuleUI;
 
@@ -26,12 +24,15 @@ public class CTCUITest {
 			curr.setPrev(prev);
 			next = initBlock(i);
 			curr.setNext(next);
+			curr.setNextPossible(next);
 			prev = curr;
 			blocks.add(curr);
 		}
 		curr.setNext(null);
 		
 		Line line = new Line(LINE, blocks);
+		TestTrackController tc = new TestTrackController(blocks);
+		line.setTrackControllers(tc, new TestTrackController(new LinkedList<Block>()));
 		CTCModule ctc = new CTCModule();
 		CTCModuleUI ui = new CTCModuleUI(ctc);
 		ctc.setUi(ui);

@@ -86,6 +86,7 @@ public class Block {
 		this.trainComm 					= initTrainComm;
 		this.switchList 				= new LinkedList<Block>();
 		this.nextPossible				= new LinkedList<Block>();
+
 	}
 	
 	public String getLine(){
@@ -203,10 +204,10 @@ public class Block {
 	}
 	
 	public void setBlockOccupation(boolean occupied){
+		this.blockOccupied=occupied;
 		for(BlockOccupationListener i : listeners){
-			i.blockOccupied();
+			i.blockOccupied(this.getBlockNumber());
 		}
-		this.blockOccupied=true;
 	}
 	
 	public boolean isSwitchEngaged(){
