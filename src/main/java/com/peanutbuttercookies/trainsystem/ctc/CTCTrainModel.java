@@ -60,9 +60,7 @@ public class CTCTrainModel extends AbstractTableModel {
 	
 	public void moveHead(Integer prevBlock, Integer newBlock) {
 		for(CTCTrain train : trains) {
-			System.out.println("head: " + train.getHead() + ", prev: " + prevBlock + ", new: " + newBlock);
 			if(train.getHead().equals(prevBlock)) {
-				System.out.println("Setting head: " + newBlock);
 				train.setHead(newBlock);
 			}
 		}

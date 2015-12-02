@@ -3,9 +3,7 @@ package com.peanutbuttercookies.trainsystem.ctctest;
 import java.util.LinkedList;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
-import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
-import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 import com.peanutbuttercookies.trainsystem.trackcontroller.PLCProgram;
 import com.peanutbuttercookies.trainsystem.trackcontroller.TrackController;
 

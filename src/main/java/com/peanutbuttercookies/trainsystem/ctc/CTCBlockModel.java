@@ -29,6 +29,7 @@ public class CTCBlockModel extends AbstractTableModel {
 		switchMap = new LinkedHashMap<Integer, CTCBlock>();
 		sections = new LinkedHashMap<String, CTCSection>();
 		update = new Thread(new TableUpdateThread(this));
+		update.setDaemon(true);
 		update.start();
 	}
 	
