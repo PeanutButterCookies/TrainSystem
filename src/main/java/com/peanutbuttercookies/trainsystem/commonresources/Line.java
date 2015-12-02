@@ -6,7 +6,6 @@ import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.trackcontroller.TrackController;
 
 public class Line {
-
 	private final LinkedList<Block> blocks;
 	private final String line;
 	private LinkedList<TrackControllerInterface> controllers;

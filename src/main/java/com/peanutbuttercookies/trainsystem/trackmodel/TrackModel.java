@@ -1,39 +1,62 @@
 package com.peanutbuttercookies.trainsystem.trackmodel;
 
 import java.io.File;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.LinkedList;
+import java.util.Map;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
+import com.peanutbuttercookies.trainsystem.commonresources.Block;
+import com.peanutbuttercookies.trainsystem.commonresources.Line;
 import com.peanutbuttercookies.trainsystem.commonresources.Line;
 import com.peanutbuttercookies.trainsystem.interfaces.ExcelFileDownloaderInterface;
+import com.peanutbuttercookies.trainsystem.interfaces.ExcelFileDownloaderInterface;
+import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
+import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
+import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
+import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrainInterface;
+import com.peanutbuttercookies.trainsystem.interfaces.TrainInterface;
+import com.peanutbuttercookies.trainsystem.interfaces.TrainInterface;
+import com.peanutbuttercookies.trainsystem.train.TrainModelInterface;
+import com.peanutbuttercookies.trainsystem.ui.TrackModelUI;
 import com.peanutbuttercookies.trainsystem.ui.TrackModelUI;
 
 public class TrackModel implements TrackModelInterface {
 	private TrackControllerInterface trackComm;
-	private TrainInterface trainComm;
+	private TrainModelInterface trainComm;
 	private TrackModelUI tmUI;
 	private ExcelFileDownloaderInterface excelDownloader;
     private LinkedList<Block> track;
     private LinkedList<Line> lines;
     private Map<Integer, LinkedList<Block>> switchMap;
 
-
 	
 	public TrackModel()throws IOException {
+
 	}
 	
 	public void fileRead(String filename) throws IOException
@@ -245,7 +268,7 @@ public class TrackModel implements TrackModelInterface {
 		            	Block newBlock = new Block(info[0], info[1], blockNumI, blockLenI, Float.parseFloat(info[4]), 
 		            			speedLimI, Float.parseFloat(info[6]), Float.parseFloat(info[7]), hasToYard, 
 		            			hasFromYard, hasSwitch, hasUnderground, hasCrossing, hasStation, station,
-		            			Integer.parseInt(switchId), arrowA, arrowB);
+		            			Integer.parseInt(switchId), arrowA, arrowB, trainComm);
 		            	if(hasSwitch)	{
 		            		
 		            		if(switchMap.get(Integer.parseInt(switchId)) == null)	{
@@ -376,6 +399,7 @@ public class TrackModel implements TrackModelInterface {
 		}
     }
 		
+
 	
 		
 	@Override
@@ -392,12 +416,22 @@ public class TrackModel implements TrackModelInterface {
 	}
 
 	@Override
-	public void setBlockOccupied(int blockId, int trainId) {
-	/*	
-		// TEMP HACK
-//		blockId += 1;
-		// TEMP HACK
+	public void setBlockOccupied(String line, int blockId) {
+		for(int i = 0; i < lines.size(); i++)
+		{
+			if(lines.get(i).getLine().equals(line))
+				track = lines.get(i).getAllBlocks();
+		}
+		for(int i = 0; i < track.size(); i++)
+		{
+			Block curBlock = track.get(i);
+			if(curBlock.getBlockNumber() == blockId)	{
+				curBlock.setBlockOccupation(true);
+				curBlock.setNext();
+			}
+		}
 		
+/*
 		System.out.println("setBlockOccupied blockId: " + blockId + " trainId: " + trainId);
 		
 		track.get(blockId-1).setOccupancy();
@@ -411,10 +445,10 @@ public class TrackModel implements TrackModelInterface {
 		trainComm.setBlockId(blockId);
 		trainComm.setBlockLength(track.get(blockId-1).getBlockLen());
 	*/
-	}
+}
 
 	@Override
-	public void setBlockUnoccupied(int blockId) {
+	public void setBlockUnoccupied(String line, int blockId) {
 		/*
 		for(int i =0; i<track.size(); i++)	{
 			if(track.get(i).getBlockId() == blockId)	{
@@ -443,11 +477,10 @@ public class TrackModel implements TrackModelInterface {
 	}*/
 	
 	@Override
-	public void setSpeedAuthority(int trainId, int speed, int authority)	{
-		trainComm.setSpeed(speed);
-		trainComm.setAuthority(authority);
-		trainComm.run();
-		System.out.println("Speed Received " + trainId + " " + speed + "  authority: " + authority + " -Track Model");
+	public void setSpeedAuthority(String line, int blockId, int speed, int authority)	{
+		//trainComm.setSpeedAuthority(line, blockId, speed, authority);
+		//trainComm.run();
+		System.out.println("Speed Received " + blockId + " " + speed + "  authority: " + authority + " -Track Model");
 
 	}
 	
@@ -461,7 +494,7 @@ public class TrackModel implements TrackModelInterface {
 	public void setStation(String station) {
 		if(!station.equals("none"))	{
 			setBeacon();
-			trainComm.setStation(station);
+			//trainComm.setStation(station);
 		}
 	}
 
@@ -476,16 +509,14 @@ public class TrackModel implements TrackModelInterface {
 
 
 	@Override
-	public void setTI(TrainInterface trainComm) {
+	public void setTI(TrainModelInterface trainComm) {
 		this.trainComm = trainComm;
 	}
 	
-
-
+	
 	@Override
 	public void setUI(TrackModelUI tmUI) {
 		this.tmUI = tmUI;
-		
 	}
 
 	@Override
@@ -512,8 +543,15 @@ public class TrackModel implements TrackModelInterface {
 		
 	}
 
+	@Override
+	public void setSpeedAuthority(int blockId, int speed, int authority) {
+		// TODO Auto-generated method stub
+		
+	}
 
-	
-
-	
+	@Override
+	public TrainInterface getTI() {
+		// TODO Auto-generated method stub
+		return null;
+	}	
 }

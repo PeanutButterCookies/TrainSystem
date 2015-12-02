@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.peanutbuttercookies.trainsystem.interfaces.BlockOccupationListener;
+import com.peanutbuttercookies.trainsystem.train.TrainModelInterface;
+import com.peanutbuttercookies.trainsystem.traincontroller.TrainControllerInterface;
 
 public class Block {
 	private final String line;
@@ -12,6 +14,7 @@ public class Block {
 	private final int blockLength;
 	private final float blockGrade;
 	private final int speedLimit;
+	private TrainModelInterface trainComm;
 	public Block getPrev() {
 		return prev;
 	}
@@ -55,7 +58,7 @@ public class Block {
 			boolean initSwitchToYard, boolean initSwitchFromYard, boolean initInfrastructureSwitch,
 			boolean initInfrastructureUnderground, boolean initInfrastructureRRCrossing,
 			boolean initInfrastructureStation,String initStationName, int initSwitchBlockId,
-			int initArrowDirectionA, int initArrowDirectionB){
+			int initArrowDirectionA, int initArrowDirectionB, TrainModelInterface initTrainComm){
 		
 		this.line						=initLine;
 		this.section					=initSection;
@@ -80,7 +83,10 @@ public class Block {
 		this.rrCrossingEngaged			=false;
 		this.twoWay 					= false;
 		this.listeners					=new LinkedList<BlockOccupationListener>();
-		nextPossible = new LinkedList<Block>();
+		this.trainComm 					= initTrainComm;
+		this.switchList 				= new LinkedList<Block>();
+		this.nextPossible				= new LinkedList<Block>();
+
 	}
 	
 	public String getLine(){
@@ -198,9 +204,9 @@ public class Block {
 	}
 	
 	public void setBlockOccupation(boolean occupied){
-		blockOccupied=occupied;
+		this.blockOccupied=occupied;
 		for(BlockOccupationListener i : listeners){
-			i.blockOccupied(this.blockNumber);
+			i.blockOccupied(this.getBlockNumber());
 		}
 	}
 	
@@ -310,9 +316,21 @@ public class Block {
 	}
 	
 	public boolean getMasterSwitch()	{
-		return masterSwitch;
+		return this.masterSwitch;
 	}
 	
+	public Block getPrevBlock()	{
+		return this.prev;
+	}
+	
+	public void setNext()	{
+		for(int i = 0; i<nextPossible.size(); i++)	{
+			if(nextPossible.get(i) != prev){
+				next = nextPossible.get(i);
+			}
+		}
+	}
+
 	public boolean isRRCrossingEngaged(){
 		return rrCrossingEngaged;
 	}
@@ -327,5 +345,9 @@ public class Block {
 	
 	public void addListener(BlockOccupationListener newListener){
 		listeners.add(newListener);
+	}
+	
+	public void setSpeedAuthority(int speed, int authority)	{
+		this.trainComm.setSpeedAndAuth((double) speed, authority);
 	}
 }

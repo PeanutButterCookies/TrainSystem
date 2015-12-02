@@ -162,7 +162,7 @@ public class Train implements TrainInterface {
 			
 			while(blockId<=authority){
 //				trackModel.setBlockOccupied(blockId + 1, id);
-				trackModel.setBlockOccupied(blockId + 1, 1);
+				//trackModel.setBlockOccupied(blockId + 1, 1);
 				setSpeed(getSpeed()*1000/3600);
 				double distance = 0;
 				while(distance <= blockLength){
@@ -176,7 +176,7 @@ public class Train implements TrainInterface {
 					}
 				}
 				System.out.println("Thread block id: " + blockId);
-				trackModel.setBlockUnoccupied(blockId);
+				//trackModel.setBlockUnoccupied(blockId);
 				blockId++;
 			}
 			setSpeed(0);
