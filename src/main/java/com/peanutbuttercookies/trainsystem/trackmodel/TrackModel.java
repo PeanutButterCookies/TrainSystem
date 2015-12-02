@@ -18,12 +18,8 @@ import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.commonresources.Line;
 import com.peanutbuttercookies.trainsystem.interfaces.ExcelFileDownloaderInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
-import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
-import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrainInterface;
-import com.peanutbuttercookies.trainsystem.interfaces.TrainInterface;
-import com.peanutbuttercookies.trainsystem.ui.TrackModelUI;
 import com.peanutbuttercookies.trainsystem.ui.TrackModelUI;
 
 public class TrackModel implements TrackModelInterface {

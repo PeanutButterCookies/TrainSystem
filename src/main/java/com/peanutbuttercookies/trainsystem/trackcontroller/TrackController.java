@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
-import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.BlockOccupationListener;
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
+import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 
 public class TrackController implements TrackControllerInterface,BlockOccupationListener {

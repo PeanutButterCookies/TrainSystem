@@ -4,10 +4,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Vector;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 import javax.swing.ButtonGroup;
-import javax.swing.ButtonModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -29,8 +29,9 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 
+import com.peanutbuttercookies.trainsystem.commonresources.Block;
+import com.peanutbuttercookies.trainsystem.commonresources.Line;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
-import com.peanutbuttercookies.trainsystem.trackcontroller.TC_Block;
 
 public class TrackControllerUI extends JFrame {
 
@@ -46,7 +47,7 @@ public class TrackControllerUI extends JFrame {
 	private String 						displayedLine=null;
 	private String						displayedController=null;
 	private LinkedList<Line>			lines;
-	private JTable table;
+	private JTable tableSwitches;
 	
 	/**
 	 * Create the frame.
@@ -171,17 +172,17 @@ public class TrackControllerUI extends JFrame {
 					.addContainerGap())
 		);
 		
-		table = new JTable();
-		table.setRowSelectionAllowed(false);
-		table.setModel(new DefaultTableModel(
+		tableSwitches = new JTable();
+		tableSwitches.setRowSelectionAllowed(false);
+		tableSwitches.setModel(new DefaultTableModel(
 			new Object[][] {
-				{null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null},
 			},
 			new String[] {
-				"Switch No.", "Block No.", "Prev. Block", "Next Block (Disengaged)", "Next Block (Engaged)", "Corresponding Switch Block", "Engaged?"
+				"Line", "Block ID", "Track Controller ID", "Switch No.", "Prev. Block", "Next Block (Disengaged)", "Next Block (Engaged)", "Corresponding Switch Block", "Engaged?"
 			}
 		));
-		scrollPane_1.setViewportView(table);
+		scrollPane_1.setViewportView(tableSwitches);
 		
 		tableVariableDisplay = new JTable();
 		scrollPane.setViewportView(tableVariableDisplay);
@@ -189,10 +190,10 @@ public class TrackControllerUI extends JFrame {
 		tableVariableDisplay.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		tableVariableDisplay.setModel(new DefaultTableModel(
 			new Object[][] {
-				{null, "", "", "", "", "", "", "", null, "", ""},
+				{null, "", "", "", null, "", null, ""},
 			},
 			new String[] {
-				"Line", "Block ID", "Wayside Controller ID", "Authority (From CTC)", "Speed (From CTC)", "Sent Authority", "Commanded Speed", "Switch ID", "Switch Engaged", "RR Crossing", "Lights"
+				"Line", "Block ID", "Track Controller ID", "Switch ID", "Switch Engaged", "RR Crossing", "Crossing Engaged", "Lights"
 			}
 		));
 		tableVariableDisplay.getColumnModel().getColumn(0).setResizable(false);
@@ -202,20 +203,13 @@ public class TrackControllerUI extends JFrame {
 		tableVariableDisplay.getColumnModel().getColumn(2).setResizable(false);
 		tableVariableDisplay.getColumnModel().getColumn(2).setPreferredWidth(116);
 		tableVariableDisplay.getColumnModel().getColumn(3).setResizable(false);
-		tableVariableDisplay.getColumnModel().getColumn(3).setPreferredWidth(116);
+		tableVariableDisplay.getColumnModel().getColumn(3).setPreferredWidth(57);
 		tableVariableDisplay.getColumnModel().getColumn(4).setResizable(false);
-		tableVariableDisplay.getColumnModel().getColumn(4).setPreferredWidth(101);
+		tableVariableDisplay.getColumnModel().getColumn(4).setPreferredWidth(86);
 		tableVariableDisplay.getColumnModel().getColumn(5).setResizable(false);
-		tableVariableDisplay.getColumnModel().getColumn(5).setPreferredWidth(81);
-		tableVariableDisplay.getColumnModel().getColumn(6).setResizable(false);
-		tableVariableDisplay.getColumnModel().getColumn(6).setPreferredWidth(105);
+		tableVariableDisplay.getColumnModel().getColumn(6).setPreferredWidth(101);
 		tableVariableDisplay.getColumnModel().getColumn(7).setResizable(false);
-		tableVariableDisplay.getColumnModel().getColumn(7).setPreferredWidth(57);
-		tableVariableDisplay.getColumnModel().getColumn(8).setResizable(false);
-		tableVariableDisplay.getColumnModel().getColumn(8).setPreferredWidth(86);
-		tableVariableDisplay.getColumnModel().getColumn(9).setResizable(false);
-		tableVariableDisplay.getColumnModel().getColumn(10).setResizable(false);
-		tableVariableDisplay.getColumnModel().getColumn(10).setPreferredWidth(39);
+		tableVariableDisplay.getColumnModel().getColumn(7).setPreferredWidth(39);
 		panel_ControllerDisplay.setLayout(gl_panel_ControllerDisplay);
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
 		gl_panel_1.setHorizontalGroup(
@@ -338,7 +332,33 @@ public class TrackControllerUI extends JFrame {
 		ActionListener switchEngage = new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				JRadioButton button = (JRadioButton) e.getSource();
-				//TO DO
+				String line=null;
+				int switchNum;
+				
+				if(displayedLine.equals("All")){
+					Iterator<Line> lineIterator=lines.iterator();
+					Line currLine=lineIterator.next();
+					String selectedItem=comboBoxSwitchList.getSelectedItem().toString();
+					
+					while(!(selectedItem.contains(currLine.getLine())) && lineIterator.hasNext()){
+						currLine=lineIterator.next();
+					}
+					line=currLine.getLine();
+					
+					String[] tokens=selectedItem.split(" ");
+					switchNum=Integer.decode(tokens[0]);
+					
+					//**** How do I know which TC the switch is a part of?
+					
+				}
+				else{
+					line=displayedLine;
+					switchNum=Integer.decode(comboBoxSwitchList.getSelectedItem().toString());
+				}
+				
+				if(button.getText().equals("Engage")){
+					
+				}
 			}
 		};
 		
@@ -526,28 +546,81 @@ public class TrackControllerUI extends JFrame {
 		setVisible(true);
 	}
 	
-	public void updateTable(){
-		/*Vector<TC_Train> tableInfo=trackController.getLineInfo(displayedLine);
-		ArrayList<TC_Block> tableInfo=trackController.getControllerInfo(displayedLine,displayedController);
-		for(int i=0; i<tableInfo.size(); i++){
-			TC_Block temp=tableInfo.get(i);
-			tableVariableDisplay.setValueAt(temp.getLine(), i+1, 0);
-			tableVariableDisplay.setValueAt(temp.getBlockNumber(), i+1, 1);
-			tableVariableDisplay.setValueAt(temp.getWaysideControllerId(), i+1, 2);
-			//authority recieved
-			//speed recieved
-			//authority
-			//speed
-			if(temp.hasSwitch()){
-				tableVariableDisplay.setValueAt(temp.getSwitchBlockId(), i+1, 7);
+	public void updateVariableTable(){
+		
+		if(this.displayedLine.equals("All")){
+			Iterator<Line> lineIterator=lines.iterator();
+			int counter=-1;
+			while(lineIterator.hasNext()){
+				Line currLine=lineIterator.next();
+				Iterator<TrackControllerInterface> tcIterator=currLine.getAllTrackControllers().iterator();
+				
+				while(tcIterator.hasNext()){
+					TrackControllerInterface currTC=tcIterator.next();
+					Iterator<Block> blockIterator=currTC.getSection().iterator();
+					
+					counter=setVariableTableValues(currLine,currTC,blockIterator,counter);
+				}
+			}
+		}
+		else{
+			Iterator<Line> lineIterator=lines.iterator();
+			Line currLine=lineIterator.next();
+			while(!currLine.getLine().equals(this.displayedLine) && lineIterator.hasNext()){
+				currLine=lineIterator.next();
+			}
+			
+			int counter=-1;
+			if(this.displayedController.equals("All")){
+				Iterator<TrackControllerInterface> tcIterator=currLine.getAllTrackControllers().iterator();
+				
+				while(tcIterator.hasNext()){
+					TrackControllerInterface currTC=tcIterator.next();
+					Iterator<Block> blockIterator=currTC.getSection().iterator();
+					
+					counter=setVariableTableValues(currLine,currTC,blockIterator,counter);
+				}
 			}
 			else{
-				tableVariableDisplay.setValueAt("N/A", i+1, 7);
+				Iterator<TrackControllerInterface> tcIterator = currLine.getAllTrackControllers().iterator();
+				TrackControllerInterface currTC=tcIterator.next();
+				while(!(Integer.toString(currTC.getControllerId()).equals(this.displayedController))){
+					currTC=tcIterator.next();
+				}
+				
+				Iterator<Block> blockIterator=currTC.getSection().iterator();
+				setVariableTableValues(currLine,currTC,blockIterator,counter);
+				
 			}
-			tableVariableDisplay.setValueAt(temp.getCommandedSpeed(), i+1, 5);
-			tableVariableDisplay.setValueAt(false, i+1, 6);						//MUST BE CHANGED AFTER PROTOTYPE
-			tableVariableDisplay.setValueAt(false, i+1, 7);						//MUST BE CHANGED AFTER PROTOTYPE
+		}
+		updateSwitchesTable();
+	}
+	
+	private int setVariableTableValues(Line currLine, TrackControllerInterface currTC, Iterator<Block> blockIterator, int counter){
+		while(blockIterator.hasNext()){
+			Block currBlock=blockIterator.next();
+			if(currBlock.getBlockNumber()==currTC.getOverlapBlock() && currBlock.getBlockNumber()==currTC.getStartBlock()){
+				break;
+			}
+			counter++;
+			tableVariableDisplay.setValueAt(currBlock.getLine(), counter, 0);				//Line
+			tableVariableDisplay.setValueAt(currBlock.getBlockNumber(), counter, 1);		//Block ID
+			tableVariableDisplay.setValueAt(currTC.getControllerId(), counter, 2);			//Track Controller ID
+			tableVariableDisplay.setValueAt(currBlock.getSwitchBlockId(), counter, 3);		//Switch ID
+			tableVariableDisplay.setValueAt(currBlock.isSwitchEngaged(), counter, 4);		//Switch Engaged
+			tableVariableDisplay.setValueAt(currBlock.hasRRCrossing(), counter, 5);			//RR Crossing
+			tableVariableDisplay.setValueAt(currBlock.isRRCrossingEngaged(), counter, 6);	//Crossing Engaged
+			tableVariableDisplay.setValueAt("N/A", counter, 7);								//Lights
 			
-		}*/
+		}
+		return counter;
+	}
+	
+	public void updateSwitchesTable(){
+		
+	}
+	
+	public void setLines(LinkedList<Line> lines){
+		this.lines=lines;
 	}
 }
