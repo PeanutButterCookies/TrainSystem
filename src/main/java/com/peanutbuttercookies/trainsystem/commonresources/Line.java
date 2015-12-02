@@ -1,11 +1,12 @@
 package com.peanutbuttercookies.trainsystem.commonresources;
 
 import java.util.LinkedList;
-
+import com.peanutbuttercookies.trainsystem.trackcontroller.TrackController;
 
 public class Line {
 	private LinkedList<Block> blocks;
 	private String line;
+	private LinkedList<TrackController> controllers;
 	
 	public Line(String initLine, LinkedList<Block> initBlocks){
 		this.line	=initLine;
@@ -22,5 +23,18 @@ public class Line {
 	
 	public Block getBlock(int index){
 		return blocks.get(index);
+	}
+	
+	public void setTrackControllers(TrackController tc_1, TrackController tc_2){
+		controllers.add(tc_1);
+		controllers.add(tc_2);
+	}
+	
+	public LinkedList<TrackController> getAllTrackControllers(){
+		return controllers;
+	}
+	
+	public TrackController getTrackController(int index){
+		return controllers.get(index);
 	}
 }

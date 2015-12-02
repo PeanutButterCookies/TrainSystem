@@ -1,24 +1,37 @@
 package com.peanutbuttercookies.trainsystem.traincontroller;
 
-import com.peanutbuttercookies.trainsystem.interfaces.TrainControllerInterface;
-import com.peanutbuttercookies.trainsystem.interfaces.TrainInterface;
-import com.peanutbuttercookies.trainsystem.ui.TrainControllerUI;
+import train.model.TrainModelInterface;
 
-public class TrainController implements TrainControllerInterface{
-	public double speedLimit;
-	public double speed;
-	public double acceleration;
-	public double mass;
-	public int authority;
-	public double power;
-	public String station;
-	public boolean doorsOpen = false;
-	TrainInterface train;
-	TrainControllerUI ui; 
+public class TrainController implements TrainControllerInterface {
 
+	String station;
+	SpeedControl control;
+	TrainModelInterface train;
+	//loginInfo login;
+	double speed;
+	double commandSpeed;
+	int auth;
+	String beacon;
+	double mass;
+	double speedLimit;
+	boolean doorsOpen;
+	double power;
+	String lights;
+	TrainControllerUI gui;
 	public TrainController() {
 		// TODO Auto-generated constructor stub
 	}
+
+
+	@Override
+	public void setSpeedAndAuth(double speed, int auth) {
+		// TODO Auto-generated method stub
+		commandSpeed = speed;
+		this.auth = auth;
+		control.commandSpeed = speed;
+		power = control.calcPower(speed);
+
+
 	
 	public void setSpeedLimit(double speedLimit){
 		System.out.println("Speed Limit " + speedLimit);
@@ -31,35 +44,66 @@ public class TrainController implements TrainControllerInterface{
 	public void setAcceleration(double acceleration){
 		System.out.println("Aceeleration " + acceleration);
 		this.acceleration = acceleration;
+
 	}
-	public void setAuthority(int authority){
-		this.authority = authority;
+
+	public void calcPower(double currentVelocity){
+		control.calcPower(currentVelocity);
 	}
-	public void setStation(String station){
-		this.station = station;
+	@Override
+	public void setSpeed(double speed) {
+		// TODO Auto-generated method stub
+		commandSpeed = speed;
+		control.commandSpeed = speed;
 	}
-	public void openDoors(){
+
+	@Override
+	public void openDoors() {
+		// TODO Auto-generated method stub
 		doorsOpen = true;
+		train.setDoors(doorsOpen);
 	}
-	public void closeDoors(){
+
+	@Override
+	public void closeDoors() {
+		// TODO Auto-generated method stub
 		doorsOpen = false;
+		train.setDoors(doorsOpen);
 	}
-	public String announceStation(){
+
+	@Override
+	public void setCurrentVelocity(double speed) {
+		// TODO Auto-generated method stub
+		this.speed = speed;
+		control.speed = speed;
+	}
+
+	@Override
+	public void setMass(double mass) {
+		// TODO Auto-generated method stub
+		this.mass = mass;
+		control.mass = mass;
+	}
+
+	@Override
+	public String announceStation() {
+		// TODO Auto-generated method stub
 		return station;
 	}
-	
-	public void setMass(double mass){
-		this.mass = mass;
+
+
+
+	public void beaconInfo(String info) {
+		// TODO Auto-generated method stub
+		beacon = info;
 	}
-	
-	public double calculatePower(double mass,double velocity,double acceleration){
-		power = mass*acceleration*velocity;
-		return power;
-	}
-	
-	public double calculateVelocity(double velocity, double acceleration, double time){
-		return 0;
-	}
+
+
+	public void setSpeedLimit(double limit) {
+		// TODO Auto-generated method stub
+		speedLimit = limit;
+		control.speedLimit = limit;
+
 	
 	public void atStation(){
 		openDoors();
@@ -70,13 +114,15 @@ public class TrainController implements TrainControllerInterface{
 	public void leaveStation(){
 		closeDoors();
 		System.out.println("Close doors");
+
 	}
 
 	@Override
-	public void setTrainModel(TrainInterface trainModel) {
-		this.train = trainModel;
+	public void setLights(String lights) {
+		// TODO Auto-generated method stub
+		this.lights = lights;
 	}
-	
-	
 
+
+	
 }

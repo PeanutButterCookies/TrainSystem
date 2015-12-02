@@ -23,12 +23,14 @@ import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrainInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrainInterface;
+import com.peanutbuttercookies.trainsystem.train.TrainModelInterface;
+import com.peanutbuttercookies.trainsystem.traincontroller.TrainControllerInterface;
 import com.peanutbuttercookies.trainsystem.ui.TrackModelUI;
 import com.peanutbuttercookies.trainsystem.ui.TrackModelUI;
 
 public class TrackModel implements TrackModelInterface {
 	private TrackControllerInterface trackComm;
-	private TrainInterface trainComm;
+	private TrainModelInterface trainComm;
 	private TrackModelUI tmUI;
 	private ExcelFileDownloaderInterface excelDownloader;
     private LinkedList<Block> track;
@@ -249,7 +251,7 @@ public class TrackModel implements TrackModelInterface {
 		            	Block newBlock = new Block(info[0], info[1], blockNumI, blockLenI, Float.parseFloat(info[4]), 
 		            			speedLimI, Float.parseFloat(info[6]), Float.parseFloat(info[7]), hasToYard, 
 		            			hasFromYard, hasSwitch, hasUnderground, hasCrossing, hasStation, station,
-		            			Integer.parseInt(switchId), arrowA, arrowB);
+		            			Integer.parseInt(switchId), arrowA, arrowB, trainComm);
 		            	if(hasSwitch)	{
 		            		
 		            		if(switchMap.get(Integer.parseInt(switchId)) == null)	{
@@ -445,7 +447,7 @@ public class TrackModel implements TrackModelInterface {
 	@Override
 	public void setSpeedAuthority(String line, int blockId, int speed, int authority)	{
 		//trainComm.setSpeedAuthority(line, blockId, speed, authority);
-		trainComm.run();
+		//trainComm.run();
 		System.out.println("Speed Received " + blockId + " " + speed + "  authority: " + authority + " -Track Model");
 
 	}
@@ -460,7 +462,7 @@ public class TrackModel implements TrackModelInterface {
 	public void setStation(String station) {
 		if(!station.equals("none"))	{
 			setBeacon();
-			trainComm.setStation(station);
+			//trainComm.setStation(station);
 		}
 	}
 
@@ -475,12 +477,11 @@ public class TrackModel implements TrackModelInterface {
 
 
 	@Override
-	public void setTI(TrainInterface trainComm) {
+	public void setTI(TrainModelInterface trainComm) {
 		this.trainComm = trainComm;
 	}
 	
-
-
+	
 	@Override
 	public void setUI(TrackModelUI tmUI) {
 		this.tmUI = tmUI;
@@ -516,6 +517,13 @@ public class TrackModel implements TrackModelInterface {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public TrainInterface getTI() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 	
 

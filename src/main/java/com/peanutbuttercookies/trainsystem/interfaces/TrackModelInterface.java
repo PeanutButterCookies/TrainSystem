@@ -9,6 +9,7 @@ import java.util.LinkedList;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.commonresources.Line;
+import com.peanutbuttercookies.trainsystem.train.TrainModelInterface;
 import com.peanutbuttercookies.trainsystem.ui.TrackModelUI;
 
 public interface TrackModelInterface {
@@ -30,7 +31,6 @@ public interface TrackModelInterface {
 	public void setUI(TrackModelUI tmUI);
 	public LinkedList<Block> getTrack();
 	public void setTC(TrackControllerInterface trackComm);
-	public void setTI(TrainInterface trainComm);
 	public void setBeacon(); //sent to train controller
 	public void setStation(String station); //sent to train controller
 	public void excelReader() throws IOException;
@@ -39,4 +39,6 @@ public interface TrackModelInterface {
 	public void setSwitch(int blockId);
 	public void setSpeedAuthority(String line, int blockId, int speed, int authority);
 	public void setBlockOccupied(String line, int blockId);
+	TrainInterface getTI();
+	public void setTI(TrainModelInterface trainComm);
 }

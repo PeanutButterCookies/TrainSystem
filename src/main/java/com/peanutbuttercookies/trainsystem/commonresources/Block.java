@@ -3,6 +3,10 @@ package com.peanutbuttercookies.trainsystem.commonresources;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.peanutbuttercookies.trainsystem.interfaces.BlockOccupationListener;
+import com.peanutbuttercookies.trainsystem.train.TrainModelInterface;
+import com.peanutbuttercookies.trainsystem.traincontroller.TrainControllerInterface;
+
 public class Block {
 	private final String line;
 	private final String section;
@@ -10,6 +14,11 @@ public class Block {
 	private final int blockLength;
 	private final float blockGrade;
 	private final int speedLimit;
+	private TrainModelInterface trainComm;
+	public Block getPrev() {
+		return prev;
+	}
+
 	private final float elevation;
 	private final float cumulativeElevation;
 	private final boolean switchToYard;
@@ -33,39 +42,50 @@ public class Block {
 	private boolean blockOccupied;
 	private boolean switchEngaged;
 	
+	public Block getNext() {
+		return next;
+	}
+
+	public void setNext(Block next) {
+		this.next = next;
+	}
+
+	private boolean rrCrossingEngaged;
+	private LinkedList<BlockOccupationListener> listeners;
+	
 	public Block(String initLine, String initSection, int initBlockNumber, int initBlockLength, 
 			float initBlockGrade, int initSpeedLimit, float initElevation, float initCumulativeElevation,
 			boolean initSwitchToYard, boolean initSwitchFromYard, boolean initInfrastructureSwitch,
 			boolean initInfrastructureUnderground, boolean initInfrastructureRRCrossing,
 			boolean initInfrastructureStation,String initStationName, int initSwitchBlockId,
-			int initArrowDirectionA, int initArrowDirectionB){
+			int initArrowDirectionA, int initArrowDirectionB, TrainModelInterface initTrainComm){
 		
 		this.line						=initLine;
-		this.section						=initSection;
-		this.blockNumber					=initBlockNumber;
-		this.blockLength					=initBlockLength;
+		this.section					=initSection;
+		this.blockNumber				=initBlockNumber;
+		this.blockLength				=initBlockLength;
 		this.blockGrade					=initBlockGrade;
 		this.speedLimit					=initSpeedLimit;
 		this.elevation					=initElevation;
-		this.cumulativeElevation			=initCumulativeElevation;
+		this.cumulativeElevation		=initCumulativeElevation;
 		this.switchToYard				=initSwitchToYard;
 		this.switchFromYard				=initSwitchFromYard;
 		this.infrastructureSwitch		=initInfrastructureSwitch;
 		this.infrastructureUnderground	=initInfrastructureUnderground;
 		this.infrastructureRRCrossing	=initInfrastructureRRCrossing;
 		this.infrastructureStation		=initInfrastructureStation;
-		this.stationName					=initStationName;
+		this.stationName				=initStationName;
 		this.switchBlockId				=initSwitchBlockId;
-		this.arrowDirectionA				=initArrowDirectionA;
-		this.arrowDirectionB				=initArrowDirectionB;
+		this.arrowDirectionA			=initArrowDirectionA;
+		this.arrowDirectionB			=initArrowDirectionB;
 		this.blockOccupied				=false;
 		this.switchEngaged				=false;
-		this.twoWay = false;
-		if(this.arrowDirectionA == 3)
-			this.twoWay = true;
-		this.nextPossible = new LinkedList<Block>();
-		this.switchList = new LinkedList<Block>();
-		this.switchEngaged = false;
+		this.rrCrossingEngaged			=false;
+		this.twoWay 					= false;
+		this.listeners					=new LinkedList<BlockOccupationListener>();
+		this.trainComm 					= initTrainComm;
+		this.switchList 				= new LinkedList<Block>();
+		this.nextPossible				= new LinkedList<Block>();
 	}
 	
 	public String getLine(){
@@ -183,7 +203,10 @@ public class Block {
 	}
 	
 	public void setBlockOccupation(boolean occupied){
-		this.blockOccupied=occupied;
+		for(BlockOccupationListener i : listeners){
+			i.blockOccupied();
+		}
+		this.blockOccupied=true;
 	}
 	
 	public boolean isSwitchEngaged(){
@@ -275,7 +298,7 @@ public class Block {
 		this.prev = newBlock;
 	}
 	
-	public void unsetPrev(Block newBlock)	{
+	public void unsetPrev()	{
 		this.prev = null;
 	}
 	
@@ -307,11 +330,23 @@ public class Block {
 		}
 	}
 
-	public Block getNext() {
-		return next;
+	public boolean isRRCrossingEngaged(){
+		return rrCrossingEngaged;
 	}
-
-	public void setNext(Block next) {
-		this.next = next;
+	
+	public void setRRCrossingEngagement(boolean engaged){
+		rrCrossingEngaged=engaged;
+	}
+	
+	public void getTwoWay(boolean twoWayIn)	{
+		this.twoWay = twoWayIn;
+	}
+	
+	public void addListener(BlockOccupationListener newListener){
+		listeners.add(newListener);
+	}
+	
+	public void setSpeedAuthority(int speed, int authority)	{
+		this.trainComm.setSpeedAndAuth((double) speed, authority);
 	}
 }
