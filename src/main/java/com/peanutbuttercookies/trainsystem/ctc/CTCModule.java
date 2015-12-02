@@ -67,7 +67,7 @@ public class CTCModule implements CTCModuleInterface {
 
 		for(TrackControllerInterface tc : line.getAllTrackControllers()) {
 			for (Block block : tc.getSection()) {
-				lineBlockMap.get(line.getLine()).addBlock(block);
+				lineBlockMap.get(line.getLine()).addBlock(block, tc);
 			}
 		}
 		if (ui != null) {
@@ -132,7 +132,8 @@ public class CTCModule implements CTCModuleInterface {
 		} catch (Exception e) {
 			return false;
 		}
-		return block.getTc().setSpeedAuthority(train.getHead(), speedInt, block.getBlockNumber());
+		block.getTc().setSpeedAuthority(train.getHead(), speedInt, block.getBlockNumber());
+		return true;
 	}
 
 	@Override

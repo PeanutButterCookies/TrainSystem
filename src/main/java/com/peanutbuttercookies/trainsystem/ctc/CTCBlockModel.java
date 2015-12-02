@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.swing.table.AbstractTableModel;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
+import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 
 public class CTCBlockModel extends AbstractTableModel {
 	
@@ -31,7 +32,7 @@ public class CTCBlockModel extends AbstractTableModel {
 		update.start();
 	}
 	
-	public void addBlock(Block block) {
+	public void addBlock(Block block, TrackControllerInterface tc) {
 		CTCBlock ctcBlock = null;
 		if(blockMap.containsKey(block.getBlockNumber())) {
 			ctcBlock = blockMap.get(block.getBlockNumber());
@@ -39,6 +40,8 @@ public class CTCBlockModel extends AbstractTableModel {
 		} else {
 			ctcBlock = new CTCBlock(block);
 		}
+		ctcBlock.setTc(tc);
+		
 		
 		if(!sections.containsKey(ctcBlock.getSection())) {
 			sections.put(ctcBlock.getSection(), new CTCSection(ctcBlock.getSection()));

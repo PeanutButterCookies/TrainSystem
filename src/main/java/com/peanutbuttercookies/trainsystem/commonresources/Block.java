@@ -80,6 +80,7 @@ public class Block {
 		this.rrCrossingEngaged			=false;
 		this.twoWay 					= false;
 		this.listeners					=new LinkedList<BlockOccupationListener>();
+		nextPossible = new LinkedList<Block>();
 	}
 	
 	public String getLine(){

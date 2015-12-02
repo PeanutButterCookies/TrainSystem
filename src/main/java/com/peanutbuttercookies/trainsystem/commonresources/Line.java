@@ -14,6 +14,7 @@ public class Line {
 	public Line(String initLine, LinkedList<Block> initBlocks){
 		this.line	=initLine;
 		this.blocks	=initBlocks;
+		controllers = new LinkedList<TrackControllerInterface>();
 	}
 
 	public String getLine(){

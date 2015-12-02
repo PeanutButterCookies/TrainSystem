@@ -24,12 +24,15 @@ public class CTCUITest {
 			curr.setPrev(prev);
 			next = initBlock(i);
 			curr.setNext(next);
+			curr.setNextPossible(next);
 			prev = curr;
 			blocks.add(curr);
 		}
 		curr.setNext(null);
 		
 		Line line = new Line(LINE, blocks);
+		TestTrackController tc = new TestTrackController(blocks);
+		line.setTrackControllers(tc, new TestTrackController(new LinkedList<Block>()));
 		CTCModule ctc = new CTCModule();
 		CTCModuleUI ui = new CTCModuleUI(ctc);
 		ctc.setUi(ui);
