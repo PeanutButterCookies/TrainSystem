@@ -23,5 +23,5 @@ public interface TrackControllerInterface {
 	public Block getBlock(int index);
 	public void engageSwitch(int switchNum);
 	public void setPLCProgram(PLCProgram newPlcProgram);
-	public void setSpeedAuthority(int speed, int authority);
+	public void setSpeedAuthority(int blockId, int speed, int authority);
 }

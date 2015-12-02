@@ -43,7 +43,6 @@ public class TrackControllerUI extends JFrame {
 	private JTextField 	textField;
 	private JTable 		tableVariableDisplay;
 	
-	private TrackControllerInterface 	trackController;
 	private String 						displayedLine=null;
 	private String						displayedController=null;
 	private LinkedList<Line>			lines;
@@ -52,15 +51,14 @@ public class TrackControllerUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public TrackControllerUI(TrackControllerInterface trackController) {
-		super("Track Controller");
-		this.trackController = trackController;
+	public TrackControllerUI() {
 		setTitle("Track Controller Module");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 1280, 720);
 		contentPane = new JPanel();
 		contentPane.setBorder(null);
 		setContentPane(contentPane);
+		this.setVisible(false);
 		
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(192, 192, 192));
