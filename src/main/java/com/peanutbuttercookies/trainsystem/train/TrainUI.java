@@ -1,4 +1,4 @@
-package com.peanutbuttercookies.trainsystem.ui;
+package com.peanutbuttercookies.trainsystem.train;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -8,8 +8,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.border.EmptyBorder;
-
-import com.peanutbuttercookies.trainsystem.interfaces.TrainInterface;
 
 public class TrainUI extends JFrame {
 
@@ -23,13 +21,13 @@ public class TrainUI extends JFrame {
 	private JTextField speed;
 	private JTextField acceleration;
 	private JTextField power;
-
+	private TrainModelInterface train;
 
 	/**
 	 * Create the frame.
 	 */
-	public TrainUI(TrainInterface trainModel) {
-		TrainInterface train = trainModel;
+	public TrainUI(TrainModelInterface trainModel) {
+		train = trainModel;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -171,5 +169,17 @@ public class TrainUI extends JFrame {
 		contentPane.add(selectTrain);
 		selectTrain.addItem(1);
 		setVisible(true);
+	}
+	
+	public void updateUI(){
+		numCars.setText(""+train.getNumCars());
+		height.setText(""+train.getHeight());
+		power.setText(""+train.getPower());
+		acceleration.setText(""+train.getAcceleration());
+		speed.setText(""+train.getCurrentSpeed());
+		mass.setText(""+train.getMass());
+		passengerCount.setText(""+train.getNumPassengers());
+		width.setText(""+train.getWidth());
+		length.setText(new String(""+train.getLength()));
 	}
 }

@@ -6,13 +6,10 @@
 
 package com.peanutbuttercookies.trainsystem.ctctest;
 
-import java.util.Vector;
-
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
-import com.peanutbuttercookies.trainsystem.trackcontroller.TC_Train;
-import com.peanutbuttercookies.trainsystem.ui.TrackControllerUI;
+import com.peanutbuttercookies.trainsystem.trackcontroller.TrackControllerUI;
 
 public class TestTrackControllerInterface implements TrackControllerInterface {
 

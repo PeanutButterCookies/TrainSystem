@@ -1,4 +1,4 @@
-package com.peanutbuttercookies.trainsystem.ui;
+package com.peanutbuttercookies.trainsystem.traincontroller;
 
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -8,8 +8,6 @@ import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.border.EmptyBorder;
 
-import com.peanutbuttercookies.trainsystem.traincontroller.TrainController;
-
 public class TrainControllerUI extends JFrame {
 
 	private JPanel contentPane;
@@ -18,13 +16,14 @@ public class TrainControllerUI extends JFrame {
 	private JTextField textField_2;
 	private JTextField textField_3;
 	private JTextField textField_4;
+	TrainController trainController;
 
 
 	/**
 	 * Create the frame.
 	 */
 	public TrainControllerUI(TrainController controller) {
-		TrainController trainController = controller;
+		trainController = controller;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -72,7 +71,7 @@ public class TrainControllerUI extends JFrame {
 		textField_1.setEditable(false);
 		contentPane.add(textField_1);
 		textField_1.setColumns(10);
-		textField_1.setText(new String(""+trainController.authority));
+		textField_1.setText(new String(""+trainController.auth));
 		
 		textField_2 = new JTextField();
 		textField_2.setEditable(false);
@@ -118,5 +117,16 @@ public class TrainControllerUI extends JFrame {
 		contentPane.add(comboBox);
 		comboBox.addItem(1);
 		setVisible(true);
+		
+	}
+	
+	public void update(){
+		textField.setText(new String(""+trainController.speedLimit));
+		textField_1.setText(new String(""+trainController.auth));
+		if(trainController.doorsOpen == false)
+			textField_3.setText("Closed");
+		else
+			textField_3.setText("Open");
+		textField_4.setText(trainController.station);
 	}
 }

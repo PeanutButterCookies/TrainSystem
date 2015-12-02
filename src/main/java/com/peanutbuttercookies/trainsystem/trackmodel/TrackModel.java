@@ -18,12 +18,8 @@ import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.commonresources.Line;
 import com.peanutbuttercookies.trainsystem.interfaces.ExcelFileDownloaderInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
-import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
-import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrainInterface;
-import com.peanutbuttercookies.trainsystem.interfaces.TrainInterface;
-import com.peanutbuttercookies.trainsystem.ui.TrackModelUI;
 import com.peanutbuttercookies.trainsystem.ui.TrackModelUI;
 
 public class TrackModel implements TrackModelInterface {
@@ -411,6 +407,20 @@ public class TrackModel implements TrackModelInterface {
 			}
 		}
 		
+/*
+		System.out.println("setBlockOccupied blockId: " + blockId + " trainId: " + trainId);
+		
+		track.get(blockId-1).setOccupancy();
+ 		if(tmUI.currentView(blockId))
+ 			tmUI.display(blockId);
+		//trackComm.setTrainPresence(trainId, blockId);
+		trainComm.setSpeedLimit(track.get(blockId-1).getSpeedLim());
+		if(!track.get(blockId-1).getInfra().equals("none")) {
+			trainComm.setStation(track.get(blockId-1).getInfra());
+		}
+		trainComm.setBlockId(blockId);
+		trainComm.setBlockLength(track.get(blockId-1).getBlockLen());
+	*/
 	}
 
 	@Override
@@ -484,7 +494,6 @@ public class TrackModel implements TrackModelInterface {
 	@Override
 	public void setUI(TrackModelUI tmUI) {
 		this.tmUI = tmUI;
-		
 	}
 
 	@Override
@@ -522,5 +531,5 @@ public class TrackModel implements TrackModelInterface {
 
 	
 
-	
-}
+}	
+

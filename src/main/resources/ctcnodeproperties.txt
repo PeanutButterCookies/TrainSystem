@@ -1,0 +1,7 @@
+line,line
+section,section
+block number,blockId
+speed limit,speed
+switch block,switch
+infrastructure,infrastructure
+arrow direction,direction

@@ -3,6 +3,8 @@ package com.peanutbuttercookies.trainsystem.commonresources;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.peanutbuttercookies.trainsystem.interfaces.BlockOccupationListener;
+
 public class Block {
 	private final String line;
 	private final String section;
@@ -10,6 +12,10 @@ public class Block {
 	private final int blockLength;
 	private final float blockGrade;
 	private final int speedLimit;
+	public Block getPrev() {
+		return prev;
+	}
+
 	private final float elevation;
 	private final float cumulativeElevation;
 	private final boolean switchToYard;
@@ -32,6 +38,8 @@ public class Block {
 	
 	private boolean blockOccupied;
 	private boolean switchEngaged;
+	private boolean rrCrossingEngaged;
+	private LinkedList<BlockOccupationListener> listeners;
 	
 	public Block(String initLine, String initSection, int initBlockNumber, int initBlockLength, 
 			float initBlockGrade, int initSpeedLimit, float initElevation, float initCumulativeElevation,
@@ -41,31 +49,29 @@ public class Block {
 			int initArrowDirectionA, int initArrowDirectionB){
 		
 		this.line						=initLine;
-		this.section						=initSection;
-		this.blockNumber					=initBlockNumber;
-		this.blockLength					=initBlockLength;
+		this.section					=initSection;
+		this.blockNumber				=initBlockNumber;
+		this.blockLength				=initBlockLength;
 		this.blockGrade					=initBlockGrade;
 		this.speedLimit					=initSpeedLimit;
 		this.elevation					=initElevation;
-		this.cumulativeElevation			=initCumulativeElevation;
+		this.cumulativeElevation		=initCumulativeElevation;
 		this.switchToYard				=initSwitchToYard;
 		this.switchFromYard				=initSwitchFromYard;
 		this.infrastructureSwitch		=initInfrastructureSwitch;
 		this.infrastructureUnderground	=initInfrastructureUnderground;
 		this.infrastructureRRCrossing	=initInfrastructureRRCrossing;
 		this.infrastructureStation		=initInfrastructureStation;
-		this.stationName					=initStationName;
+		this.stationName				=initStationName;
 		this.switchBlockId				=initSwitchBlockId;
-		this.arrowDirectionA				=initArrowDirectionA;
-		this.arrowDirectionB				=initArrowDirectionB;
+		this.arrowDirectionA			=initArrowDirectionA;
+		this.arrowDirectionB			=initArrowDirectionB;
 		this.blockOccupied				=false;
 		this.switchEngaged				=false;
-		this.twoWay = false;
-		if(this.arrowDirectionA == 3)
-			this.twoWay = true;
-		this.nextPossible = new LinkedList<Block>();
-		this.switchList = new LinkedList<Block>();
-		this.switchEngaged = false;
+		this.rrCrossingEngaged			=false;
+		this.twoWay 					= false;
+		this.listeners					=new LinkedList<BlockOccupationListener>();
+		nextPossible = new LinkedList<Block>();
 	}
 	
 	public String getLine(){
@@ -183,7 +189,10 @@ public class Block {
 	}
 	
 	public void setBlockOccupation(boolean occupied){
-		this.blockOccupied=occupied;
+		blockOccupied=occupied;
+		for(BlockOccupationListener i : listeners){
+			i.blockOccupied(this.blockNumber);
+		}
 	}
 	
 	public boolean isSwitchEngaged(){
@@ -275,7 +284,7 @@ public class Block {
 		this.prev = newBlock;
 	}
 	
-	public void unsetPrev(Block newBlock)	{
+	public void unsetPrev()	{
 		this.prev = null;
 	}
 	
@@ -313,5 +322,21 @@ public class Block {
 
 	public void setNext(Block next) {
 		this.next = next;
+	}
+	
+	public boolean isRRCrossingEngaged(){
+		return rrCrossingEngaged;
+	}
+	
+	public void setRRCrossingEngagement(boolean engaged){
+		rrCrossingEngaged=engaged;
+	}
+	
+	public void getTwoWay(boolean twoWayIn)	{
+		this.twoWay = twoWayIn;
+	}
+	
+	public void addListener(BlockOccupationListener newListener){
+		listeners.add(newListener);
 	}
 }
