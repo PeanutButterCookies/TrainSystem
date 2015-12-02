@@ -8,20 +8,9 @@ package com.peanutbuttercookies.trainsystem.systemwrapper;
 
 import java.io.IOException;
 
-import com.peanutbuttercookies.trainsystem.ctc.CTCModule;
-import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
-import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
-import com.peanutbuttercookies.trainsystem.interfaces.TrainInterface;
-import com.peanutbuttercookies.trainsystem.trackcontroller.TrackControllerModule;
 import com.peanutbuttercookies.trainsystem.trackmodel.TrackModel;
-import com.peanutbuttercookies.trainsystem.train.Train;
-import com.peanutbuttercookies.trainsystem.traincontroller.TrainController;
-import com.peanutbuttercookies.trainsystem.ui.CTCModuleUI;
-import com.peanutbuttercookies.trainsystem.ui.TrackControllerUI;
 import com.peanutbuttercookies.trainsystem.ui.TrackModelUI;
-import com.peanutbuttercookies.trainsystem.ui.TrainControllerUI;
-import com.peanutbuttercookies.trainsystem.ui.TrainUI;
 
 public class MainApp {
 	public static void main(String[] args) throws IOException {

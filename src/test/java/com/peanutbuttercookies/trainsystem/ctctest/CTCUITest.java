@@ -4,8 +4,6 @@ import java.util.LinkedList;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.commonresources.Line;
-import com.peanutbuttercookies.trainsystem.ctc.CTCBlock;
-import com.peanutbuttercookies.trainsystem.ctc.CTCBlockModel;
 import com.peanutbuttercookies.trainsystem.ctc.CTCModule;
 import com.peanutbuttercookies.trainsystem.ui.CTCModuleUI;
 
