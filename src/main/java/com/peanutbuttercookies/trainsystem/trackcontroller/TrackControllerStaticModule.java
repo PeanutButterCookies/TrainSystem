@@ -73,8 +73,7 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 			line.setTrackControllers(tc1, tc2);
 
 			ui.setLines(lines);
-			// TODO commented this out
-			// ui.updateVariableTable();
+			ui.updateVariableTable();
 
 			return true;
 		} else {
