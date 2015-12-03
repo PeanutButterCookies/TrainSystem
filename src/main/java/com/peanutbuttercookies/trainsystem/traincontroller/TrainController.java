@@ -108,7 +108,7 @@ public class TrainController implements TrainControllerInterface {
 	public void run(){
 		while(true){
 			power = control.calcPower(speed);
-			System.out.println(power);
+			System.out.println("Power: "+power);
 			train.setPower(power);
 			try {
 				Thread.sleep(100);

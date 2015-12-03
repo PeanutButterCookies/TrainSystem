@@ -147,7 +147,7 @@ public class Engine {
 				}
 				train.controller.setCurrentVelocity(currentSpeed);
 				train.gui.updateUI();
-				System.out.println(currentSpeed);
+				System.out.println("CurrentSpeed: "+currentSpeed);
 				//train.controller.calcPower(currentSpeed);
 
 				//return currentSpeed;
