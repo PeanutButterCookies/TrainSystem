@@ -64,11 +64,11 @@ public class CTCBlockModel extends AbstractTableModel {
 			}
 		}
 		
-		if(block.getPrev() == null) {
+		if(block.getPrevBlock() == null) {
 			System.out.println("Previous block is null");
 			ctcBlock.setPrevBlock(null);
 		} else {
-			Integer prev = block.getPrev().getBlockNumber();
+			Integer prev = block.getPrevBlock().getBlockNumber();
 			if(blockMap.containsKey(prev)) {
 				ctcBlock.setPrevBlock(blockMap.get(prev));
 			} else {
