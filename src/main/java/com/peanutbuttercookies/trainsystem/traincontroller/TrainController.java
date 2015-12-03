@@ -1,49 +1,41 @@
 package com.peanutbuttercookies.trainsystem.traincontroller;
 
+import java.util.concurrent.TimeUnit;
+
+import train.model.TrainModel;
 import train.model.TrainModelInterface;
 
 public class TrainController implements TrainControllerInterface {
 
 	String station;
-	SpeedControl control;
+	SpeedControl control = new SpeedControl(this);
 	TrainModelInterface train;
 	//loginInfo login;
 	double speed;
 	double commandSpeed;
 	int auth;
-	String beacon;
+	String beacon="";
+	int blockId;
 	double mass;
 	double speedLimit;
 	boolean doorsOpen;
 	double power;
-	String lights;
-	TrainControllerUI gui;
-	public TrainController() {
+	String lights="";
+	TrainControllerUI gui = new TrainControllerUI(this);
+	public TrainController(TrainModelInterface train) {
 		// TODO Auto-generated constructor stub
+		this.train = train;
+		setSpeedLimit(20);
 	}
-
 
 	@Override
 	public void setSpeedAndAuth(double speed, int auth) {
 		// TODO Auto-generated method stub
 		commandSpeed = speed;
 		this.auth = auth;
+		System.out.println(auth);
 		control.commandSpeed = speed;
-		power = control.calcPower(speed);
-
-
-	
-	public void setSpeedLimit(double speedLimit){
-		System.out.println("Speed Limit " + speedLimit);
-		this.speedLimit = speedLimit;
-	}
-	public void setSpeed(double speed){
-		System.out.println("Speed " + speed);
-		this.speed = speed;
-	}
-	public void setAcceleration(double acceleration){
-		System.out.println("Aceeleration " + acceleration);
-		this.acceleration = acceleration;
+		//power = control.calcPower(speed);
 
 	}
 
@@ -92,7 +84,6 @@ public class TrainController implements TrainControllerInterface {
 	}
 
 
-
 	public void beaconInfo(String info) {
 		// TODO Auto-generated method stub
 		beacon = info;
@@ -103,18 +94,6 @@ public class TrainController implements TrainControllerInterface {
 		// TODO Auto-generated method stub
 		speedLimit = limit;
 		control.speedLimit = limit;
-
-	
-	public void atStation(){
-		openDoors();
-		System.out.println(station);
-		System.out.println("Open Doors");
-	}
-	
-	public void leaveStation(){
-		closeDoors();
-		System.out.println("Close doors");
-
 	}
 
 	@Override
@@ -122,7 +101,24 @@ public class TrainController implements TrainControllerInterface {
 		// TODO Auto-generated method stub
 		this.lights = lights;
 	}
+	
+	@Override
+	public void setBlockId(int id){
+		blockId = id;
+	}
 
-
+	public void run(){
+		while(true){
+			power = control.calcPower(speed);
+			System.out.println(power);
+			train.setPower(power);
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 	
 }

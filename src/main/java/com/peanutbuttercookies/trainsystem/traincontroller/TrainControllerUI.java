@@ -24,6 +24,7 @@ public class TrainControllerUI extends JFrame {
 	private JTextField textField_3;
 	private JTextField textField_4;
 	TrainController trainController;
+	private JTextField currentBlock;
 
 
 	/**
@@ -54,15 +55,15 @@ public class TrainControllerUI extends JFrame {
 		sl_contentPane.putConstraint(SpringLayout.WEST, lblSpeedLimit, 38, SpringLayout.WEST, contentPane);
 		contentPane.add(lblSpeedLimit);
 		
-		JLabel lblAuthority = new JLabel("Authority:");
-		sl_contentPane.putConstraint(SpringLayout.WEST, lblAuthority, 48, SpringLayout.WEST, contentPane);
-		contentPane.add(lblAuthority);
-		
 		JLabel lblPower = new JLabel("Power:");
-		sl_contentPane.putConstraint(SpringLayout.NORTH, lblAuthority, 41, SpringLayout.SOUTH, lblPower);
-		sl_contentPane.putConstraint(SpringLayout.NORTH, lblPower, 36, SpringLayout.SOUTH, lblSpeedLimit);
-		sl_contentPane.putConstraint(SpringLayout.EAST, lblPower, 0, SpringLayout.EAST, lblSpeedLimit);
+		sl_contentPane.putConstraint(SpringLayout.WEST, lblPower, 48, SpringLayout.WEST, contentPane);
 		contentPane.add(lblPower);
+		
+		JLabel lblAuth = new JLabel("Authority:");
+		sl_contentPane.putConstraint(SpringLayout.NORTH, lblPower, 41, SpringLayout.SOUTH, lblAuth);
+		sl_contentPane.putConstraint(SpringLayout.NORTH, lblAuth, 36, SpringLayout.SOUTH, lblSpeedLimit);
+		sl_contentPane.putConstraint(SpringLayout.EAST, lblAuth, 0, SpringLayout.EAST, lblSpeedLimit);
+		contentPane.add(lblAuth);
 		
 		textField = new JTextField();
 		textField.setEditable(false);
@@ -73,8 +74,8 @@ public class TrainControllerUI extends JFrame {
 		textField.setText(new String(""+trainController.speedLimit));
 		
 		textField_1 = new JTextField();
-		sl_contentPane.putConstraint(SpringLayout.NORTH, textField_1, -3, SpringLayout.NORTH, lblPower);
-		sl_contentPane.putConstraint(SpringLayout.WEST, textField_1, 6, SpringLayout.EAST, lblPower);
+		sl_contentPane.putConstraint(SpringLayout.NORTH, textField_1, -3, SpringLayout.NORTH, lblAuth);
+		sl_contentPane.putConstraint(SpringLayout.WEST, textField_1, 6, SpringLayout.EAST, lblAuth);
 		textField_1.setEditable(false);
 		contentPane.add(textField_1);
 		textField_1.setColumns(10);
@@ -82,7 +83,7 @@ public class TrainControllerUI extends JFrame {
 		
 		textField_2 = new JTextField();
 		textField_2.setEditable(false);
-		sl_contentPane.putConstraint(SpringLayout.SOUTH, textField_2, 0, SpringLayout.SOUTH, lblAuthority);
+		sl_contentPane.putConstraint(SpringLayout.SOUTH, textField_2, 0, SpringLayout.SOUTH, lblPower);
 		sl_contentPane.putConstraint(SpringLayout.EAST, textField_2, 0, SpringLayout.EAST, textField);
 		contentPane.add(textField_2);
 		textField_2.setColumns(10);
@@ -94,7 +95,7 @@ public class TrainControllerUI extends JFrame {
 		contentPane.add(lblDoors);
 		
 		JLabel lblNextStation = new JLabel("Station: ");
-		sl_contentPane.putConstraint(SpringLayout.NORTH, lblNextStation, 0, SpringLayout.NORTH, lblPower);
+		sl_contentPane.putConstraint(SpringLayout.NORTH, lblNextStation, 0, SpringLayout.NORTH, lblAuth);
 		sl_contentPane.putConstraint(SpringLayout.EAST, lblNextStation, 0, SpringLayout.EAST, lblDoors);
 		contentPane.add(lblNextStation);
 		
@@ -111,7 +112,7 @@ public class TrainControllerUI extends JFrame {
 		
 		textField_4 = new JTextField();
 		textField_4.setEditable(false);
-		sl_contentPane.putConstraint(SpringLayout.NORTH, textField_4, 0, SpringLayout.NORTH, lblPower);
+		sl_contentPane.putConstraint(SpringLayout.NORTH, textField_4, 0, SpringLayout.NORTH, lblAuth);
 		sl_contentPane.putConstraint(SpringLayout.WEST, textField_4, 6, SpringLayout.EAST, lblNextStation);
 		contentPane.add(textField_4);
 		textField_4.setColumns(10);
@@ -122,6 +123,19 @@ public class TrainControllerUI extends JFrame {
 		sl_contentPane.putConstraint(SpringLayout.WEST, comboBox, 6, SpringLayout.EAST, lblSelectTrain);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, comboBox, 0, SpringLayout.SOUTH, lblSelectTrain);
 		contentPane.add(comboBox);
+		
+		currentBlock = new JTextField();
+		currentBlock.setEditable(false);
+		sl_contentPane.putConstraint(SpringLayout.NORTH, currentBlock, 0, SpringLayout.NORTH, textField_2);
+		sl_contentPane.putConstraint(SpringLayout.EAST, currentBlock, 0, SpringLayout.EAST, textField_3);
+		contentPane.add(currentBlock);
+		currentBlock.setColumns(10);
+		currentBlock.setText(""+trainController.blockId);
+		
+		JLabel lblCurrentBlock = new JLabel("Current Block: ");
+		sl_contentPane.putConstraint(SpringLayout.NORTH, lblCurrentBlock, 0, SpringLayout.NORTH, lblPower);
+		sl_contentPane.putConstraint(SpringLayout.EAST, lblCurrentBlock, 0, SpringLayout.EAST, lblDoors);
+		contentPane.add(lblCurrentBlock);
 		comboBox.addItem(1);
 		setVisible(true);
 		
@@ -130,10 +144,12 @@ public class TrainControllerUI extends JFrame {
 	public void update(){
 		textField.setText(new String(""+trainController.speedLimit));
 		textField_1.setText(new String(""+trainController.auth));
+		textField_2.setText(new String(""+trainController.power));
 		if(trainController.doorsOpen == false)
 			textField_3.setText("Closed");
 		else
 			textField_3.setText("Open");
 		textField_4.setText(trainController.station);
+		currentBlock.setText(""+trainController.blockId);
 	}
 }
