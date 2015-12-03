@@ -20,7 +20,6 @@ import com.peanutbuttercookies.trainsystem.interfaces.ExcelFileDownloaderInterfa
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrainInterface;
-import com.peanutbuttercookies.trainsystem.ui.TrackModelUI;
 
 public class TrackModel implements TrackModelInterface {
 	private TrackControllerInterface trackComm;
@@ -393,19 +392,20 @@ public class TrackModel implements TrackModelInterface {
 
 	@Override
 	public void setBlockOccupied(String line, int blockId) {
-		for(int i = 0; i < lines.size(); i++)
-		{
-			if(lines.get(i).getLine().equals(line))
-				track = lines.get(i).getAllBlocks();
-		}
-		for(int i = 0; i < track.size(); i++)
-		{
-			Block curBlock = track.get(i);
-			if(curBlock.getBlockNumber() == blockId)	{
-				curBlock.setBlockOccupation(true);
-				curBlock.setNext();
-			}
-		}
+	}
+//		for(int i = 0; i < lines.size(); i++)
+//		{
+//			if(lines.get(i).getLine().equals(line))
+//				track = lines.get(i).getAllBlocks();
+//		}
+//		for(int i = 0; i < track.size(); i++)
+//		{
+//			Block curBlock = track.get(i);
+//			if(curBlock.getBlockNumber() == blockId)	{
+//				curBlock.setBlockOccupation(true);
+//				curBlock.setNext();
+//			}
+//		}
 		
 /*
 		System.out.println("setBlockOccupied blockId: " + blockId + " trainId: " + trainId);
@@ -421,7 +421,7 @@ public class TrackModel implements TrackModelInterface {
 		trainComm.setBlockId(blockId);
 		trainComm.setBlockLength(track.get(blockId-1).getBlockLen());
 	*/
-	}
+//	}
 
 	@Override
 	public void setBlockUnoccupied(String line, int blockId) {

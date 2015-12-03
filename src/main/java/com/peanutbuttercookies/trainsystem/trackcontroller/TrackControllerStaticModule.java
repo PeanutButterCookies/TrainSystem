@@ -13,7 +13,7 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 	private TrackControllerUI ui;
 	private CTCModuleInterface ctc;
 	private TrackModelInterface trackModel;
-	private LinkedList<Line> lines;
+	private LinkedList<Line> lines=new LinkedList<Line>();
 	
 	public TrackControllerStaticModule() {
 		lines = new LinkedList<Line>();
@@ -24,7 +24,6 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 		if(line.getAllBlocks().size()>1){
 			//alter private global variables
 			lines.add(line);
-			
 			//initialize all local variables
 			int divider;
 			int offset=0;
@@ -36,11 +35,16 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 			//sets the dividing point to separate the line into two sections controlled by the two TCs
 			divider=blocks.size()/2;
 			while(!split){
-				if(blocks.get(divider+offset).getSwitchBlockId()==-1 && blocks.get(divider+offset+1).getSwitchBlockId()==-1){
+				//System.out.println("Divider: " + divider + "\tOffset: "+offset);
+				if(divider==offset){
+					System.err.println("ERROR: COULD NOT FIND A VIABLE SPLITTING POINT");
+					return false;
+				}
+				if(blocks.get(divider+offset-1).getSwitchBlockId()==-1 && blocks.get(divider+offset).getSwitchBlockId()==-1){
 					split=true;
 					divider+=offset;
 				}
-				else if(blocks.get(divider-offset).getSwitchBlockId()==-1 && blocks.get(divider-offset-1).getSwitchBlockId()==-1){
+				else if(blocks.get(divider-offset-1).getSwitchBlockId()==-1 && blocks.get(divider-offset).getSwitchBlockId()==-1){
 					split=true;
 					divider-=(offset+1);
 				}
@@ -50,7 +54,7 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 			}
 			
 			//Sets up the TC sections
-			for(int i=0;i<divider;i++){
+			for(int i=0;i<=divider;i++){
 				section_1.add(blocks.get(i));
 			}
 			for(int i=divider;i<blocks.size();i++){
@@ -60,6 +64,9 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 			//Assigns the track controller objects to the line
 			line.setTrackControllers(new TrackController(line.getLine(),1,section_1,1,divider,divider,ctc,trackModel),
 					new TrackController(line.getLine(),2,section_2,divider,blocks.size(),divider,ctc,trackModel));
+			
+			ui.setLines(lines);
+			ui.updateVariableTable();
 			
 			return true;
 		}

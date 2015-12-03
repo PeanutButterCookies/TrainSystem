@@ -6,7 +6,7 @@ import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.commonresources.Line;
 import com.peanutbuttercookies.trainsystem.ctc.CTCBlock;
 import com.peanutbuttercookies.trainsystem.ctc.CTCModule;
-import com.peanutbuttercookies.trainsystem.ui.CTCModuleUI;
+import com.peanutbuttercookies.trainsystem.ctc.CTCModuleUI;
 
 public class CTCUITest {
 	public static final String LINE = "TestLine";
