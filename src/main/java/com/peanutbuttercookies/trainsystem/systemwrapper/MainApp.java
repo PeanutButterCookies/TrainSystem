@@ -29,13 +29,14 @@ public class MainApp {
 		trackModel.fileRead("C:/Users/Kevin/Downloads/ModifiedTrackLayout.xlsx");
 		
 		trackController.setCTC(ctc);
+		TrackControllerUI tcUI = new TrackControllerUI();
+		trackController.setTrackControllerUI(tcUI);
 		List<Line> lines = trackModel.getLines();
 		for(Line line : lines) {
 			trackController.setTrackControllers(line);
 			ctc.importLine(line);
 		}
 		
-		TrackControllerUI tcUI = new TrackControllerUI();
 		tcUI.setLines(lines);
 		CTCModuleUI ctcUI = new CTCModuleUI(ctc);
 		ctc.setUi(ctcUI);

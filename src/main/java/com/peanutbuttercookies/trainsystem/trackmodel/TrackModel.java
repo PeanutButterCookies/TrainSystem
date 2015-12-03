@@ -19,11 +19,11 @@ import com.peanutbuttercookies.trainsystem.commonresources.Line;
 import com.peanutbuttercookies.trainsystem.interfaces.ExcelFileDownloaderInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
-import com.peanutbuttercookies.trainsystem.interfaces.TrainInterface;
+import com.peanutbuttercookies.trainsystem.train.TrainModelInterface;
 
 public class TrackModel implements TrackModelInterface {
 	private TrackControllerInterface trackComm;
-	private TrainInterface trainComm;
+	private TrainModelInterface trainComm;
 	private TrackModelUI tmUI;
 	private ExcelFileDownloaderInterface excelDownloader;
     private LinkedList<Block> track;
@@ -455,7 +455,7 @@ public class TrackModel implements TrackModelInterface {
 	@Override
 	public void setSpeedAuthority(String line, int blockId, int speed, int authority)	{
 		//trainComm.setSpeedAuthority(line, blockId, speed, authority);
-		trainComm.run();
+//		trainComm.run();
 		System.out.println("Speed Received " + blockId + " " + speed + "  authority: " + authority + " -Track Model");
 
 	}
@@ -470,7 +470,7 @@ public class TrackModel implements TrackModelInterface {
 	public void setStation(String station) {
 		if(!station.equals("none"))	{
 			setBeacon();
-			trainComm.setStation(station);
+//			trainComm.setStation(station);
 		}
 	}
 
