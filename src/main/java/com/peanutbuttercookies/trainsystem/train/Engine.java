@@ -125,7 +125,7 @@ public class Engine {
 				
 				
 				currentAccel = Math.min(currentAccel, MAXACCELERATION);
-				distance += (currentSpeed * clockspeed) + ( (1.0/2.0)*(currentAccel) );
+				distance += (currentSpeed) + ( (1.0/2.0)*(currentAccel) );
 
 				try {
 					TimeUnit.SECONDS.sleep((long) .1);
