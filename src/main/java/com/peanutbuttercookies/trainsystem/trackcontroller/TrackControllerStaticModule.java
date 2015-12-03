@@ -71,7 +71,7 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 	
 	@Override
 	public void blockOccupied(int blockId) {
-		this.ui.updateTable();
+		this.ui.updateVariableTable();
 	}
 
 	@Override
