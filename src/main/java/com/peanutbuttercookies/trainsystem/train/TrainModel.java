@@ -1,26 +1,32 @@
 package com.peanutbuttercookies.trainsystem.train;
 
+import train.controller.TrainController;
 import train.controller.TrainControllerInterface;
+import train.test.Block;
 
 public class TrainModel implements TrainModelInterface {
 
 	public int id;
 	public double distanceTraveled;
-	private double currentSpeed;
+	private double currentSpeed = 0;
 	private double currentAccleration;
-	private Block currentBlock;
-	private Engine engine;
-	private TrainSpecs specs;
-	public TrainControllerInterface controller;
-	private Passengers passengers;
+	public Block currentBlock;
+	double power;
+	private Engine engine = new Engine(this);
+	public int auth;
+	private TrainSpecs specs = new TrainSpecs();
+	public TrainControllerInterface controller = new TrainController(this);
+	private Passengers passengers = new Passengers();
 	private boolean doors;
 	private double grade;
 	private double mass;
-	TrainUI gui;
+	TrainUI gui = new TrainUI(this);
 	//private double power;
 	
 	public TrainModel() {
 		// TODO Auto-generated constructor stub
+		setMass();
+		
 	}
 
 	@Override
@@ -28,6 +34,7 @@ public class TrainModel implements TrainModelInterface {
 		// TODO Auto-generated method stub
 		
 		grade = angle;
+		engine.grade = angle;
 	}
 
 	@Override
@@ -40,7 +47,7 @@ public class TrainModel implements TrainModelInterface {
 	@Override
 	public void setSpeedLimits(double limit) {
 		// TODO Auto-generated method stub
-		controller.setSpeedLimits(limit);
+		controller.setSpeedLimit(limit);
 	}
 
 	@Override
@@ -58,6 +65,12 @@ public class TrainModel implements TrainModelInterface {
 	@Override
 	public void setPower(double power) {
 		// TODO Auto-generated method stub
+		this.power = power;
+		if(auth-currentBlock.id == 0){
+			System.out.println("what");
+			brakes();}
+		else
+			engine.brakes = false;
 		engine.applyPower(power, grade, mass);
 	}
 
@@ -70,17 +83,20 @@ public class TrainModel implements TrainModelInterface {
 	@Override
 	public void setSpeedAndAuth(double speed, int auth) {
 		// TODO Auto-generated method stub
+		this.auth = auth;
 		controller.setSpeedAndAuth(speed, auth);
 	}
 	
 	public void setMass(){
 		mass = specs.getEmptyMass() + passengers.getPassMass(specs.getMaxCapac());
+		engine.mass = mass;
 	}
 
-	@Override
+	
 	public void setBlock(Block block) {
 		// TODO Auto-generated method stub
-		
+		currentBlock = block;
+		controller.setBlockId(currentBlock.getId());
 	}
 
 	@Override
@@ -110,7 +126,7 @@ public class TrainModel implements TrainModelInterface {
 	@Override
 	public double getPower() {
 		// TODO Auto-generated method stub
-		return engine.power;
+		return power;
 	}
 
 	@Override
@@ -136,6 +152,8 @@ public class TrainModel implements TrainModelInterface {
 		// TODO Auto-generated method stub
 		return engine.currentAccel;
 	}
+
+	
 
 }
 

@@ -1,5 +1,7 @@
 package com.peanutbuttercookies.trainsystem.train;
 
+import train.test.Block;
+
 public interface TrainModelInterface {
 	void setBlock(Block block);
 	void setAngle(double angle);

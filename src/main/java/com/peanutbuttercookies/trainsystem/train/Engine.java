@@ -1,17 +1,19 @@
 package com.peanutbuttercookies.trainsystem.train;
 
+import java.util.concurrent.TimeUnit;
+
 public class Engine {
 	public double currentSpeed;
 	public double commandedSpeed;
 	public double currentAccel;
 	public double mass;
-	public double power;
+	//public double power;
 	public double distance;
 	public double clockspeed = .1;
 	public double grade;
 	TrainModel train;
-	public boolean brakes;
-	public boolean emergencyBrakes;
+	public boolean brakes = false;
+	public boolean emergencyBrakes = false;
 	private final double WHEELRADIUS = 270; // mm
 	private final double MAXPOWER = 120000; // W
 	private final double BRAKEACC = -1.2; // m/s^2
@@ -34,7 +36,7 @@ public class Engine {
 	}*/
 	//public void setVals(double power,double grade)
 	
-	public double applyPower(double power, double grade, double mass ){
+	public void applyPower(double power, double grade, double mass ){
 		// Take power and update speed and acceleration.
 				double frictionForce = 0;
 				double gravityForce = 0;
@@ -83,12 +85,14 @@ public class Engine {
 				// If the brakes are on, the train stops at 0
 				if ((brakes || emergencyBrakes) && (currentSpeed < 0.05))
 				{
+					System.out.println("wrong if");
 					currentSpeed = 0;
 					currentAccel = 0;
 				}
 				// Else do the power calculation
 				else if(!emergencyBrakes && !brakes)
 				{
+					System.out.println("In else");
 					//frictionForce = curBlock.getFrictionCoefficient() * mass * GRAVITY * Math.cos(theta);
 					frictionForce = ROLLINGCOEFFICIENT * mass * GRAVITY * Math.cos(theta);
 					gravityForce = mass * GRAVITY * Math.sin(theta);
@@ -120,16 +124,32 @@ public class Engine {
 				
 				
 				currentAccel = Math.min(currentAccel, MAXACCELERATION);
-				distance += (currentSpeed * clockspeed) + ( (1.0/2.0)*(currentAccel)*(clockspeed * clockspeed) );
+				distance += (currentSpeed * clockspeed) + ( (1.0/2.0)*(currentAccel) );
 
-				
+				try {
+					TimeUnit.SECONDS.sleep((long) .1);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
 				// Populate train values and return them
 				train.distanceTraveled = this.distance;
+				System.out.println("Distance: " + distance);
+				if(distance >= train.currentBlock.length){
+					distance = distance - train.currentBlock.getLength();
+					train.currentBlock.setOccupied(false, train);
+					train.setBlock(train.currentBlock.getNext());
+					train.currentBlock.setOccupied(true,train);
+					train.setSpeedLimits(train.currentBlock.getSpeedLimit());
+					train.setAngle(train.currentBlock.getGrade());
+				}
 				train.controller.setCurrentVelocity(currentSpeed);
-				train.controller.calcPower(currentSpeed);
 				train.gui.updateUI();
-				return currentSpeed;
+				System.out.println(currentSpeed);
+				//train.controller.calcPower(currentSpeed);
+
+				//return currentSpeed;
 				
 	}
 
