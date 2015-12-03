@@ -192,10 +192,10 @@ public class TrackControllerUI extends JFrame {
 		tableVariableDisplay.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		tableVariableDisplay.setModel(new DefaultTableModel(
 			new Object[][] {
-				{null, "", "", "", null, "", null, ""},
+				{null, "", "", "", null, null, "", null, ""},
 			},
 			new String[] {
-				"Line", "Block ID", "Track Controller ID", "Switch ID", "Switch Engaged", "RR Crossing", "Crossing Engaged", "Lights"
+				"Line", "Block ID", "Track Controller ID", "Switch ID", "Block Occupied", "Switch Engaged", "RR Crossing", "Crossing Engaged", "Lights"
 			}
 		));
 		tableVariableDisplay.getColumnModel().getColumn(0).setResizable(false);
@@ -206,12 +206,13 @@ public class TrackControllerUI extends JFrame {
 		tableVariableDisplay.getColumnModel().getColumn(2).setPreferredWidth(116);
 		tableVariableDisplay.getColumnModel().getColumn(3).setResizable(false);
 		tableVariableDisplay.getColumnModel().getColumn(3).setPreferredWidth(57);
-		tableVariableDisplay.getColumnModel().getColumn(4).setResizable(false);
-		tableVariableDisplay.getColumnModel().getColumn(4).setPreferredWidth(86);
+		tableVariableDisplay.getColumnModel().getColumn(4).setPreferredWidth(85);
 		tableVariableDisplay.getColumnModel().getColumn(5).setResizable(false);
-		tableVariableDisplay.getColumnModel().getColumn(6).setPreferredWidth(101);
-		tableVariableDisplay.getColumnModel().getColumn(7).setResizable(false);
-		tableVariableDisplay.getColumnModel().getColumn(7).setPreferredWidth(39);
+		tableVariableDisplay.getColumnModel().getColumn(5).setPreferredWidth(86);
+		tableVariableDisplay.getColumnModel().getColumn(6).setResizable(false);
+		tableVariableDisplay.getColumnModel().getColumn(7).setPreferredWidth(101);
+		tableVariableDisplay.getColumnModel().getColumn(8).setResizable(false);
+		tableVariableDisplay.getColumnModel().getColumn(8).setPreferredWidth(39);
 		panel_ControllerDisplay.setLayout(gl_panel_ControllerDisplay);
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
 		gl_panel_1.setHorizontalGroup(
@@ -566,9 +567,9 @@ public class TrackControllerUI extends JFrame {
 					
 					DefaultTableModel dtm= (DefaultTableModel)tableVariableDisplay.getModel();
 					dtm.setRowCount(currTC.getSection().size()+counter);
-					if(!tcIterator.hasNext()){
+					/*if(!tcIterator.hasNext()){
 						dtm.setRowCount(tableVariableDisplay.getRowCount()-1);
-					}
+					}*/
 					counter=setVariableTableValues(currLine,currTC,counter);
 				}
 			}
@@ -591,9 +592,9 @@ public class TrackControllerUI extends JFrame {
 					
 					DefaultTableModel dtm= (DefaultTableModel)tableVariableDisplay.getModel();
 					dtm.setRowCount(currTC.getSection().size()+counter);
-					if(!tcIterator.hasNext()){
+					/*if(!tcIterator.hasNext()){
 						dtm.setRowCount(tableVariableDisplay.getRowCount()-1);
-					}
+					}*/
 					counter=setVariableTableValues(currLine,currTC,counter);
 				}
 			}
@@ -626,10 +627,11 @@ public class TrackControllerUI extends JFrame {
 			tableVariableDisplay.setValueAt(currBlock.getBlockNumber(), counter, 1);		//Block ID
 			tableVariableDisplay.setValueAt(currTC.getControllerId(), counter, 2);			//Track Controller ID
 			tableVariableDisplay.setValueAt(currBlock.getSwitchBlockId(), counter, 3);		//Switch ID
-			tableVariableDisplay.setValueAt(currBlock.isSwitchEngaged(), counter, 4);		//Switch Engaged
-			tableVariableDisplay.setValueAt(currBlock.hasRRCrossing(), counter, 5);			//RR Crossing
-			tableVariableDisplay.setValueAt(currBlock.isRRCrossingEngaged(), counter, 6);	//Crossing Engaged
-			tableVariableDisplay.setValueAt("N/A", counter, 7);								//Lights
+			tableVariableDisplay.setValueAt(currBlock.isBlockOccupied(), counter, 4);		//Block Occupied
+			tableVariableDisplay.setValueAt(currBlock.isSwitchEngaged(), counter, 5);		//Switch Engaged
+			tableVariableDisplay.setValueAt(currBlock.hasRRCrossing(), counter, 6);			//RR Crossing
+			tableVariableDisplay.setValueAt(currBlock.isRRCrossingEngaged(), counter, 7);	//Crossing Engaged
+			tableVariableDisplay.setValueAt("N/A", counter, 8);								//Lights
 			counter++;
 			
 		}

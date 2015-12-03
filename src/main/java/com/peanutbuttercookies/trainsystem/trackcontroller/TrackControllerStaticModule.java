@@ -63,10 +63,14 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 			for (int i = 0; i <= divider; i++) {
 				section_1.add(blocks.get(i));
 				blocks.get(i).addListener(tc1);
+				blocks.get(i).addListener(this);
 			}
 			for (int i = divider; i < blocks.size(); i++) {
 				section_2.add(blocks.get(i));
 				blocks.get(i).addListener(tc2);
+				if(i!=divider){
+					blocks.get(i).addListener(this);
+				}
 			}
 
 			// Assigns the track controller objects to the line
