@@ -22,6 +22,7 @@ public interface TrainModelInterface {
 	double getNumCars();
 	double getCurrentSpeed();
 	double getAcceleration();
+	void run();
 
 }
 
