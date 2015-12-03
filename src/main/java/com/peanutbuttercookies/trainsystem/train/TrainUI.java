@@ -173,6 +173,7 @@ public class TrainUI extends JFrame {
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, selectTrain, 0, SpringLayout.SOUTH, lblSelectTrain);
 		contentPane.add(selectTrain);
 		selectTrain.addItem(1);
+//		add(contentPane);
 		setVisible(true);
 	}
 	

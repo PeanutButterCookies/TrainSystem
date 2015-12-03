@@ -105,9 +105,11 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 
 	@Override
 	public void blockOccupied(int blockId) {
+		System.out.println("Block Occupied track controller");
 		if(blockId>=this.startBlock && blockId<=this.endBlock && this.startBlock!=this.overlapBlock){
 			boolean occupied=section.get(blockId-startBlock).isBlockOccupied();
 			if(occupied){
+				System.out.println("Setting ctc block occupied");
 				this.ctc.setBlockOccupied(this.line,blockId);
 			}
 			else{

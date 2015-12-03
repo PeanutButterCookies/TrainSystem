@@ -103,6 +103,7 @@ public class TrainController implements TrainControllerInterface {
 	@Override
 	public void setBlockId(int id){
 		blockId = id;
+		System.out.println("Block: "+blockId);
 	}
 
 	public void run(){

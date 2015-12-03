@@ -138,9 +138,6 @@ public class CTCBlock {
 		double seconds = diff/1000;
 		double minutes = seconds/60;
 		double hours = minutes/60;
-		if(hours < 1) {
-			hours = 1;
-		}
 		double throughput = numTrains/hours;
 		return throughput;
 		

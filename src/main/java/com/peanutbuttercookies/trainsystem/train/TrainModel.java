@@ -5,7 +5,7 @@ import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.traincontroller.TrainController;
 import com.peanutbuttercookies.trainsystem.traincontroller.TrainControllerInterface;
 
-public class TrainModel implements TrainModelInterface {
+public class TrainModel implements TrainModelInterface, Runnable {
 
 	public int id;
 	public double distanceTraveled;
@@ -68,10 +68,11 @@ public class TrainModel implements TrainModelInterface {
 	public void setPower(double power) {
 		// TODO Auto-generated method stub
 		this.power = power;
-		if(auth-currentBlock.getBlockNumber() == 0){
+		System.out.println("Current: " + currentBlock.getBlockNumber() + ", Auth: " + auth);
+		if(auth == currentBlock.getBlockNumber()){
 			System.out.println("what");
-			brakes();}
-		else
+			brakes();
+		} else
 			engine.brakes = false;
 		engine.applyPower(power, grade, mass);
 	}
@@ -98,7 +99,6 @@ public class TrainModel implements TrainModelInterface {
 	public void setBlock(Block block) {
 		// TODO Auto-generated method stub
 		currentBlock = block;
-		controller.setBlockId(currentBlock.getBlockNumber());
 	}
 
 	@Override

@@ -191,14 +191,17 @@ public class Block {
 		return blockOccupied;
 	}
 
-	public void setBlockOccupation(boolean occupied, TrainModelInterface trainComm) {
+	public void setBlockOccupation(boolean occupied, Block prev, TrainModelInterface trainComm) {
 		if (occupied) {
 			this.trainComm = trainComm;
+			setPrev(prev);
+			setNext();
 		} else {
 			trainComm = null;
 		}
 		blockOccupied = occupied;
 		for (BlockOccupationListener i : listeners) {
+			System.out.println("Block occupation listener found");
 			i.blockOccupied(this.blockNumber);
 		}
 	}
@@ -310,10 +313,11 @@ public class Block {
 		for (int i = 0; i < nextPossible.size(); i++) {
 			if (nextPossible.get(i) != prev) {
 				next = nextPossible.get(i);
+				System.out.println("Next Block: "+ next.getBlockNumber() + " ");
 			}
 		}
 	}
-
+	
 	public Block getNext() {
 		return next;
 	}
@@ -343,11 +347,15 @@ public class Block {
 		if (blockNumber == 1) {
 			System.out.println("new train");
 			trainComm = new TrainModel();
+			Thread thread = new Thread(trainComm);
+			thread.setDaemon(true);
 			trainComm.setBlock(this);
-			trainComm.run();
-		}
-		if (trainComm != null) {
-			this.trainComm.setSpeedAndAuth(speed, authority);
+			setBlockOccupation(true, null, trainComm);
+			System.out.println(next.getBlockNumber());
+			trainComm.setSpeedAndAuth(speed, authority);
+			thread.start();
+		} else {
+			trainComm.setSpeedAndAuth(speed, authority);
 		}
 	}
 }

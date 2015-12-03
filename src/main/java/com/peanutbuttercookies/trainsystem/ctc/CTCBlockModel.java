@@ -59,28 +59,31 @@ public class CTCBlockModel extends AbstractTableModel {
 			switchMap.put(ctcBlock.getBlockNumber(), ctcBlock);
 		}
 
-		if (block.getBlockNumber() == 0) {
+		if (block.getBlockNumber() == 1) {
+			System.out.println("Prev block set to null");
 			ctcBlock.setPrevBlock(null);
 		} else {
 			int index = (block.getNextPossible().size() > 1)? 1:0;
 			Integer prev = block.getNextPossible().get(index).getBlockNumber();
 			if (blockMap.containsKey(prev)) {
+				System.out.println("Used an old CTCBlock");
 				ctcBlock.setPrevBlock(blockMap.get(prev));
 			} else {
-				CTCBlock newBlock = new CTCBlock();
+				System.out.println("Made a new CTCBlock");
+				CTCBlock newBlock = new CTCBlock(block.getNextPossible().get(index));
 				blockMap.put(prev, newBlock);
 				ctcBlock.setPrevBlock(newBlock);
 			}
 		}
 
-		if(block.getBlockNumber() != 0 && block.getNextPossible().size() == 1) {
+		if(block.getBlockNumber() != 1 && block.getNextPossible().size() == 1) {
 			ctcBlock.setNextBlock(null);
 		} else {
 			Integer next = block.getNextPossible().get(0).getBlockNumber();
 			if (blockMap.containsKey(next)) {
 				ctcBlock.setNextBlock(blockMap.get(next));
 			} else {
-				CTCBlock newBlock = new CTCBlock();
+				CTCBlock newBlock = new CTCBlock(block.getNextPossible().get(0));
 				blockMap.put(next, newBlock);
 				ctcBlock.setNextBlock(newBlock);
 			}
@@ -90,6 +93,11 @@ public class CTCBlockModel extends AbstractTableModel {
 		if (!blockMap.containsKey(ctcBlock.getBlockNumber())) {
 			blockMap.put(ctcBlock.getBlockNumber(), ctcBlock);
 		}
+		
+		System.out.println("This: " +ctcBlock);
+		System.out.println("Next: " + ctcBlock.getNextBlock());
+		System.out.println("Prev: " + ctcBlock.getPrevBlock());
+		
 		fireTableDataChanged();
 	}
 
@@ -111,7 +119,7 @@ public class CTCBlockModel extends AbstractTableModel {
 		if (blockMap.containsKey(blockId)) {
 			blockMap.get(blockId).setOccupied(true);
 			fireTableDataChanged();
-			if (blockId == 0 && !blockMap.get(0).getNextBlock().isOccupied()) {
+			if (blockId == 1 && !blockMap.get(blockMap.get(1).getNextBlock().getBlockNumber()).getNextBlock().isOccupied()) {
 				return true;
 			} else {
 				return false;
@@ -126,7 +134,7 @@ public class CTCBlockModel extends AbstractTableModel {
 		if (blockMap.containsKey(blockId)) {
 			blockMap.get(blockId).setOccupied(false);
 			fireTableDataChanged();
-			if (blockId == 0 && !blockMap.get(0).getNextBlock().isOccupied()) {
+			if (blockId == 1 && !blockMap.get(2).getNextBlock().isOccupied()) {
 				return true;
 			} else {
 				return false;

@@ -2,6 +2,8 @@ package com.peanutbuttercookies.trainsystem.train;
 
 import java.util.concurrent.TimeUnit;
 
+import com.peanutbuttercookies.trainsystem.commonresources.Block;
+
 
 public class Engine {
 	public double currentSpeed;
@@ -86,14 +88,12 @@ public class Engine {
 				// If the brakes are on, the train stops at 0
 				if ((brakes || emergencyBrakes) && (currentSpeed < 0.05))
 				{
-					System.out.println("wrong if");
 					currentSpeed = 0;
 					currentAccel = 0;
 				}
 				// Else do the power calculation
 				else if(!emergencyBrakes && !brakes)
 				{
-					System.out.println("In else");
 					//frictionForce = curBlock.getFrictionCoefficient() * mass * GRAVITY * Math.cos(theta);
 					frictionForce = ROLLINGCOEFFICIENT * mass * GRAVITY * Math.cos(theta);
 					gravityForce = mass * GRAVITY * Math.sin(theta);
@@ -102,10 +102,6 @@ public class Engine {
 					
 					double totalForce = engineForce + gravityForce + frictionForce;
 
-					System.out.println("Total force: " + totalForce);
-					System.out.println("Gravity force: " + gravityForce);
-					System.out.println("Friction force: " + frictionForce);
-					
 					// Engine overcomes gravity and friction
 					if (totalForce > 0)
 					{
@@ -143,12 +139,15 @@ public class Engine {
 				train.distanceTraveled = this.distance;
 				System.out.println("Distance: " + distance);
 				if(distance >= train.currentBlock.getBlockLength()){
+					System.out.println("\n\n\nSwitching block\n\n\n");
 					distance = distance - train.currentBlock.getBlockLength();
-					train.currentBlock.setBlockOccupation(false, train);
+					Block old = train.currentBlock;
 					train.setBlock(train.currentBlock.getNext());
-					train.currentBlock.setBlockOccupation(true,train);
+					train.currentBlock.setBlockOccupation(true,old,train);
+					old.setBlockOccupation(false,null, null);
 					train.setSpeedLimits(train.currentBlock.getSpeedLimit());
 					train.setAngle(train.currentBlock.getBlockGrade());
+					train.controller.setBlockId(train.currentBlock.getBlockNumber());
 				}
 				train.controller.setCurrentVelocity(currentSpeed);
 				train.gui.updateUI();

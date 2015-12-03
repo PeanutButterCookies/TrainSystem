@@ -32,7 +32,7 @@ public class SpeedControl {
 			commandSpeed = speedLimit;
 		}
 		ek = commandSpeed - speed;
-		uk = uk_prev + .01/2 * (ek + ek_prev);
+		uk = uk_prev + 1/2 * (ek + ek_prev);
 		power = KI*(ek) + KP*(uk);
 		if(power > maxPower){
 			uk = uk_prev;

@@ -3,7 +3,7 @@ package com.peanutbuttercookies.trainsystem.train;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
 
-public interface TrainModelInterface {
+public interface TrainModelInterface extends Runnable {
 	void setBlock(Block block);
 	void setAngle(double angle);
 	void brakes();
@@ -22,7 +22,6 @@ public interface TrainModelInterface {
 	double getNumCars();
 	double getCurrentSpeed();
 	double getAcceleration();
-	void run();
 
 }
 

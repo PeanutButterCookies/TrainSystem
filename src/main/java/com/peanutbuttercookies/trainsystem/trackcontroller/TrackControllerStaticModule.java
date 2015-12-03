@@ -9,78 +9,84 @@ import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerStaticInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 
-public class TrackControllerStaticModule implements TrackControllerStaticInterface,BlockOccupationListener {
+public class TrackControllerStaticModule implements TrackControllerStaticInterface, BlockOccupationListener {
 	private TrackControllerUI ui;
 	private CTCModuleInterface ctc;
 	private TrackModelInterface trackModel;
-	private LinkedList<Line> lines=new LinkedList<Line>();
-	
+	private LinkedList<Line> lines = new LinkedList<Line>();
+
 	public TrackControllerStaticModule() {
 		lines = new LinkedList<Line>();
 	}
 
 	@Override
-	public boolean setTrackControllers(Line line){
-		if(line.getAllBlocks().size()>1){
-			//alter private global variables
+	public boolean setTrackControllers(Line line) {
+		if (line.getAllBlocks().size() > 1) {
+			// alter private global variables
 			lines.add(line);
-			//initialize all local variables
+			// initialize all local variables
 			int divider;
-			int offset=0;
-			boolean split=false;
+			int offset = 0;
+			boolean split = false;
 			final LinkedList<Block> blocks = line.getAllBlocks();
 			LinkedList<Block> section_1 = new LinkedList<Block>();
 			LinkedList<Block> section_2 = new LinkedList<Block>();
-			
-			//sets the dividing point to separate the line into two sections controlled by the two TCs
-			divider=blocks.size()/2;
-			while(!split){
-				//System.out.println("Divider: " + divider + "\tOffset: "+offset);
-				if(divider==offset){
+
+			// sets the dividing point to separate the line into two sections
+			// controlled by the two TCs
+			divider = blocks.size() / 2;
+			while (!split) {
+				// System.out.println("Divider: " + divider + "\tOffset:
+				// "+offset);
+				if (divider == offset) {
 					System.err.println("ERROR: COULD NOT FIND A VIABLE SPLITTING POINT");
 					return false;
 				}
-				if(blocks.get(divider+offset-1).getSwitchBlockId()==-1 && blocks.get(divider+offset).getSwitchBlockId()==-1){
-					split=true;
-					divider+=offset;
-				}
-				else if(blocks.get(divider-offset-1).getSwitchBlockId()==-1 && blocks.get(divider-offset).getSwitchBlockId()==-1){
-					split=true;
-					divider-=(offset+1);
-				}
-				else{
+				if (blocks.get(divider + offset - 1).getSwitchBlockId() == -1
+						&& blocks.get(divider + offset).getSwitchBlockId() == -1) {
+					split = true;
+					divider += offset;
+				} else if (blocks.get(divider - offset - 1).getSwitchBlockId() == -1
+						&& blocks.get(divider - offset).getSwitchBlockId() == -1) {
+					split = true;
+					divider -= (offset + 1);
+				} else {
 					offset++;
 				}
 			}
-			
-			//Sets up the TC sections
-			for(int i=0;i<=divider;i++){
+
+			TrackController tc1 = new TrackController(line.getLine(), 1, section_1, 1, divider, divider, ctc,
+					trackModel);
+			TrackController tc2 = new TrackController(line.getLine(), 2, section_2, divider, blocks.size(), divider,
+					ctc, trackModel);
+			// Sets up the TC sections
+			for (int i = 0; i <= divider; i++) {
 				section_1.add(blocks.get(i));
+				blocks.get(i).addListener(tc1);
 			}
-			for(int i=divider;i<blocks.size();i++){
+			for (int i = divider; i < blocks.size(); i++) {
 				section_2.add(blocks.get(i));
+				blocks.get(i).addListener(tc2);
 			}
-			
-			//Assigns the track controller objects to the line
-			line.setTrackControllers(new TrackController(line.getLine(),1,section_1,1,divider,divider,ctc,trackModel),
-					new TrackController(line.getLine(),2,section_2,divider,blocks.size(),divider,ctc,trackModel));
-			
+
+			// Assigns the track controller objects to the line
+			line.setTrackControllers(tc1, tc2);
+
 			ui.setLines(lines);
-			//TODO commented this out
-//			ui.updateVariableTable();
-			
+			// TODO commented this out
+			// ui.updateVariableTable();
+
 			return true;
-		}
-		else{
+		} else {
 			return false;
-		}		
+		}
 	}
 
 	@Override
 	public void setTrackControllerUI(TrackControllerUI trackControllerUI) {
-		this.ui=trackControllerUI;
+		this.ui = trackControllerUI;
 	}
-	
+
 	@Override
 	public void blockOccupied(int blockId) {
 		this.ui.updateVariableTable();
@@ -88,12 +94,12 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 
 	@Override
 	public void setCTC(CTCModuleInterface initCtc) {
-		this.ctc=initCtc;
+		this.ctc = initCtc;
 	}
 
 	@Override
 	public void setTrackModel(TrackModelInterface initTrackModel) {
-		this.trackModel=initTrackModel;
+		this.trackModel = initTrackModel;
 	}
 
 }
