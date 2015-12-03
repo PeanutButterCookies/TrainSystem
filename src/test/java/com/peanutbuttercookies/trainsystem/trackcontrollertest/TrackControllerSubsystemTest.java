@@ -21,6 +21,7 @@ public class TrackControllerSubsystemTest {
 	
 	public static void main(String[] args) throws IOException {
 		TrackControllerStaticInterface TCModule = new TrackControllerStaticModule();
+		
 		TrackControllerUI ui = new TrackControllerUI();
 		TCModule.setTrackControllerUI(ui);
 		//TrackModelInterface trackModel = new TrackModel();
@@ -52,19 +53,6 @@ public class TrackControllerSubsystemTest {
 			}
 		}
 		
-		//TestTrackController tc = new TestTrackController(blocks);
-		//line.setTrackControllers(tc, new TestTrackController(new LinkedList<Block>()));
-		
-		
-		
-		/*
-		trackModel.fileRead("C:\\Users\\Chris\\Documents\\University of Pittsburgh\\Junior Year\\Software Engineering\\testtrack.xlsx");
-		Iterator<Line> lineIterator=trackModel.getLines().iterator();
-		while(lineIterator.hasNext()){
-			Line currLine=lineIterator.next();
-			TCModule.setTrackControllers(currLine);
-		}
-		*/
 		
 	}
 	
