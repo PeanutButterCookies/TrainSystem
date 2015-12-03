@@ -93,7 +93,7 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 	@Override
 	public void setSpeedAuthority(int blockId, int speed, int authority){
 		if(blockId<=endBlock && blockId>=startBlock){
-			section.get(blockId-startBlock).setSpeedAuthority(speed,authority);
+			section.get(blockId-startBlock+1).setSpeedAuthority(speed,authority);
 		}
 		else{
 			System.err.println("ERROR: BLOCKID NOT CONTAINED WITHIN THIS CONTROLLER");
