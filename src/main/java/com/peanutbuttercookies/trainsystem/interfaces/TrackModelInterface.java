@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.commonresources.Line;
 import com.peanutbuttercookies.trainsystem.trackmodel.TrackModelUI;
+import com.peanutbuttercookies.trainsystem.train.TrainModelInterface;
 
 public interface TrackModelInterface {
 	//for train access, but should not need it
@@ -30,7 +31,6 @@ public interface TrackModelInterface {
 	public void setUI(TrackModelUI tmUI);
 	public LinkedList<Block> getTrack();
 	public void setTC(TrackControllerInterface trackComm);
-	public void setTI(TrainInterface trainComm);
 	public void setBeacon(); //sent to train controller
 	public void setStation(String station); //sent to train controller
 	public void excelReader() throws IOException;

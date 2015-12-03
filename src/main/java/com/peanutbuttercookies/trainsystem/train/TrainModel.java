@@ -154,6 +154,12 @@ public class TrainModel implements TrainModelInterface {
 		return engine.currentAccel;
 	}
 
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		controller.run();
+	}
+
 	
 
 }

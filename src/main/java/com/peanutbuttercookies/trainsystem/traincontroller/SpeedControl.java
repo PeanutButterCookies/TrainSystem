@@ -1,3 +1,4 @@
+
 package com.peanutbuttercookies.trainsystem.traincontroller;
 
 
@@ -27,6 +28,9 @@ public class SpeedControl {
 	
 	public double calcPower(double speed){
 		//System.out.println(commandSpeed);
+		if(commandSpeed > speedLimit){
+			commandSpeed = speedLimit;
+		}
 		ek = commandSpeed - speed;
 		uk = uk_prev + .01/2 * (ek + ek_prev);
 		power = KI*(ek) + KP*(uk);
