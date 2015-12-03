@@ -134,7 +134,7 @@ public class CTCModule implements CTCModuleInterface {
 		} catch (Exception e) {
 			return false;
 		}
-		System.out.println("CTC block id: " + train.getHead());
+		speedInt = (int) (1609.34 * speedInt / 3600);
 		lineBlockMap.get(line).getBlock(train.getHead()).getTc().setSpeedAuthority(train.getHead(), speedInt,
 				block.getBlockNumber());
 		return true;
