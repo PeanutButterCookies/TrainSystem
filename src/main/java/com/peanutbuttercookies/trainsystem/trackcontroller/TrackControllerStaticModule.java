@@ -15,6 +15,10 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 	private TrackModelInterface trackModel;
 	private LinkedList<Line> lines;
 	
+	public TrackControllerStaticModule() {
+		lines = new LinkedList<Line>();
+	}
+
 	@Override
 	public boolean setTrackControllers(Line line){
 		if(line.getAllBlocks().size()>1){

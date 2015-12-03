@@ -34,6 +34,9 @@ public class CTCBlockModel extends AbstractTableModel {
 	}
 	
 	public void addBlock(Block block, TrackControllerInterface tc) {
+		if(block == null) {
+			return;
+		}
 		CTCBlock ctcBlock = null;
 		if(blockMap.containsKey(block.getBlockNumber())) {
 			ctcBlock = blockMap.get(block.getBlockNumber());
@@ -91,7 +94,10 @@ public class CTCBlockModel extends AbstractTableModel {
 				ctcBlock.setNextBlock(newBlock);
 			}
 		}
-		blockMap.put(ctcBlock.getBlockNumber(), ctcBlock);
+		if(ctcBlock.getBlockNumber() > 9) System.out.println("Bad block");
+		if(!blockMap.containsKey(ctcBlock.getBlockNumber())) {
+			blockMap.put(ctcBlock.getBlockNumber(), ctcBlock);
+		}
 		fireTableDataChanged();
 	}
 	

@@ -69,7 +69,6 @@ public class CTCTrainModel extends AbstractTableModel {
 	
 	public void moveTail(Integer prevBlock, Integer newBlock) {
 		for(CTCTrain train : trains) {
-			System.out.println("tail: " + train.getHead() + ", prev: " + prevBlock + ", new: " + newBlock);
 			if(train.getTail().equals(prevBlock)) {
 				train.setTail(newBlock);
 			}

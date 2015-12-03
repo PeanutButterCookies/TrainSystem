@@ -67,6 +67,7 @@ public class CTCModule implements CTCModuleInterface {
 
 		for(TrackControllerInterface tc : line.getAllTrackControllers()) {
 			for (Block block : tc.getSection()) {
+				System.out.println(block.getBlockNumber());
 				lineBlockMap.get(line.getLine()).addBlock(block, tc);
 			}
 		}

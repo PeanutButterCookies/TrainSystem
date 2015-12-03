@@ -9,6 +9,7 @@ package com.peanutbuttercookies.trainsystem.systemwrapper;
 import java.io.IOException;
 import java.util.List;
 
+import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.commonresources.Line;
 import com.peanutbuttercookies.trainsystem.ctc.CTCModule;
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
@@ -24,9 +25,14 @@ public class MainApp {
 		CTCModuleInterface ctc = new CTCModule();
 		TrackControllerStaticModule trackController = new TrackControllerStaticModule();
 		TrackModelInterface trackModel = new TrackModel();
+		//TODO
+		trackModel.fileRead("C:/Users/Kevin/Downloads/ModifiedTrackLayout.xlsx");
 		
 		trackController.setCTC(ctc);
 		List<Line> lines = trackModel.getLines();
+		for(Block block : lines.get(0).getAllBlocks()) {
+			System.out.println(block.getBlockNumber());
+		}
 		for(Line line : lines) {
 			trackController.setTrackControllers(line);
 			ctc.importLine(line);
