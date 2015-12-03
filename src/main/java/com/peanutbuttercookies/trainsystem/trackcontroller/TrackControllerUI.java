@@ -5,7 +5,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
@@ -50,7 +50,7 @@ public class TrackControllerUI extends JFrame {
 	
 	private String 						displayedLine=null;
 	private String						displayedController=null;
-	private LinkedList<Line>			lines;
+	private List<Line>					lines;
 	private JTable 						tableSwitches;
 	
 	/**
@@ -622,7 +622,7 @@ public class TrackControllerUI extends JFrame {
 		
 	}
 	
-	public void setLines(LinkedList<Line> lines){
+	public void setLines(List<Line> lines){
 		this.lines=lines;
 		
 		Iterator<Line> lineIterator=lines.iterator();
