@@ -16,14 +16,14 @@ import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 
 public class CTCBlockModel extends AbstractTableModel {
-	
+
 	private static final long serialVersionUID = -3573813996444899446L;
 
 	private Map<Integer, CTCBlock> blockMap;
 	private Map<Integer, CTCBlock> switchMap;
 	private Map<String, CTCSection> sections;
 	private Thread update;
-	
+
 	public CTCBlockModel() {
 		blockMap = new LinkedHashMap<Integer, CTCBlock>();
 		switchMap = new LinkedHashMap<Integer, CTCBlock>();
@@ -32,47 +32,35 @@ public class CTCBlockModel extends AbstractTableModel {
 		update.setDaemon(true);
 		update.start();
 	}
-	
+
 	public void addBlock(Block block, TrackControllerInterface tc) {
-		if(block == null) {
+		if (block == null) {
 			return;
 		}
 		CTCBlock ctcBlock = null;
-		if(blockMap.containsKey(block.getBlockNumber())) {
+		if (blockMap.containsKey(block.getBlockNumber())) {
 			ctcBlock = blockMap.get(block.getBlockNumber());
 			ctcBlock.setAll(block);
 		} else {
 			ctcBlock = new CTCBlock(block);
 		}
 		ctcBlock.setTc(tc);
-		
-		
-		if(!sections.containsKey(ctcBlock.getSection())) {
+
+		if (!sections.containsKey(ctcBlock.getSection())) {
 			sections.put(ctcBlock.getSection(), new CTCSection(ctcBlock.getSection()));
 		}
-		
+
 		sections.get(ctcBlock.getSection()).addBlock(ctcBlock);
-		if(ctcBlock.isSwitch()) {
-			switchMap.put(ctcBlock.getBlockNumber(), ctcBlock); 
+		if (ctcBlock.isSwitch()) {
+			switchMap.put(ctcBlock.getBlockNumber(), ctcBlock);
 		}
-		
-		for(Block b : block.getNextPossible()) {
-			int num = b.getBlockNumber();
-			if(blockMap.containsKey(num)) {
-				ctcBlock.addPossible(blockMap.get(num));
-			} else {
-				CTCBlock newBlock = new CTCBlock();
-				blockMap.put(num, newBlock);
-				ctcBlock.addPossible(newBlock);
-			}
-		}
-		
-		if(block.getPrevBlock() == null) {
-			System.out.println("Previous block is null");
+
+		if (block.getBlockNumber() == 0) {
 			ctcBlock.setPrevBlock(null);
 		} else {
-			Integer prev = block.getPrevBlock().getBlockNumber();
-			if(blockMap.containsKey(prev)) {
+			int index = (block.getNextPossible().size() > 1)? 1:0;
+			Integer prev = block.getNextPossible().get(index).getBlockNumber();
+			if (blockMap.containsKey(prev)) {
 				ctcBlock.setPrevBlock(blockMap.get(prev));
 			} else {
 				CTCBlock newBlock = new CTCBlock();
@@ -80,13 +68,12 @@ public class CTCBlockModel extends AbstractTableModel {
 				ctcBlock.setPrevBlock(newBlock);
 			}
 		}
-		
-		if(block.getNext() == null) {
-			System.out.println("Next block is null");
+
+		if(block.getBlockNumber() != 0 && block.getNextPossible().size() == 1) {
 			ctcBlock.setNextBlock(null);
 		} else {
-			Integer next = block.getNext().getBlockNumber();
-			if(blockMap.containsKey(next)) {
+			Integer next = block.getNextPossible().get(0).getBlockNumber();
+			if (blockMap.containsKey(next)) {
 				ctcBlock.setNextBlock(blockMap.get(next));
 			} else {
 				CTCBlock newBlock = new CTCBlock();
@@ -94,32 +81,33 @@ public class CTCBlockModel extends AbstractTableModel {
 				ctcBlock.setNextBlock(newBlock);
 			}
 		}
-		if(ctcBlock.getBlockNumber() > 9) System.out.println("Bad block");
-		if(!blockMap.containsKey(ctcBlock.getBlockNumber())) {
+		if (ctcBlock.getBlockNumber() > 9)
+			System.out.println("Bad block");
+		if (!blockMap.containsKey(ctcBlock.getBlockNumber())) {
 			blockMap.put(ctcBlock.getBlockNumber(), ctcBlock);
 		}
 		fireTableDataChanged();
 	}
-	
+
 	public Collection<CTCSection> getSections() {
 		return sections.values();
 	}
-	
+
 	public List<CTCBlock> getBlocks(CTCSection section) {
 		return sections.get(section.getName()).getBlocks();
 	}
-	
+
 	public void removeBlock(int block, String line) {
 		blockMap.remove(block);
 		switchMap.remove(block);
 		fireTableDataChanged();
 	}
-	
+
 	public boolean setOccupied(int blockId) {
-		if(blockMap.containsKey(blockId)) {
+		if (blockMap.containsKey(blockId)) {
 			blockMap.get(blockId).setOccupied(true);
 			fireTableDataChanged();
-			if(blockId == 0 && !blockMap.get(0).getNextBlock().isOccupied()) {
+			if (blockId == 0 && !blockMap.get(0).getNextBlock().isOccupied()) {
 				return true;
 			} else {
 				return false;
@@ -129,12 +117,12 @@ public class CTCBlockModel extends AbstractTableModel {
 			return false;
 		}
 	}
-	
+
 	public boolean setUnoccupied(int blockId) {
-		if(blockMap.containsKey(blockId)) {
+		if (blockMap.containsKey(blockId)) {
 			blockMap.get(blockId).setOccupied(false);
 			fireTableDataChanged();
-			if(blockId == 0 && !blockMap.get(0).getNextBlock().isOccupied()) {
+			if (blockId == 0 && !blockMap.get(0).getNextBlock().isOccupied()) {
 				return true;
 			} else {
 				return false;
@@ -144,18 +132,18 @@ public class CTCBlockModel extends AbstractTableModel {
 			return false;
 		}
 	}
-	
+
 	public Integer getPrevBlock(int blockId) {
 		CTCBlock block = blockMap.get(blockId);
-		if(block == null) {
+		if (block == null) {
 			return null;
-		} else if(block.getPrevBlock() == null) {
+		} else if (block.getPrevBlock() == null) {
 			return null;
 		} else {
 			return block.getPrevBlock().getBlockNumber();
 		}
 	}
-	
+
 	@Override
 	public int getColumnCount() {
 		return CTCBlock.getFieldsSize();
@@ -168,11 +156,11 @@ public class CTCBlockModel extends AbstractTableModel {
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		if(!blockMap.containsKey(rowIndex)) {
+		if (!blockMap.containsKey(rowIndex)) {
 			return null;
 		}
 
-		switch(columnIndex) {
+		switch (columnIndex) {
 		case 0:
 			return blockMap.get(rowIndex).getBlockNumber();
 		case 1:
@@ -188,18 +176,14 @@ public class CTCBlockModel extends AbstractTableModel {
 		}
 
 	}
-	
+
 	@Override
 	public String getColumnName(int column) {
 		return CTCBlock.getField(column);
 	}
-	
-	//FOR TESTING
+
+	// FOR TESTING
 	public Map<Integer, CTCBlock> getBlockMap() {
 		return blockMap;
 	}
 }
-
-
-
-

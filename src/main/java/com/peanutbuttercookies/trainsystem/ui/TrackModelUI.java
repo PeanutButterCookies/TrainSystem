@@ -113,7 +113,7 @@ public class TrackModelUI extends JFrame {
                 {
                     File file = chooser.getSelectedFile();
                     String filename= file.getAbsolutePath();
-                    try {
+					try {
 						module.fileRead(filename);
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
@@ -131,7 +131,7 @@ public class TrackModelUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
             	for(int i = 0; i < track.size(); i++)	{
             		if(i == curView)
-            			track.get(i).setBlockOccupation(true);
+            			track.get(i).setBlockOccupation(true, null);
             	}
             	update(curView);
             }
@@ -155,7 +155,7 @@ public class TrackModelUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				for(int i = 0; i < track.size(); i++)	{
             		if(i == curView)
-            			track.get(i).setBlockOccupation(false);
+            			track.get(i).setBlockOccupation(false, null);
             	}
             	update(curView);
 			}
@@ -371,5 +371,6 @@ public class TrackModelUI extends JFrame {
 	        }
 	        infoList.addElement(nextPos);
         }
+        
 	}
 }

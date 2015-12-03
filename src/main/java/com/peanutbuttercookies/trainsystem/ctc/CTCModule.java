@@ -122,6 +122,9 @@ public class CTCModule implements CTCModuleInterface {
 
 	public void setUi(CTCModuleUI ui) {
 		this.ui = ui;
+		for(String line : lineBlockMap.keySet()) {
+			ui.addLine(line);
+		}
 	}
 
 	@Override

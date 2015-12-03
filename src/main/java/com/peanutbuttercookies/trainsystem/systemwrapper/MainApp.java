@@ -30,19 +30,17 @@ public class MainApp {
 		
 		trackController.setCTC(ctc);
 		List<Line> lines = trackModel.getLines();
-		for(Block block : lines.get(0).getAllBlocks()) {
-			System.out.println(block.getBlockNumber());
-		}
 		for(Line line : lines) {
 			trackController.setTrackControllers(line);
 			ctc.importLine(line);
 		}
 		
-		
-		CTCModuleUI ctcUI = new CTCModuleUI(ctc);
-		TrackModelUI tmUI = new TrackModelUI(trackModel);
 		TrackControllerUI tcUI = new TrackControllerUI();
 		tcUI.setLines(lines);
+		CTCModuleUI ctcUI = new CTCModuleUI(ctc);
+		ctc.setUi(ctcUI);
+		TrackModelUI tmUI = new TrackModelUI(trackModel);
+		tmUI.display(0);
 
 	}
 }

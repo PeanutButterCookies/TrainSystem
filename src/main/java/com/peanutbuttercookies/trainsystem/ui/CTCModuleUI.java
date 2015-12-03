@@ -42,6 +42,7 @@ public class CTCModuleUI extends JFrame {
 
 	
 	public void addLine(String line) {
+		System.out.println("Adding line: to ui:" + line);
 		ComponentContainer panel = new ComponentContainer(line, module);
 		lineTabs.addTab(line, panel);
 	}
