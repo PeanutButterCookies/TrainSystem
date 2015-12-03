@@ -48,6 +48,7 @@ public class TrainModel implements TrainModelInterface {
 	@Override
 	public void setSpeedLimits(double limit) {
 		// TODO Auto-generated method stub
+		limit = limit*.27777778;
 		controller.setSpeedLimit(limit);
 	}
 
