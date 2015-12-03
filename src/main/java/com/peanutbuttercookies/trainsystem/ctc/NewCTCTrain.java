@@ -3,8 +3,8 @@ package com.peanutbuttercookies.trainsystem.ctc;
 public class NewCTCTrain extends CTCTrain {
 
 	public NewCTCTrain() {
-		setHead(0);
-		setTail(0);
+		setHead(1);
+		setTail(1);
 	}
 
 	@Override

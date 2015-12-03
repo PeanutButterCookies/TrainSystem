@@ -11,12 +11,12 @@ import javax.swing.DefaultComboBoxModel;
 import com.peanutbuttercookies.trainsystem.commonresources.Line;
 import com.peanutbuttercookies.trainsystem.ctc.CTCBlock;
 import com.peanutbuttercookies.trainsystem.ctc.CTCBlockModel;
+import com.peanutbuttercookies.trainsystem.ctc.CTCModuleUI;
 import com.peanutbuttercookies.trainsystem.ctc.CTCSection;
 import com.peanutbuttercookies.trainsystem.ctc.CTCTrain;
 import com.peanutbuttercookies.trainsystem.ctc.CTCTrainModel;
 import com.peanutbuttercookies.trainsystem.ctc.ComponentContainer;
 import com.peanutbuttercookies.trainsystem.ctc.ScheduleModel;
-import com.peanutbuttercookies.trainsystem.ui.CTCModuleUI;
 
 public interface CTCModuleInterface {
 	

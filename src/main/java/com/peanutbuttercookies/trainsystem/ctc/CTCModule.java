@@ -14,7 +14,6 @@ import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.commonresources.Line;
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
-import com.peanutbuttercookies.trainsystem.ui.CTCModuleUI;
 
 public class CTCModule implements CTCModuleInterface {
 
@@ -67,7 +66,6 @@ public class CTCModule implements CTCModuleInterface {
 
 		for(TrackControllerInterface tc : line.getAllTrackControllers()) {
 			for (Block block : tc.getSection()) {
-				System.out.println(block.getBlockNumber());
 				lineBlockMap.get(line.getLine()).addBlock(block, tc);
 			}
 		}
@@ -136,6 +134,7 @@ public class CTCModule implements CTCModuleInterface {
 		} catch (Exception e) {
 			return false;
 		}
+		System.out.println("CTC block id: " + train.getHead());
 		block.getTc().setSpeedAuthority(train.getHead(), speedInt, block.getBlockNumber());
 		return true;
 	}

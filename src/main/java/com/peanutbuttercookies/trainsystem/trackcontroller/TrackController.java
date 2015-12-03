@@ -92,7 +92,9 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 	
 	@Override
 	public void setSpeedAuthority(int blockId, int speed, int authority){
-		section.get(blockId).setSpeedAuthority(speed,authority);
+		System.out.println("TrackController block Id: " + blockId);
+		System.out.println(section.get(blockId-startBlock).getBlockNumber());
+		section.get(blockId-startBlock).setSpeedAuthority(speed,authority);
 	}
 
 	@Override

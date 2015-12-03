@@ -336,7 +336,9 @@ public class Block {
 	}
 
 	public void setSpeedAuthority(int speed, int authority) {
-		if (blockNumber == 0) {
+		System.out.println("Block Number: " + blockNumber + ", Speed: " + speed +", Authority: " + authority);
+		if (blockNumber == 1) {
+			System.out.println("new train");
 			trainComm = new TrainModel();
 			trainComm.setBlock(next);
 		}
