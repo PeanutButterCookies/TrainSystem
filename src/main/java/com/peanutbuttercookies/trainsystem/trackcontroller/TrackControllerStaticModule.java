@@ -54,10 +54,10 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 			}
 			
 			//Sets up the TC sections
-			for(int i=0;i<divider;i++){
+			for(int i=1;i<=divider;i++){
 				section_1.add(blocks.get(i));
 			}
-			for(int i=divider;i<blocks.size();i++){
+			for(int i=divider;i<=blocks.size();i++){
 				section_2.add(blocks.get(i));
 			}
 			
