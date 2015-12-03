@@ -18,7 +18,7 @@ import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 import com.peanutbuttercookies.trainsystem.trackcontroller.TrackControllerStaticModule;
 import com.peanutbuttercookies.trainsystem.trackcontroller.TrackControllerUI;
 import com.peanutbuttercookies.trainsystem.trackmodel.TrackModel;
-import com.peanutbuttercookies.trainsystem.ui.TrackModelUI;
+import com.peanutbuttercookies.trainsystem.trackmodel.TrackModelUI;
 
 public class MainApp {
 	public static void main(String[] args) throws IOException {

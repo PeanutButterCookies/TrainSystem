@@ -20,7 +20,6 @@ import com.peanutbuttercookies.trainsystem.interfaces.ExcelFileDownloaderInterfa
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrainInterface;
-import com.peanutbuttercookies.trainsystem.ui.TrackModelUI;
 
 public class TrackModel implements TrackModelInterface {
 	private TrackControllerInterface trackComm;

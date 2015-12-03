@@ -1,4 +1,4 @@
-package com.peanutbuttercookies.trainsystem.ui;
+package com.peanutbuttercookies.trainsystem.trackmodel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
