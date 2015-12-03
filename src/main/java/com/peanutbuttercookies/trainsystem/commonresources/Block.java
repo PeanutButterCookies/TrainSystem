@@ -72,6 +72,9 @@ public class Block {
 		this.listeners = new LinkedList<BlockOccupationListener>();
 		this.nextPossible = new LinkedList<Block>();
 		this.switchList = new LinkedList<Block>();
+		if(blockNumber == 0) {
+			System.out.println("BLOCK IS 0 THAT IS BAD");
+		}
 	}
 
 	public String getLine() {
@@ -340,7 +343,7 @@ public class Block {
 		if (blockNumber == 1) {
 			System.out.println("new train");
 			trainComm = new TrainModel();
-			trainComm.setBlock(next);
+			trainComm.setBlock(this);
 		}
 		if (trainComm != null) {
 			this.trainComm.setSpeedAndAuth(speed, authority);

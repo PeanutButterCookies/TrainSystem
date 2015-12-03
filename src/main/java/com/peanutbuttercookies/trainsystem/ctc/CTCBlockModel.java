@@ -32,6 +32,10 @@ public class CTCBlockModel extends AbstractTableModel {
 		update.setDaemon(true);
 		update.start();
 	}
+	
+	public CTCBlock getBlock(int blockId) {
+		return blockMap.get(blockId);
+	}
 
 	public void addBlock(Block block, TrackControllerInterface tc) {
 		if (block == null) {

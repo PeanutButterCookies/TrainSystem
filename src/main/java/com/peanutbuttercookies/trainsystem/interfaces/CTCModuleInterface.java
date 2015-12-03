@@ -47,4 +47,5 @@ public interface CTCModuleInterface {
 	public void setBlockUnoccupied(String line, int blockId);
 	public void importLine(Line line);
 	public void switchChanged(String line, int switchId, int blockId);
+
 }

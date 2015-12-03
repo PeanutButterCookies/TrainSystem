@@ -95,6 +95,12 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 		System.out.println("TrackController block Id: " + blockId);
 		System.out.println(section.get(blockId-startBlock).getBlockNumber());
 		section.get(blockId-startBlock).setSpeedAuthority(speed,authority);
+		if(blockId<=endBlock && blockId>=startBlock){
+			section.get(blockId-startBlock).setSpeedAuthority(speed,authority);
+		}
+		else{
+			System.err.println("ERROR: BLOCKID NOT CONTAINED WITHIN THIS CONTROLLER");
+		}
 	}
 
 	@Override

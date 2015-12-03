@@ -233,15 +233,15 @@ public class TrackControllerUI extends JFrame {
 					.addContainerGap())
 		);
 		
-		JLabel lblTrackControllerSelection = new JLabel("Track Controller");
-		lblTrackControllerSelection.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTrackControllerSelection.setFont(new Font("Tahoma", Font.BOLD, 14));
+		JLabel lblTrackControllerSelection1 = new JLabel("Track Controller");
+		lblTrackControllerSelection1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTrackControllerSelection1.setFont(new Font("Tahoma", Font.BOLD, 14));
 		
 		JSeparator separator = new JSeparator();
 		
-		JLabel lblWaysideController = new JLabel("Selection");
-		lblWaysideController.setHorizontalAlignment(SwingConstants.CENTER);
-		lblWaysideController.setFont(new Font("Tahoma", Font.BOLD, 14));
+		JLabel lblTrackControllerSelection2 = new JLabel("Selection");
+		lblTrackControllerSelection2.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTrackControllerSelection2.setFont(new Font("Tahoma", Font.BOLD, 14));
 		
 		comboBoxLine_2 = new JComboBox<String> ();
 		comboBoxLine_2.setModel(new DefaultComboBoxModel<String> (new String[] {"All"}));
@@ -284,6 +284,8 @@ public class TrackControllerUI extends JFrame {
 					panelColor.setBackground(Color.white);
 				}
 				}
+				
+				updateVariableTable();
 			}
 		});
 		
@@ -307,6 +309,7 @@ public class TrackControllerUI extends JFrame {
 			public void actionPerformed(ActionEvent e){
 				JComboBox<String>  comboBox=(JComboBox<String> )e.getSource();
 				displayedController = (String)comboBox.getSelectedItem();
+				updateVariableTable();
 			}
 		});
 		
@@ -402,8 +405,8 @@ public class TrackControllerUI extends JFrame {
 						.addComponent(separator_2, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
 						.addComponent(comboBoxLine_2, 0, 153, Short.MAX_VALUE)
 						.addComponent(lblSelectTrackController, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
-						.addComponent(lblWaysideController, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
-						.addComponent(lblTrackControllerSelection, GroupLayout.PREFERRED_SIZE, 153, Short.MAX_VALUE)
+						.addComponent(lblTrackControllerSelection2, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
+						.addComponent(lblTrackControllerSelection1, GroupLayout.PREFERRED_SIZE, 153, Short.MAX_VALUE)
 						.addComponent(separator, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
 						.addComponent(comboBoxTrackController_2, 0, 153, Short.MAX_VALUE)
 						.addComponent(lblSelectLine, GroupLayout.PREFERRED_SIZE, 151, GroupLayout.PREFERRED_SIZE)
@@ -424,9 +427,9 @@ public class TrackControllerUI extends JFrame {
 			gl_panel_ControllerSelection.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel_ControllerSelection.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(lblTrackControllerSelection, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)
+					.addComponent(lblTrackControllerSelection1, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(lblWaysideController)
+					.addComponent(lblTrackControllerSelection2)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(separator, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.UNRELATED)
@@ -559,9 +562,11 @@ public class TrackControllerUI extends JFrame {
 				
 				while(tcIterator.hasNext()){
 					TrackControllerInterface currTC=tcIterator.next();
-					Iterator<Block> blockIterator=currTC.getSection().iterator();
+					//Iterator<Block> blockIterator=currTC.getSection().iterator();
 					
-					counter=setVariableTableValues(currLine,currTC,blockIterator,counter);
+					DefaultTableModel dtm= (DefaultTableModel)tableVariableDisplay.getModel();
+					dtm.setRowCount(currTC.getSection().size()+counter+1);
+					counter=setVariableTableValues(currLine,currTC,counter);
 				}
 			}
 		}
@@ -572,37 +577,44 @@ public class TrackControllerUI extends JFrame {
 				currLine=lineIterator.next();
 			}
 			
-			int counter=-1;
+			
 			if(this.displayedController.equals("All")){
 				Iterator<TrackControllerInterface> tcIterator=currLine.getAllTrackControllers().iterator();
 				
+				int counter=-1;
 				while(tcIterator.hasNext()){
 					TrackControllerInterface currTC=tcIterator.next();
-					Iterator<Block> blockIterator=currTC.getSection().iterator();
+					//Iterator<Block> blockIterator=currTC.getSection().iterator();
 					
-					counter=setVariableTableValues(currLine,currTC,blockIterator,counter);
+					DefaultTableModel dtm= (DefaultTableModel)tableVariableDisplay.getModel();
+					dtm.setRowCount(currTC.getSection().size()+counter+1);
+					counter=setVariableTableValues(currLine,currTC,counter);
 				}
 			}
 			else{
 				Iterator<TrackControllerInterface> tcIterator = currLine.getAllTrackControllers().iterator();
 				TrackControllerInterface currTC=tcIterator.next();
-				while(!(Integer.toString(currTC.getControllerId()).equals(this.displayedController))){
+				while(!(Integer.toString(currTC.getControllerId()).equals(this.displayedController)) && tcIterator.hasNext()){
 					currTC=tcIterator.next();
 				}
-				
-				Iterator<Block> blockIterator=currTC.getSection().iterator();
-				setVariableTableValues(currLine,currTC,blockIterator,counter);
+				int counter=-1;
+				//Iterator<Block> blockIterator=currTC.getSection().iterator();
+				DefaultTableModel dtm= (DefaultTableModel)tableVariableDisplay.getModel();
+				dtm.setRowCount(currTC.getSection().size());
+				setVariableTableValues(currLine,currTC,counter);
 				
 			}
 		}
+		this.repaint();
 		updateSwitchesTable();
 	}
 	
-	private int setVariableTableValues(Line currLine, TrackControllerInterface currTC, Iterator<Block> blockIterator, int counter){
+	private int setVariableTableValues(Line currLine, TrackControllerInterface currTC, int counter){
+		Iterator<Block> blockIterator=currTC.getSection().iterator();
 		while(blockIterator.hasNext()){
 			Block currBlock=blockIterator.next();
-			if(currBlock.getBlockNumber()==currTC.getOverlapBlock() && currBlock.getBlockNumber()==currTC.getStartBlock()){
-				break;
+			if(currBlock.getBlockNumber()==currTC.getOverlapBlock() && currBlock.getBlockNumber()==currTC.getStartBlock() && counter+1>tableVariableDisplay.getRowCount()/2){
+				continue;
 			}
 			counter++;
 			tableVariableDisplay.setValueAt(currBlock.getLine(), counter, 0);				//Line

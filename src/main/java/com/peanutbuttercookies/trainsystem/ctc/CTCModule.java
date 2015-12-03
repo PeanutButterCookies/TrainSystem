@@ -43,8 +43,8 @@ public class CTCModule implements CTCModuleInterface {
 	public void setBlockUnoccupied(String line, int blockId) {
 		CTCBlockModel model = lineBlockMap.get(line);
 		boolean removeTrain = model.setUnoccupied(blockId);
-		if(!removeTrain) {
-		lineTrainMap.get(line).moveTail(model.getPrevBlock(blockId), blockId);
+		if (!removeTrain) {
+			lineTrainMap.get(line).moveTail(model.getPrevBlock(blockId), blockId);
 		} else {
 			lineTrainMap.get(line).removeTrain();
 		}
@@ -64,7 +64,7 @@ public class CTCModule implements CTCModuleInterface {
 			lineTrainMap.put(line.getLine(), new CTCTrainModel());
 		}
 
-		for(TrackControllerInterface tc : line.getAllTrackControllers()) {
+		for (TrackControllerInterface tc : line.getAllTrackControllers()) {
 			for (Block block : tc.getSection()) {
 				lineBlockMap.get(line.getLine()).addBlock(block, tc);
 			}
@@ -120,7 +120,7 @@ public class CTCModule implements CTCModuleInterface {
 
 	public void setUi(CTCModuleUI ui) {
 		this.ui = ui;
-		for(String line : lineBlockMap.keySet()) {
+		for (String line : lineBlockMap.keySet()) {
 			ui.addLine(line);
 		}
 	}
@@ -135,7 +135,8 @@ public class CTCModule implements CTCModuleInterface {
 			return false;
 		}
 		System.out.println("CTC block id: " + train.getHead());
-		block.getTc().setSpeedAuthority(train.getHead(), speedInt, block.getBlockNumber());
+		lineBlockMap.get(line).getBlock(train.getHead()).getTc().setSpeedAuthority(train.getHead(), speedInt,
+				block.getBlockNumber());
 		return true;
 	}
 
