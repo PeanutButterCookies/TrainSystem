@@ -555,7 +555,7 @@ public class TrackControllerUI extends JFrame {
 		
 		if(this.displayedLine.equals("All")){
 			Iterator<Line> lineIterator=lines.iterator();
-			int counter=-1;
+			int counter=0;
 			while(lineIterator.hasNext()){
 				Line currLine=lineIterator.next();
 				Iterator<TrackControllerInterface> tcIterator=currLine.getAllTrackControllers().iterator();
@@ -565,7 +565,10 @@ public class TrackControllerUI extends JFrame {
 					//Iterator<Block> blockIterator=currTC.getSection().iterator();
 					
 					DefaultTableModel dtm= (DefaultTableModel)tableVariableDisplay.getModel();
-					dtm.setRowCount(currTC.getSection().size()+counter+1);
+					dtm.setRowCount(currTC.getSection().size()+counter);
+					if(!tcIterator.hasNext()){
+						dtm.setRowCount(tableVariableDisplay.getRowCount()-1);
+					}
 					counter=setVariableTableValues(currLine,currTC,counter);
 				}
 			}
@@ -581,13 +584,16 @@ public class TrackControllerUI extends JFrame {
 			if(this.displayedController.equals("All")){
 				Iterator<TrackControllerInterface> tcIterator=currLine.getAllTrackControllers().iterator();
 				
-				int counter=-1;
+				int counter=0;
 				while(tcIterator.hasNext()){
 					TrackControllerInterface currTC=tcIterator.next();
 					//Iterator<Block> blockIterator=currTC.getSection().iterator();
 					
 					DefaultTableModel dtm= (DefaultTableModel)tableVariableDisplay.getModel();
-					dtm.setRowCount(currTC.getSection().size()+counter+1);
+					dtm.setRowCount(currTC.getSection().size()+counter);
+					if(!tcIterator.hasNext()){
+						dtm.setRowCount(tableVariableDisplay.getRowCount()-1);
+					}
 					counter=setVariableTableValues(currLine,currTC,counter);
 				}
 			}
@@ -597,7 +603,7 @@ public class TrackControllerUI extends JFrame {
 				while(!(Integer.toString(currTC.getControllerId()).equals(this.displayedController)) && tcIterator.hasNext()){
 					currTC=tcIterator.next();
 				}
-				int counter=-1;
+				int counter=0;
 				//Iterator<Block> blockIterator=currTC.getSection().iterator();
 				DefaultTableModel dtm= (DefaultTableModel)tableVariableDisplay.getModel();
 				dtm.setRowCount(currTC.getSection().size());
@@ -616,7 +622,6 @@ public class TrackControllerUI extends JFrame {
 			if(currBlock.getBlockNumber()==currTC.getOverlapBlock() && currBlock.getBlockNumber()==currTC.getStartBlock() && counter+1>tableVariableDisplay.getRowCount()/2){
 				continue;
 			}
-			counter++;
 			tableVariableDisplay.setValueAt(currBlock.getLine(), counter, 0);				//Line
 			tableVariableDisplay.setValueAt(currBlock.getBlockNumber(), counter, 1);		//Block ID
 			tableVariableDisplay.setValueAt(currTC.getControllerId(), counter, 2);			//Track Controller ID
@@ -625,6 +630,7 @@ public class TrackControllerUI extends JFrame {
 			tableVariableDisplay.setValueAt(currBlock.hasRRCrossing(), counter, 5);			//RR Crossing
 			tableVariableDisplay.setValueAt(currBlock.isRRCrossingEngaged(), counter, 6);	//Crossing Engaged
 			tableVariableDisplay.setValueAt("N/A", counter, 7);								//Lights
+			counter++;
 			
 		}
 		return counter;
