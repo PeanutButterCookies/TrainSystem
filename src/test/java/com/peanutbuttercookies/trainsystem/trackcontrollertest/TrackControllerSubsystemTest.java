@@ -1,18 +1,20 @@
 package com.peanutbuttercookies.trainsystem.trackcontrollertest;
 
+import java.io.IOException;
+
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerStaticInterface;
-import com.peanutbuttercookies.trainsystem.trackcontroller.TrackControllerAuthentication;
+import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 import com.peanutbuttercookies.trainsystem.trackcontroller.TrackControllerStaticModule;
 import com.peanutbuttercookies.trainsystem.trackcontroller.TrackControllerUI;
+import com.peanutbuttercookies.trainsystem.trackmodel.TrackModel;
 
 public class TrackControllerSubsystemTest {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		TrackControllerStaticInterface TCModule = new TrackControllerStaticModule();
-		//TrackControllerUI ui = new TrackControllerUI();
-		//ui.setVisible(false);
-		//TrackControllerAuthentication login = new TrackControllerAuthentication("chris","12345",ui);
-		TrackControllerAuthentication login = new TrackControllerAuthentication("chris","12345",new TrackControllerUI());
+		TrackControllerUI ui = new TrackControllerUI();
+		TrackModelInterface trackModel = new TrackModel();
+		trackModel.fileRead();
 	}
 
 }
