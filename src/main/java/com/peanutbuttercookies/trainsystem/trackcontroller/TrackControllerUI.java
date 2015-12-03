@@ -1,18 +1,19 @@
-package com.peanutbuttercookies.trainsystem.ui;
+package com.peanutbuttercookies.trainsystem.trackcontroller;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Vector;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.ButtonGroup;
-import javax.swing.ButtonModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -28,26 +29,34 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 
+import com.peanutbuttercookies.trainsystem.commonresources.Block;
+import com.peanutbuttercookies.trainsystem.commonresources.Line;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
-import com.peanutbuttercookies.trainsystem.trackcontroller.TC_Block;
 
 public class TrackControllerUI extends JFrame {
 
-	private JPanel 		contentPane;
-	private JTextField 	textField;
-	private JTable 		tableVariableDisplay;
+	/**
+	 * 
+	 */
+	private static final long 			serialVersionUID = -730006420600296656L;
+	private JPanel 						contentPane;
+	private JTextField 					textField;
+	private JTable 						tableVariableDisplay;
+	private JComboBox<String> 			comboBoxLine_1;
+	private JComboBox<String>  			comboBoxLine_2;
+	private JComboBox<String> 			comboBoxTrackController_1;
+	private JComboBox<String> 			comboBoxTrackController_2;
+	private JComboBox<String> 			comboBoxSwitchList;
 	
-	private TrackControllerInterface 	trackController;
 	private String 						displayedLine=null;
 	private String						displayedController=null;
-	private JTable table;
+	private List<Line>					lines;
+	private JTable 						tableSwitches;
 	
 	/**
 	 * Create the frame.
 	 */
-	public TrackControllerUI(TrackControllerInterface trackController) {
-		super("Track Controller");
-		this.trackController = trackController;
+	public TrackControllerUI() {
 		setTitle("Track Controller Module");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 1280, 720);
@@ -100,7 +109,7 @@ public class TrackControllerUI extends JFrame {
 		JPanel panel_ControllerDisplay = new JPanel();
 		panel_ControllerDisplay.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		
-		JLabel lblDisplayingController = new JLabel("- Displaying Unidentified Wayside Controller -");
+		JLabel lblDisplayingController = new JLabel("- Displaying Unidentified Track Controller -");
 		lblDisplayingController.setHorizontalAlignment(SwingConstants.CENTER);
 		lblDisplayingController.setFont(new Font("Tahoma", Font.BOLD, 14));
 		
@@ -165,17 +174,17 @@ public class TrackControllerUI extends JFrame {
 					.addContainerGap())
 		);
 		
-		table = new JTable();
-		table.setRowSelectionAllowed(false);
-		table.setModel(new DefaultTableModel(
+		tableSwitches = new JTable();
+		tableSwitches.setRowSelectionAllowed(false);
+		tableSwitches.setModel(new DefaultTableModel(
 			new Object[][] {
-				{null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null, null, null},
 			},
 			new String[] {
-				"Switch No.", "Block No.", "Prev. Block", "Next Block (Disengaged)", "Next Block (Engaged)", "Corresponding Switch Block", "Engaged?"
+				"Line", "Block ID", "Track Controller ID", "Switch No.", "Prev. Block", "Next Block (Disengaged)", "Next Block (Engaged)", "Corresponding Switch Block", "Engaged?"
 			}
 		));
-		scrollPane_1.setViewportView(table);
+		scrollPane_1.setViewportView(tableSwitches);
 		
 		tableVariableDisplay = new JTable();
 		scrollPane.setViewportView(tableVariableDisplay);
@@ -183,10 +192,10 @@ public class TrackControllerUI extends JFrame {
 		tableVariableDisplay.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		tableVariableDisplay.setModel(new DefaultTableModel(
 			new Object[][] {
-				{null, "", "", "", "", "", "", "", null, "", ""},
+				{null, "", "", "", null, "", null, ""},
 			},
 			new String[] {
-				"Line", "Block ID", "Wayside Controller ID", "Authority (From CTC)", "Speed (From CTC)", "Sent Authority", "Commanded Speed", "Switch ID", "Switch Engaged", "RR Crossing", "Lights"
+				"Line", "Block ID", "Track Controller ID", "Switch ID", "Switch Engaged", "RR Crossing", "Crossing Engaged", "Lights"
 			}
 		));
 		tableVariableDisplay.getColumnModel().getColumn(0).setResizable(false);
@@ -196,20 +205,13 @@ public class TrackControllerUI extends JFrame {
 		tableVariableDisplay.getColumnModel().getColumn(2).setResizable(false);
 		tableVariableDisplay.getColumnModel().getColumn(2).setPreferredWidth(116);
 		tableVariableDisplay.getColumnModel().getColumn(3).setResizable(false);
-		tableVariableDisplay.getColumnModel().getColumn(3).setPreferredWidth(116);
+		tableVariableDisplay.getColumnModel().getColumn(3).setPreferredWidth(57);
 		tableVariableDisplay.getColumnModel().getColumn(4).setResizable(false);
-		tableVariableDisplay.getColumnModel().getColumn(4).setPreferredWidth(101);
+		tableVariableDisplay.getColumnModel().getColumn(4).setPreferredWidth(86);
 		tableVariableDisplay.getColumnModel().getColumn(5).setResizable(false);
-		tableVariableDisplay.getColumnModel().getColumn(5).setPreferredWidth(81);
-		tableVariableDisplay.getColumnModel().getColumn(6).setResizable(false);
-		tableVariableDisplay.getColumnModel().getColumn(6).setPreferredWidth(105);
+		tableVariableDisplay.getColumnModel().getColumn(6).setPreferredWidth(101);
 		tableVariableDisplay.getColumnModel().getColumn(7).setResizable(false);
-		tableVariableDisplay.getColumnModel().getColumn(7).setPreferredWidth(57);
-		tableVariableDisplay.getColumnModel().getColumn(8).setResizable(false);
-		tableVariableDisplay.getColumnModel().getColumn(8).setPreferredWidth(86);
-		tableVariableDisplay.getColumnModel().getColumn(9).setResizable(false);
-		tableVariableDisplay.getColumnModel().getColumn(10).setResizable(false);
-		tableVariableDisplay.getColumnModel().getColumn(10).setPreferredWidth(39);
+		tableVariableDisplay.getColumnModel().getColumn(7).setPreferredWidth(39);
 		panel_ControllerDisplay.setLayout(gl_panel_ControllerDisplay);
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
 		gl_panel_1.setHorizontalGroup(
@@ -231,9 +233,9 @@ public class TrackControllerUI extends JFrame {
 					.addContainerGap())
 		);
 		
-		JLabel lblLineSelection = new JLabel("Wayside Controller");
-		lblLineSelection.setHorizontalAlignment(SwingConstants.CENTER);
-		lblLineSelection.setFont(new Font("Tahoma", Font.BOLD, 14));
+		JLabel lblTrackControllerSelection = new JLabel("Track Controller");
+		lblTrackControllerSelection.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTrackControllerSelection.setFont(new Font("Tahoma", Font.BOLD, 14));
 		
 		JSeparator separator = new JSeparator();
 		
@@ -241,13 +243,13 @@ public class TrackControllerUI extends JFrame {
 		lblWaysideController.setHorizontalAlignment(SwingConstants.CENTER);
 		lblWaysideController.setFont(new Font("Tahoma", Font.BOLD, 14));
 		
-		JComboBox comboBoxLine_2 = new JComboBox();
-		comboBoxLine_2.setModel(new DefaultComboBoxModel(new String[] {"All"}));
+		comboBoxLine_2 = new JComboBox<String> ();
+		comboBoxLine_2.setModel(new DefaultComboBoxModel<String> (new String[] {"All"}));
 		displayedLine=(String)comboBoxLine_2.getSelectedItem();
 		
 		comboBoxLine_2.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				JComboBox comboBox=(JComboBox)e.getSource();
+				JComboBox<String>  comboBox=(JComboBox<String>)e.getSource();
 				displayedLine = (String)comboBox.getSelectedItem();
 				
 				switch(displayedLine.toLowerCase()){
@@ -293,17 +295,17 @@ public class TrackControllerUI extends JFrame {
 		
 		JButton btnNextLine = new JButton("Next");
 		
-		JLabel lblSelectWaysideController = new JLabel("Select Wayside Controller");
-		lblSelectWaysideController.setHorizontalAlignment(SwingConstants.CENTER);
-		lblSelectWaysideController.setFont(new Font("Tahoma", Font.BOLD, 11));
+		JLabel lblSelectTrackController = new JLabel("Select Track Controller");
+		lblSelectTrackController.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSelectTrackController.setFont(new Font("Tahoma", Font.BOLD, 11));
 		
-		JComboBox comboBoxWaysideController_2 = new JComboBox();
-		comboBoxWaysideController_2.setModel(new DefaultComboBoxModel(new String[] {"All"}));
-		displayedController=(String)comboBoxWaysideController_2.getSelectedItem();
+		comboBoxTrackController_2 = new JComboBox<String> ();
+		comboBoxTrackController_2.setModel(new DefaultComboBoxModel<String> (new String[] {"All"}));
+		displayedController=(String)comboBoxTrackController_2.getSelectedItem();
 		
-		comboBoxWaysideController_2.addActionListener(new ActionListener(){
+		comboBoxTrackController_2.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				JComboBox comboBox=(JComboBox)e.getSource();
+				JComboBox<String>  comboBox=(JComboBox<String> )e.getSource();
 				displayedController = (String)comboBox.getSelectedItem();
 			}
 		});
@@ -324,15 +326,41 @@ public class TrackControllerUI extends JFrame {
 		lblManuallyEngageSwitch.setFont(new Font("Tahoma", Font.BOLD, 11));
 		lblManuallyEngageSwitch.setHorizontalAlignment(SwingConstants.CENTER);
 		
-		JComboBox comboBoxSwitchList = new JComboBox();
-		comboBoxSwitchList.setModel(new DefaultComboBoxModel(new String[] {"None"}));
+		comboBoxSwitchList = new JComboBox<String> ();
+		comboBoxSwitchList.setModel(new DefaultComboBoxModel<String> (new String[] {"None"}));
 		
 		
 		//Changes the engagement of the switch selected in comboBoxSwitchList
 		ActionListener switchEngage = new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				JRadioButton button = (JRadioButton) e.getSource();
-				//TO DO
+				String line=null;
+				int switchNum;
+				
+				if(displayedLine.equals("All")){
+					Iterator<Line> lineIterator=lines.iterator();
+					Line currLine=lineIterator.next();
+					String selectedItem=comboBoxSwitchList.getSelectedItem().toString();
+					
+					while(!(selectedItem.contains(currLine.getLine())) && lineIterator.hasNext()){
+						currLine=lineIterator.next();
+					}
+					line=currLine.getLine();
+					
+					String[] tokens=selectedItem.split(" ");
+					switchNum=Integer.decode(tokens[0]);
+					
+					//**** How do I know which TC the switch is a part of?
+					
+				}
+				else{
+					line=displayedLine;
+					switchNum=Integer.decode(comboBoxSwitchList.getSelectedItem().toString());
+				}
+				
+				if(button.getText().equals("Engage")){
+					
+				}
 			}
 		};
 		
@@ -349,7 +377,7 @@ public class TrackControllerUI extends JFrame {
 		
 		comboBoxSwitchList.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				JComboBox comboBox=(JComboBox)e.getSource();
+				JComboBox<String>  comboBox=(JComboBox<String>)e.getSource();
 				String selected = (String)comboBox.getSelectedItem();
 				if(selected.equals("None")){
 					rdbtnEngage.setEnabled(false);
@@ -373,11 +401,11 @@ public class TrackControllerUI extends JFrame {
 						.addComponent(comboBoxSwitchList, 0, 153, Short.MAX_VALUE)
 						.addComponent(separator_2, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
 						.addComponent(comboBoxLine_2, 0, 153, Short.MAX_VALUE)
-						.addComponent(lblSelectWaysideController, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
+						.addComponent(lblSelectTrackController, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
 						.addComponent(lblWaysideController, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
-						.addComponent(lblLineSelection, GroupLayout.PREFERRED_SIZE, 153, Short.MAX_VALUE)
+						.addComponent(lblTrackControllerSelection, GroupLayout.PREFERRED_SIZE, 153, Short.MAX_VALUE)
 						.addComponent(separator, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
-						.addComponent(comboBoxWaysideController_2, 0, 153, Short.MAX_VALUE)
+						.addComponent(comboBoxTrackController_2, 0, 153, Short.MAX_VALUE)
 						.addComponent(lblSelectLine, GroupLayout.PREFERRED_SIZE, 151, GroupLayout.PREFERRED_SIZE)
 						.addGroup(gl_panel_ControllerSelection.createSequentialGroup()
 							.addComponent(btnPrevLine)
@@ -396,7 +424,7 @@ public class TrackControllerUI extends JFrame {
 			gl_panel_ControllerSelection.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel_ControllerSelection.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(lblLineSelection, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)
+					.addComponent(lblTrackControllerSelection, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(lblWaysideController)
 					.addPreferredGap(ComponentPlacement.RELATED)
@@ -410,9 +438,9 @@ public class TrackControllerUI extends JFrame {
 						.addComponent(btnPrevLine)
 						.addComponent(btnNextLine))
 					.addGap(49)
-					.addComponent(lblSelectWaysideController)
+					.addComponent(lblSelectTrackController)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(comboBoxWaysideController_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addComponent(comboBoxTrackController_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_panel_ControllerSelection.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnPrevController)
@@ -441,17 +469,35 @@ public class TrackControllerUI extends JFrame {
 		textField = new JTextField();
 		textField.setColumns(10);
 		
-		JLabel lblEnterWaysideController = new JLabel("Wayside Controller ID:");
+		JLabel lblEnterTrackController = new JLabel("Track Controller ID:");
 		
 		JButton btnLoadProgram = new JButton("Load Program");
 		
 		JLabel lblEnterLineName = new JLabel("Line:");
 		
-		JComboBox comboBoxWaysideController_1 = new JComboBox();
+		comboBoxTrackController_1 = new JComboBox<String> ();
 		
-		JComboBox comboBoxLine_1 = new JComboBox();
+		comboBoxLine_1 = new JComboBox<String> ();
 		
 		JButton btnBrowse = new JButton("Browse");
+		btnBrowse.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				JFileChooser chooser = new JFileChooser();
+				chooser.setCurrentDirectory(new java.io.File("."));
+				chooser.setDialogTitle("Choose PLC file to load");
+				chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+				chooser.setAcceptAllFileFilterUsed(false);
+				
+				if(chooser.showOpenDialog(null)==JFileChooser.APPROVE_OPTION){
+					System.out.println("getCurrentDirectory(): "+chooser.getCurrentDirectory());
+					System.out.println("getSelectedFile(): "+chooser.getSelectedFile());
+				}
+				else{
+					System.out.println("No Selection");
+				}
+			}
+		});
+		
 		GroupLayout gl_panel = new GroupLayout(panel);
 		gl_panel.setHorizontalGroup(
 			gl_panel.createParallelGroup(Alignment.LEADING)
@@ -460,12 +506,12 @@ public class TrackControllerUI extends JFrame {
 					.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
 						.addComponent(lblEnterPlcProgram)
 						.addComponent(lblEnterLineName)
-						.addComponent(lblEnterWaysideController))
+						.addComponent(lblEnterTrackController))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
 						.addComponent(textField, GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
 						.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING, false)
-							.addComponent(comboBoxWaysideController_1, Alignment.LEADING, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+							.addComponent(comboBoxTrackController_1, Alignment.LEADING, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 							.addComponent(comboBoxLine_1, Alignment.LEADING, 0, 246, Short.MAX_VALUE)))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
@@ -489,8 +535,8 @@ public class TrackControllerUI extends JFrame {
 								.addComponent(comboBoxLine_1, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE))
 							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-								.addComponent(lblEnterWaysideController)
-								.addComponent(comboBoxWaysideController_1, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE))
+								.addComponent(lblEnterTrackController)
+								.addComponent(comboBoxTrackController_1, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE))
 							.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 						.addGroup(gl_panel.createSequentialGroup()
 							.addPreferredGap(ComponentPlacement.RELATED)
@@ -502,27 +548,96 @@ public class TrackControllerUI extends JFrame {
 		setVisible(true);
 	}
 	
-	public void updateTable(){
-		ArrayList<TC_Block> tableInfo=trackController.getControllerInfo(displayedLine,displayedController);
-		for(int i=0; i<tableInfo.size(); i++){
-			TC_Block temp=tableInfo.get(i);
-			tableVariableDisplay.setValueAt(temp.getLine(), i+1, 0);
-			tableVariableDisplay.setValueAt(temp.getBlockNumber(), i+1, 1);
-			tableVariableDisplay.setValueAt(temp.getWaysideControllerId(), i+1, 2);
-			//authority recieved
-			//speed recieved
-			//authority
-			//speed
-			if(temp.hasSwitch()){
-				tableVariableDisplay.setValueAt(temp.getSwitchBlockId(), i+1, 7);
+	public void updateVariableTable(){
+		
+		if(this.displayedLine.equals("All")){
+			Iterator<Line> lineIterator=lines.iterator();
+			int counter=-1;
+			while(lineIterator.hasNext()){
+				Line currLine=lineIterator.next();
+				Iterator<TrackControllerInterface> tcIterator=currLine.getAllTrackControllers().iterator();
+				
+				while(tcIterator.hasNext()){
+					TrackControllerInterface currTC=tcIterator.next();
+					Iterator<Block> blockIterator=currTC.getSection().iterator();
+					
+					counter=setVariableTableValues(currLine,currTC,blockIterator,counter);
+				}
+			}
+		}
+		else{
+			Iterator<Line> lineIterator=lines.iterator();
+			Line currLine=lineIterator.next();
+			while(!currLine.getLine().equals(this.displayedLine) && lineIterator.hasNext()){
+				currLine=lineIterator.next();
+			}
+			
+			int counter=-1;
+			if(this.displayedController.equals("All")){
+				Iterator<TrackControllerInterface> tcIterator=currLine.getAllTrackControllers().iterator();
+				
+				while(tcIterator.hasNext()){
+					TrackControllerInterface currTC=tcIterator.next();
+					Iterator<Block> blockIterator=currTC.getSection().iterator();
+					
+					counter=setVariableTableValues(currLine,currTC,blockIterator,counter);
+				}
 			}
 			else{
-				tableVariableDisplay.setValueAt("N/A", i+1, 7);
+				Iterator<TrackControllerInterface> tcIterator = currLine.getAllTrackControllers().iterator();
+				TrackControllerInterface currTC=tcIterator.next();
+				while(!(Integer.toString(currTC.getControllerId()).equals(this.displayedController))){
+					currTC=tcIterator.next();
+				}
+				
+				Iterator<Block> blockIterator=currTC.getSection().iterator();
+				setVariableTableValues(currLine,currTC,blockIterator,counter);
+				
 			}
-			tableVariableDisplay.setValueAt(temp.getCommandedSpeed(), i+1, 5);
-			tableVariableDisplay.setValueAt(false, i+1, 6);						//MUST BE CHANGED AFTER PROTOTYPE
-			tableVariableDisplay.setValueAt(false, i+1, 7);						//MUST BE CHANGED AFTER PROTOTYPE
+		}
+		updateSwitchesTable();
+	}
+	
+	private int setVariableTableValues(Line currLine, TrackControllerInterface currTC, Iterator<Block> blockIterator, int counter){
+		while(blockIterator.hasNext()){
+			Block currBlock=blockIterator.next();
+			if(currBlock.getBlockNumber()==currTC.getOverlapBlock() && currBlock.getBlockNumber()==currTC.getStartBlock()){
+				break;
+			}
+			counter++;
+			tableVariableDisplay.setValueAt(currBlock.getLine(), counter, 0);				//Line
+			tableVariableDisplay.setValueAt(currBlock.getBlockNumber(), counter, 1);		//Block ID
+			tableVariableDisplay.setValueAt(currTC.getControllerId(), counter, 2);			//Track Controller ID
+			tableVariableDisplay.setValueAt(currBlock.getSwitchBlockId(), counter, 3);		//Switch ID
+			tableVariableDisplay.setValueAt(currBlock.isSwitchEngaged(), counter, 4);		//Switch Engaged
+			tableVariableDisplay.setValueAt(currBlock.hasRRCrossing(), counter, 5);			//RR Crossing
+			tableVariableDisplay.setValueAt(currBlock.isRRCrossingEngaged(), counter, 6);	//Crossing Engaged
+			tableVariableDisplay.setValueAt("N/A", counter, 7);								//Lights
 			
 		}
+		return counter;
 	}
+	
+	public void updateSwitchesTable(){
+		
+	}
+	
+	public void setLines(List<Line> lines){
+		this.lines=lines;
+		
+		Iterator<Line> lineIterator=lines.iterator();
+		while(lineIterator.hasNext()){
+			Line currLine=lineIterator.next();
+			comboBoxLine_1.addItem(currLine.getLine());
+			comboBoxLine_2.addItem(currLine.getLine());
+			
+			Iterator<TrackControllerInterface> tcIterator = currLine.getAllTrackControllers().iterator();
+			while(tcIterator.hasNext()){
+				TrackControllerInterface currTC=tcIterator.next();
+				comboBoxTrackController_1.addItem(Integer.toString(currTC.getControllerId()));
+				comboBoxTrackController_2.addItem(Integer.toString(currTC.getControllerId()));
+			}
+		}
+	}
+	
 }

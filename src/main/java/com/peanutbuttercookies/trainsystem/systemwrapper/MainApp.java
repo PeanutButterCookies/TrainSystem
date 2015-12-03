@@ -7,44 +7,42 @@
 package com.peanutbuttercookies.trainsystem.systemwrapper;
 
 import java.io.IOException;
+import java.util.List;
 
+import com.peanutbuttercookies.trainsystem.commonresources.Block;
+import com.peanutbuttercookies.trainsystem.commonresources.Line;
 import com.peanutbuttercookies.trainsystem.ctc.CTCModule;
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
-import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
-import com.peanutbuttercookies.trainsystem.interfaces.TrainInterface;
-import com.peanutbuttercookies.trainsystem.trackcontroller.TrackControllerModule;
+import com.peanutbuttercookies.trainsystem.trackcontroller.TrackControllerStaticModule;
+import com.peanutbuttercookies.trainsystem.trackcontroller.TrackControllerUI;
 import com.peanutbuttercookies.trainsystem.trackmodel.TrackModel;
-import com.peanutbuttercookies.trainsystem.train.Train;
-import com.peanutbuttercookies.trainsystem.traincontroller.TrainController;
 import com.peanutbuttercookies.trainsystem.ui.CTCModuleUI;
-import com.peanutbuttercookies.trainsystem.ui.TrackControllerUI;
 import com.peanutbuttercookies.trainsystem.ui.TrackModelUI;
-import com.peanutbuttercookies.trainsystem.ui.TrainControllerUI;
-import com.peanutbuttercookies.trainsystem.ui.TrainUI;
 
 public class MainApp {
 	public static void main(String[] args) throws IOException {
 		CTCModuleInterface ctc = new CTCModule();
-		TrackControllerInterface tc = new TrackControllerModule();
-		TrackModelInterface tm = new TrackModel();
-		TrainInterface ti = new Train();
-		TrainController trainController = new TrainController();
+		TrackControllerStaticModule trackController = new TrackControllerStaticModule();
+		TrackModelInterface trackModel = new TrackModel();
+		//TODO
+		trackModel.fileRead("C:/Users/Kevin/Downloads/ModifiedTrackLayout.xlsx");
 		
-		ctc.setTC(tc);
-		tc.setCTC(ctc);
-		tc.setTrackModel(tm);
-		tm.setTC(tc);
-		tm.setTI(ti);
-		ti.setTrainController(trainController);
-		ti.setTrackModel(tm);
-		trainController.setTrainModel(ti);
+		trackController.setCTC(ctc);
+		List<Line> lines = trackModel.getLines();
+		for(Block block : lines.get(0).getAllBlocks()) {
+			System.out.println(block.getBlockNumber());
+		}
+		for(Line line : lines) {
+			trackController.setTrackControllers(line);
+			ctc.importLine(line);
+		}
+		
 		
 		CTCModuleUI ctcUI = new CTCModuleUI(ctc);
-		TrackModelUI tmUI = new TrackModelUI(tm);
-		TrackControllerUI tcUI = new TrackControllerUI(tc);
-		TrainUI tUI = new TrainUI(ti);
-		TrainControllerUI trainControllerUI = new TrainControllerUI(trainController);
+		TrackModelUI tmUI = new TrackModelUI(trackModel);
+		TrackControllerUI tcUI = new TrackControllerUI();
+		tcUI.setLines(lines);
 
 	}
 }

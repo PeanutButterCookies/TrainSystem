@@ -1,9 +1,7 @@
+
 package com.peanutbuttercookies.trainsystem.traincontroller;
 
-import java.util.concurrent.TimeUnit;
-
-import train.model.TrainModel;
-import train.model.TrainModelInterface;
+import com.peanutbuttercookies.trainsystem.train.TrainModelInterface;
 
 public class TrainController implements TrainControllerInterface {
 

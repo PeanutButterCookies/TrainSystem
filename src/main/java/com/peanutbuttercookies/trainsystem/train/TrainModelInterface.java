@@ -1,6 +1,7 @@
+
 package com.peanutbuttercookies.trainsystem.train;
 
-import train.test.Block;
+import com.peanutbuttercookies.trainsystem.commonresources.Block;
 
 public interface TrainModelInterface {
 	void setBlock(Block block);
@@ -23,3 +24,5 @@ public interface TrainModelInterface {
 	double getAcceleration();
 
 }
+
+

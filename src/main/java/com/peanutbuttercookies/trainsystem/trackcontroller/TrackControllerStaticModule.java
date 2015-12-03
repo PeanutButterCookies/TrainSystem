@@ -8,7 +8,6 @@ import com.peanutbuttercookies.trainsystem.interfaces.BlockOccupationListener;
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerStaticInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
-import com.peanutbuttercookies.trainsystem.ui.TrackControllerUI;
 
 public class TrackControllerStaticModule implements TrackControllerStaticInterface,BlockOccupationListener {
 	private TrackControllerUI ui;
@@ -16,6 +15,10 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 	private TrackModelInterface trackModel;
 	private LinkedList<Line> lines;
 	
+	public TrackControllerStaticModule() {
+		lines = new LinkedList<Line>();
+	}
+
 	@Override
 	public boolean setTrackControllers(Line line){
 		if(line.getAllBlocks().size()>1){
@@ -67,12 +70,12 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 
 	@Override
 	public void setTrackControllerUI(TrackControllerUI trackControllerUI) {
-		ui=trackControllerUI;
+		this.ui=trackControllerUI;
 	}
 	
 	@Override
-	public void blockOccupied() {
-		ui.updateTable();
+	public void blockOccupied(int blockId) {
+		this.ui.updateVariableTable();
 	}
 
 	@Override

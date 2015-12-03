@@ -2,7 +2,6 @@ package com.peanutbuttercookies.trainsystem.trackcontroller;
 
 import java.util.LinkedList;
 
-import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.commonresources.Line;
 
 /**

@@ -1,8 +1,9 @@
+
 package com.peanutbuttercookies.trainsystem.train;
 
-import train.controller.TrainController;
-import train.controller.TrainControllerInterface;
-import train.test.Block;
+import com.peanutbuttercookies.trainsystem.commonresources.Block;
+import com.peanutbuttercookies.trainsystem.traincontroller.TrainController;
+import com.peanutbuttercookies.trainsystem.traincontroller.TrainControllerInterface;
 
 public class TrainModel implements TrainModelInterface {
 
@@ -66,7 +67,7 @@ public class TrainModel implements TrainModelInterface {
 	public void setPower(double power) {
 		// TODO Auto-generated method stub
 		this.power = power;
-		if(auth-currentBlock.id == 0){
+		if(auth-currentBlock.getBlockNumber() == 0){
 			System.out.println("what");
 			brakes();}
 		else
@@ -96,7 +97,7 @@ public class TrainModel implements TrainModelInterface {
 	public void setBlock(Block block) {
 		// TODO Auto-generated method stub
 		currentBlock = block;
-		controller.setBlockId(currentBlock.getId());
+		controller.setBlockId(currentBlock.getBlockNumber());
 	}
 
 	@Override

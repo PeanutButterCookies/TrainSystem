@@ -2,6 +2,7 @@ package com.peanutbuttercookies.trainsystem.train;
 
 import java.util.concurrent.TimeUnit;
 
+
 public class Engine {
 	public double currentSpeed;
 	public double commandedSpeed;
@@ -136,13 +137,13 @@ public class Engine {
 				// Populate train values and return them
 				train.distanceTraveled = this.distance;
 				System.out.println("Distance: " + distance);
-				if(distance >= train.currentBlock.length){
-					distance = distance - train.currentBlock.getLength();
-					train.currentBlock.setOccupied(false, train);
+				if(distance >= train.currentBlock.getBlockLength()){
+					distance = distance - train.currentBlock.getBlockLength();
+					train.currentBlock.setBlockOccupation(false, train);
 					train.setBlock(train.currentBlock.getNext());
-					train.currentBlock.setOccupied(true,train);
+					train.currentBlock.setBlockOccupation(true,train);
 					train.setSpeedLimits(train.currentBlock.getSpeedLimit());
-					train.setAngle(train.currentBlock.getGrade());
+					train.setAngle(train.currentBlock.getBlockGrade());
 				}
 				train.controller.setCurrentVelocity(currentSpeed);
 				train.gui.updateUI();

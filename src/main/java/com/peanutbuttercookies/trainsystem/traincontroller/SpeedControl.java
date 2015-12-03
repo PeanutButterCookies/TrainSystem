@@ -1,5 +1,7 @@
 package com.peanutbuttercookies.trainsystem.traincontroller;
 
+
+
 public class SpeedControl {
 	double mass;
 	double commandSpeed;

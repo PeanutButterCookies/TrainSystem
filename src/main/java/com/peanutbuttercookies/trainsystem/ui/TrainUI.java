@@ -1,19 +1,15 @@
 package com.peanutbuttercookies.trainsystem.ui;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SpringLayout;
 import javax.swing.border.EmptyBorder;
 
 import com.peanutbuttercookies.trainsystem.interfaces.TrainInterface;
-
-import javax.swing.SpringLayout;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
 
 public class TrainUI extends JFrame {
 
