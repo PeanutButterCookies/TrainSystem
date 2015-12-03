@@ -71,6 +71,7 @@ public class Block {
 		this.twoWay = false;
 		this.listeners = new LinkedList<BlockOccupationListener>();
 		this.nextPossible = new LinkedList<Block>();
+		this.switchList = new LinkedList<Block>();
 	}
 
 	public String getLine() {
@@ -337,8 +338,9 @@ public class Block {
 	public void setSpeedAuthority(int speed, int authority) {
 		if (blockNumber == 0) {
 			trainComm = new TrainModel();
-			trainComm.setBlock(this);
-		} else {
+			trainComm.setBlock(next);
+		}
+		if (trainComm != null) {
 			this.trainComm.setSpeedAndAuth(speed, authority);
 		}
 	}

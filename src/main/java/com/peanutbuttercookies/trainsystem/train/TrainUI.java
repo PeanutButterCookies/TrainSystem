@@ -1,13 +1,18 @@
+
 package com.peanutbuttercookies.trainsystem.train;
 
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
+import javax.swing.SpringLayout;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SpringLayout;
-import javax.swing.border.EmptyBorder;
 
 public class TrainUI extends JFrame {
 
@@ -140,7 +145,7 @@ public class TrainUI extends JFrame {
 		sl_contentPane.putConstraint(SpringLayout.EAST, speed, 0, SpringLayout.EAST, length);
 		contentPane.add(speed);
 		speed.setColumns(10);
-		speed.setText(""+train.getCurrentSpeed());
+		speed.setText(""+train.getCurrentSpeed()*2.23694); //convert to mph
 		
 		acceleration = new JTextField();
 		acceleration.setEditable(false);
@@ -176,7 +181,7 @@ public class TrainUI extends JFrame {
 		height.setText(""+train.getHeight());
 		power.setText(""+train.getPower());
 		acceleration.setText(""+train.getAcceleration());
-		speed.setText(""+train.getCurrentSpeed());
+		speed.setText(""+train.getCurrentSpeed()*2.23694);
 		mass.setText(""+train.getMass());
 		passengerCount.setText(""+train.getNumPassengers());
 		width.setText(""+train.getWidth());

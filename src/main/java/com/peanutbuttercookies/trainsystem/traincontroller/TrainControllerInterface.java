@@ -12,5 +12,7 @@ public interface TrainControllerInterface {
 	void setSpeedLimit(double limit);
 	void calcPower(double currentSpeed);
 	void setLights(String lights);
+	void run();
+	void setBlockId(int id);
 
 }
