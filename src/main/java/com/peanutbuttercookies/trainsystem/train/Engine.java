@@ -80,7 +80,7 @@ public class Engine {
 				double oldSpeed = currentSpeed;
 
 				// vf = vi + at;
-				currentSpeed += currentAccel*clockspeed;
+				currentSpeed += currentAccel;
 
 				
 				// If the brakes are on, the train stops at 0
