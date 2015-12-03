@@ -101,6 +101,10 @@ public class Engine {
 					engineForce = power / (currentSpeed + 0.00001);
 					
 					double totalForce = engineForce + gravityForce + frictionForce;
+
+					System.out.println("Total force: " + totalForce);
+					System.out.println("Gravity force: " + gravityForce);
+					System.out.println("Friction force: " + frictionForce);
 					
 					// Engine overcomes gravity and friction
 					if (totalForce > 0)
@@ -125,6 +129,7 @@ public class Engine {
 				
 				
 				currentAccel = Math.min(currentAccel, MAXACCELERATION);
+				System.out.println("Current Accel: " + currentAccel);
 				distance += (currentSpeed) + ( (1.0/2.0)*(currentAccel) );
 
 				try {
