@@ -344,6 +344,7 @@ public class Block {
 			System.out.println("new train");
 			trainComm = new TrainModel();
 			trainComm.setBlock(this);
+			trainComm.run();
 		}
 		if (trainComm != null) {
 			this.trainComm.setSpeedAndAuth(speed, authority);

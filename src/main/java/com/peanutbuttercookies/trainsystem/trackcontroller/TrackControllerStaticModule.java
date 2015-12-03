@@ -66,7 +66,8 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 					new TrackController(line.getLine(),2,section_2,divider,blocks.size(),divider,ctc,trackModel));
 			
 			ui.setLines(lines);
-			ui.updateVariableTable();
+			//TODO commented this out
+//			ui.updateVariableTable();
 			
 			return true;
 		}
