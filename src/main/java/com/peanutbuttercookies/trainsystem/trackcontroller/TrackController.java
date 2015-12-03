@@ -69,7 +69,7 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 	
 	@Override
 	public Block getBlock(int index){
-		int i=index-this.startBlock+1;
+		int i=index-this.startBlock;
 		if(i>0){
 			return this.section.get(i);
 		}
@@ -93,7 +93,7 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 	@Override
 	public void setSpeedAuthority(int blockId, int speed, int authority){
 		if(blockId<=endBlock && blockId>=startBlock){
-			section.get(blockId-startBlock+1).setSpeedAuthority(speed,authority);
+			section.get(blockId-startBlock).setSpeedAuthority(speed,authority);
 		}
 		else{
 			System.err.println("ERROR: BLOCKID NOT CONTAINED WITHIN THIS CONTROLLER");
@@ -103,7 +103,7 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 	@Override
 	public void blockOccupied(int blockId) {
 		if(blockId>=this.startBlock && blockId<=this.endBlock && this.startBlock!=this.overlapBlock){
-			boolean occupied=section.get(blockId-startBlock+1).isBlockOccupied();
+			boolean occupied=section.get(blockId-startBlock).isBlockOccupied();
 			if(occupied){
 				this.ctc.setBlockOccupied(this.line,blockId);
 			}
