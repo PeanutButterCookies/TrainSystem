@@ -9,7 +9,7 @@ import java.util.LinkedList;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.commonresources.Line;
-import com.peanutbuttercookies.trainsystem.ui.TrackModelUI;
+import com.peanutbuttercookies.trainsystem.trackmodel.TrackModelUI;
 
 public interface TrackModelInterface {
 	//for train access, but should not need it

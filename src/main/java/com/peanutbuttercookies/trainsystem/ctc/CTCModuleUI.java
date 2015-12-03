@@ -4,14 +4,13 @@
  */
 
 
-package com.peanutbuttercookies.trainsystem.ui;
+package com.peanutbuttercookies.trainsystem.ctc;
 
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 
-import com.peanutbuttercookies.trainsystem.ctc.ComponentContainer;
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
 
 public class CTCModuleUI extends JFrame {
@@ -42,7 +41,6 @@ public class CTCModuleUI extends JFrame {
 
 	
 	public void addLine(String line) {
-		System.out.println("Adding line: to ui:" + line);
 		ComponentContainer panel = new ComponentContainer(line, module);
 		lineTabs.addTab(line, panel);
 	}

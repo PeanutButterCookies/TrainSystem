@@ -14,7 +14,6 @@ import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.commonresources.Line;
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
-import com.peanutbuttercookies.trainsystem.ui.CTCModuleUI;
 
 public class CTCModule implements CTCModuleInterface {
 
@@ -44,8 +43,8 @@ public class CTCModule implements CTCModuleInterface {
 	public void setBlockUnoccupied(String line, int blockId) {
 		CTCBlockModel model = lineBlockMap.get(line);
 		boolean removeTrain = model.setUnoccupied(blockId);
-		if(!removeTrain) {
-		lineTrainMap.get(line).moveTail(model.getPrevBlock(blockId), blockId);
+		if (!removeTrain) {
+			lineTrainMap.get(line).moveTail(model.getPrevBlock(blockId), blockId);
 		} else {
 			lineTrainMap.get(line).removeTrain();
 		}
@@ -65,9 +64,8 @@ public class CTCModule implements CTCModuleInterface {
 			lineTrainMap.put(line.getLine(), new CTCTrainModel());
 		}
 
-		for(TrackControllerInterface tc : line.getAllTrackControllers()) {
+		for (TrackControllerInterface tc : line.getAllTrackControllers()) {
 			for (Block block : tc.getSection()) {
-				System.out.println(block.getBlockNumber());
 				lineBlockMap.get(line.getLine()).addBlock(block, tc);
 			}
 		}
@@ -122,7 +120,7 @@ public class CTCModule implements CTCModuleInterface {
 
 	public void setUi(CTCModuleUI ui) {
 		this.ui = ui;
-		for(String line : lineBlockMap.keySet()) {
+		for (String line : lineBlockMap.keySet()) {
 			ui.addLine(line);
 		}
 	}
@@ -136,7 +134,9 @@ public class CTCModule implements CTCModuleInterface {
 		} catch (Exception e) {
 			return false;
 		}
-		block.getTc().setSpeedAuthority(train.getHead(), speedInt, block.getBlockNumber());
+		System.out.println("CTC block id: " + train.getHead());
+		lineBlockMap.get(line).getBlock(train.getHead()).getTc().setSpeedAuthority(train.getHead(), speedInt,
+				block.getBlockNumber());
 		return true;
 	}
 
