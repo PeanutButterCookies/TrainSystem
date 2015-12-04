@@ -1,6 +1,7 @@
 package com.peanutbuttercookies.trainsystem.trackcontroller;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
@@ -19,7 +20,7 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 	private final int startBlock;
 	private final int endBlock;
 	private final int overlapBlock;
-	private final HashMap switchList;
+	private final HashMap<String,LinkedList<Block>> switchList;
 	private PLCProgram plcProgram;
 	
 	public TrackController(String initLine, int initControllerId, LinkedList<Block> initSection,
@@ -118,8 +119,16 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 		}
 	}
 	
-	private HashMap setSwitchList(LinkedList<Block> blockSection){
-		return new HashMap();
+	private HashMap<String,LinkedList<Block>> setSwitchList(LinkedList<Block> blockSection){
+		Iterator<Block> blockIterator = this.section.iterator();
+		HashMap<String,LinkedList<Block>> switchMap= new HashMap<String,LinkedList<Block>>();
+		while(blockIterator.hasNext()){
+			Block currBlock = blockIterator.next();
+			if(currBlock.hasSwitch()){
+				switchMap.put(Integer.toString(currBlock.getSwitchBlockId()), (LinkedList<Block>)currBlock.getSwitchList());
+			}
+		}
+		return switchMap;
 	}
 
 }
