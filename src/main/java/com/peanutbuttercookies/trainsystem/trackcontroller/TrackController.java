@@ -82,8 +82,16 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 	}
 	
 	@Override
-	public void engageSwitch(int switchNum){
-		
+	public void engageSwitch(String switchName, boolean engagement){
+		Iterator<Block> switchBlockIterator=this.switchList.get(switchName).iterator();
+		while(switchBlockIterator.hasNext()){
+			Block currBlock=switchBlockIterator.next();
+			if(currBlock.hasSwitch()){
+				if(currBlock.isSwitchEngaged()!=engagement){
+					currBlock.setSwitchEngagement();
+				}
+			}
+		}
 	}
 	
 	@Override
