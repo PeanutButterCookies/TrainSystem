@@ -295,8 +295,34 @@ public class TrackControllerUI extends JFrame {
 		lblSelectLine.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		JButton btnPrevLine = new JButton("Prev.");
+		btnPrevLine.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				int current = comboBoxLine_2.getSelectedIndex();
+				if(current!=0){
+					comboBoxLine_2.setSelectedIndex(current-1);
+				}
+				else{
+					comboBoxLine_2.setSelectedIndex(comboBoxLine_2.getItemCount()-1);
+				}
+				displayedLine=comboBoxLine_2.getSelectedItem().toString();
+				updateVariableTable();
+			}
+		});
 		
 		JButton btnNextLine = new JButton("Next");
+		btnNextLine.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				int current = comboBoxLine_2.getSelectedIndex();
+				if(current!=comboBoxLine_2.getItemCount()-1){
+					comboBoxLine_2.setSelectedIndex(current+1);
+				}
+				else{
+					comboBoxLine_2.setSelectedIndex(0);
+				}
+				displayedLine=comboBoxLine_2.getSelectedItem().toString();
+				updateVariableTable();
+			}
+		});
 		
 		JLabel lblSelectTrackController = new JLabel("Select Track Controller");
 		lblSelectTrackController.setHorizontalAlignment(SwingConstants.CENTER);
@@ -315,8 +341,38 @@ public class TrackControllerUI extends JFrame {
 		});
 		
 		JButton btnPrevController = new JButton("Prev.");
+		btnPrevController.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				if(!displayedLine.equals("All")){
+					int current = comboBoxTrackController_2.getSelectedIndex();
+					if(current!=0){
+						comboBoxTrackController_2.setSelectedIndex(current-1);
+					}
+					else{
+						comboBoxTrackController_2.setSelectedIndex(comboBoxTrackController_2.getItemCount()-1);
+					}
+					displayedController=comboBoxTrackController_2.getSelectedItem().toString();
+					updateVariableTable();
+				}
+			}
+		});
 		
 		JButton btnNextController = new JButton("Next");
+		btnNextController.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				if(!displayedLine.equals("All")){
+					int current = comboBoxTrackController_2.getSelectedIndex();
+					if(current!=comboBoxTrackController_2.getItemCount()-1){
+						comboBoxTrackController_2.setSelectedIndex(current+1);
+					}
+					else{
+						comboBoxTrackController_2.setSelectedIndex(0);
+					}
+					displayedController=comboBoxTrackController_2.getSelectedItem().toString();
+					updateVariableTable();
+				}
+			}
+		});
 		
 		JSeparator separator_2 = new JSeparator();
 		

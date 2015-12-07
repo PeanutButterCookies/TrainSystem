@@ -22,7 +22,7 @@ public interface TrackControllerInterface {
 	public int getOverlapBlock();
 	public LinkedList<Block> getSection();
 	public Block getBlock(int index);
-	public void engageSwitch(int switchNum);
+	public void engageSwitch(String switchName, boolean engagement);
 	public void setPLCProgram(PLCProgram newPlcProgram);
 	public void setSpeedAuthority(int blockId, int speed, int authority);
 }
