@@ -9,9 +9,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.neo4j.ogm.annotation.NodeEntity;
+
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 
+@NodeEntity(label="Class")
 public class CTCBlock {
 	private static List<String> fields;
 
@@ -26,12 +29,10 @@ public class CTCBlock {
 	}
 	
 	private Integer blockNumber;
-	private String line;
 	private String section;
 	private boolean occupied;
-	private CTCBlock nextBlock;
-	private CTCBlock prevBlock;
-	private List<CTCBlock> possibleNext;
+	private boolean aSwitch;
+
 	private long starttime;
 	private int numTrains;
 	private TrackControllerInterface tc;
@@ -45,9 +46,6 @@ public class CTCBlock {
 	}
 
 	public CTCBlock() {
-		possibleNext = new ArrayList<CTCBlock>();
-		nextBlock = null;
-		prevBlock = null;
 		setOccupied(false);
 		starttime = System.currentTimeMillis();
 	}
@@ -87,41 +85,6 @@ public class CTCBlock {
 		this.occupied = occupied;
 	}
 
-	public String getLine() {
-		return line;
-	}
-
-	public void setLine(String line) {
-		this.line = line;
-	}
-	
-	public void addPossible(CTCBlock block) {
-		if(nextBlock == null) {
-			setNextBlock(block);
-			block.setPrevBlock(this);
-		}
-		possibleNext.add(block);
-	}
-
-	public CTCBlock getNextBlock() {
-		return nextBlock;
-	}
-
-	public void setNextBlock(CTCBlock nextBlock) {
-		this.nextBlock = nextBlock;
-	}
-
-	public CTCBlock getPrevBlock() {
-		return prevBlock;
-	}
-
-	public void setPrevBlock(CTCBlock prevBlock) {
-		this.prevBlock = prevBlock;
-	}
-	
-	public boolean isSwitch() {
-		return possibleNext.size() > 1;
-	}
 
 	public String getSection() {
 		return section;
@@ -145,21 +108,17 @@ public class CTCBlock {
 	}
 	
 	@Override
-	/**
-	 * Equals makes blocks unique by number and line
-	 */
 	public boolean equals(Object other) {
 		if(!(other instanceof CTCBlock)) {
 			return false;
 		}
 		
-		return line.equals(((CTCBlock)other).getLine()) && blockNumber.equals(((CTCBlock)other).getBlockNumber());
+		return blockNumber.equals(((CTCBlock)other).getBlockNumber());
 	}
 	
 	@Override
 	public int hashCode() {
-		String unique = line + blockNumber;
-		return unique.hashCode();
+		return blockNumber;
 	}
 	
 	public static int getFieldsSize() {
@@ -173,9 +132,12 @@ public class CTCBlock {
 	public String toString() {
 		return blockNumber.toString();
 	}
-	public String state() {
-		return "prev: " + ((prevBlock == null)? "null": prevBlock.getBlockNumber())
-				+ "\ncurr: " + blockNumber
-				+ "\nnext: " + ((nextBlock == null)? "null": nextBlock.getBlockNumber());
+
+	public boolean isaSwitch() {
+		return aSwitch;
+	}
+
+	public void setaSwitch(boolean aSwitch) {
+		this.aSwitch = aSwitch;
 	}
 }
