@@ -40,66 +40,7 @@ public class CTCBlockModel extends AbstractTableModel {
 	}
 
 	public void addBlock(Block block, TrackControllerInterface tc) {
-		if (block == null) {
-			return;
-		}
-		CTCBlock ctcBlock = null;
-		if (blockMap.containsKey(block.getBlockNumber())) {
-			ctcBlock = blockMap.get(block.getBlockNumber());
-			ctcBlock.setAll(block);
-		} else {
-			ctcBlock = new CTCBlock(block);
-		}
-		ctcBlock.setTc(tc);
-
-		if (!sections.containsKey(ctcBlock.getSection())) {
-			sections.put(ctcBlock.getSection(), new CTCSection(ctcBlock.getSection()));
-		}
-
-		sections.get(ctcBlock.getSection()).addBlock(ctcBlock);
-		if (ctcBlock.isSwitch()) {
-			switchMap.put(ctcBlock.getBlockNumber(), ctcBlock);
-		}
-
-		if (block.getBlockNumber() == 1) {
-			System.out.println("Prev block set to null");
-			ctcBlock.setPrevBlock(null);
-		} else {
-			int index = (block.getNextPossible().size() > 1)? 1:0;
-			Integer prev = block.getNextPossible().get(index).getBlockNumber();
-			if (blockMap.containsKey(prev)) {
-				System.out.println("Used an old CTCBlock");
-				ctcBlock.setPrevBlock(blockMap.get(prev));
-			} else {
-				System.out.println("Made a new CTCBlock");
-				CTCBlock newBlock = new CTCBlock(block.getNextPossible().get(index));
-				blockMap.put(prev, newBlock);
-				ctcBlock.setPrevBlock(newBlock);
-			}
-		}
-
-		if(block.getBlockNumber() != 1 && block.getNextPossible().size() == 1) {
-			ctcBlock.setNextBlock(null);
-		} else {
-			Integer next = block.getNextPossible().get(0).getBlockNumber();
-			if (blockMap.containsKey(next)) {
-				ctcBlock.setNextBlock(blockMap.get(next));
-			} else {
-				CTCBlock newBlock = new CTCBlock(block.getNextPossible().get(0));
-				blockMap.put(next, newBlock);
-				ctcBlock.setNextBlock(newBlock);
-			}
-		}
-		if (ctcBlock.getBlockNumber() > 9)
-			System.out.println("Bad block");
-		if (!blockMap.containsKey(ctcBlock.getBlockNumber())) {
-			blockMap.put(ctcBlock.getBlockNumber(), ctcBlock);
-		}
-		
-		System.out.println("This: " +ctcBlock);
-		System.out.println("Next: " + ctcBlock.getNextBlock());
-		System.out.println("Prev: " + ctcBlock.getPrevBlock());
-		
+		//TODO
 		fireTableDataChanged();
 	}
 
