@@ -23,8 +23,10 @@ public class CTCBlockModel extends AbstractTableModel {
 	private Map<Integer, CTCBlock> switchMap;
 	private Map<String, CTCSection> sections;
 	private Thread update;
+	private Neo4JBlockGraph neo4j;
 
-	public CTCBlockModel() {
+	public CTCBlockModel(Neo4JBlockGraph neo4j) {
+		this.neo4j = neo4j;
 		blockMap = new LinkedHashMap<Integer, CTCBlock>();
 		switchMap = new LinkedHashMap<Integer, CTCBlock>();
 		sections = new LinkedHashMap<String, CTCSection>();

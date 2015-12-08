@@ -5,16 +5,12 @@
 
 package com.peanutbuttercookies.trainsystem.ctc;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import org.neo4j.ogm.annotation.NodeEntity;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 
-@NodeEntity(label="Class")
 public class CTCBlock {
 	private static List<String> fields;
 
@@ -32,9 +28,8 @@ public class CTCBlock {
 	private String section;
 	private boolean occupied;
 	private boolean aSwitch;
-
 	private long starttime;
-	private int numTrains;
+	private int numOccupied;
 	private TrackControllerInterface tc;
 	
 	public TrackControllerInterface getTc() {
@@ -53,7 +48,6 @@ public class CTCBlock {
 	public CTCBlock(int blockNumber, String line, String section) {
 		this();
 		setBlockNumber(blockNumber);
-		setLine(line);
 		setSection(section);
 
 	}
@@ -65,7 +59,6 @@ public class CTCBlock {
 	
 	public void setAll(Block block) {
 		setBlockNumber(block.getBlockNumber());
-		setLine(block.getLine());
 		setSection(block.getSection());
 	}
 	
@@ -80,7 +73,7 @@ public class CTCBlock {
 	}
 	public void setOccupied(boolean occupied) {
 		if(occupied) {
-			numTrains++;
+			numOccupied++;
 		}
 		this.occupied = occupied;
 	}
@@ -101,7 +94,7 @@ public class CTCBlock {
 		double seconds = diff/1000;
 		double minutes = seconds/60;
 		double hours = minutes/60;
-		double throughput = numTrains/hours;
+		double throughput = numOccupied/hours;
 		return throughput;
 		
 		

@@ -18,6 +18,7 @@ import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 public class CTCModule implements CTCModuleInterface {
 
 	private CTCModuleUI ui;
+	private Neo4JBlockGraph neo4j;
 
 	private Map<String, CTCBlockModel> lineBlockMap;
 	private Map<String, CTCTrainModel> lineTrainMap;
@@ -26,6 +27,7 @@ public class CTCModule implements CTCModuleInterface {
 	public CTCModule() {
 		lineBlockMap = new HashMap<String, CTCBlockModel>();
 		lineTrainMap = new HashMap<String, CTCTrainModel>();
+		neo4j = new Neo4JBlockGraph();
 	}
 
 	@Override
