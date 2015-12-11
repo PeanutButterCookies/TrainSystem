@@ -21,7 +21,7 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 	private final int endBlock;
 	private final int overlapBlock;
 	private final HashMap<String,LinkedList<Block>> switchList;
-	private PLCProgram plcProgram;
+	private PLCProgram_OLD plcProgram;
 	
 	public TrackController(String initLine, int initControllerId, LinkedList<Block> initSection,
 			int initStartBlock, int initEndBlock, int initOverlapBlock, CTCModuleInterface initCtc,
@@ -83,19 +83,24 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 	
 	@Override
 	public void engageSwitch(String switchName, boolean engagement){
-		Iterator<Block> switchBlockIterator=this.switchList.get(switchName).iterator();
-		while(switchBlockIterator.hasNext()){
-			Block currBlock=switchBlockIterator.next();
-			if(currBlock.hasSwitch()){
-				if(currBlock.isSwitchEngaged()!=engagement){
-					currBlock.setSwitchEngagement();
+		if(this.switchList.containsKey(switchName)){
+			Iterator<Block> switchBlockIterator=this.switchList.get(switchName).iterator();
+			while(switchBlockIterator.hasNext()){
+				Block currBlock=switchBlockIterator.next();
+				if(currBlock.hasSwitch()){
+					if(currBlock.isSwitchEngaged()!=engagement){
+						currBlock.setSwitchEngagement();
+					}
 				}
-			}
+			}	
+		}
+		else{
+			System.err.println("ERROR: THIS TC DOES NOT CONTAIN SWITCH  "+switchName);
 		}
 	}
 	
 	@Override
-	public void setPLCProgram(PLCProgram newPlcProgram){
+	public void setPLCProgram(PLCProgram_OLD newPlcProgram){
 		this.plcProgram=newPlcProgram;
 	}
 	

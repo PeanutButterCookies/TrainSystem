@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -47,6 +48,8 @@ public class TrackControllerUI extends JFrame {
 	private JComboBox<String> 			comboBoxTrackController_1;
 	private JComboBox<String> 			comboBoxTrackController_2;
 	private JComboBox<String> 			comboBoxSwitchList;
+	
+	private HashMap<String,TrackControllerInterface> switchMap;
 	
 	private String 						displayedLine=null;
 	private String						displayedController=null;
@@ -424,61 +427,154 @@ public class TrackControllerUI extends JFrame {
 			}
 		};
 		
-		ButtonGroup group = new ButtonGroup();
-		JRadioButton rdbtnEngage = new JRadioButton("Engage");	
-		JRadioButton rdbtnDisengage = new JRadioButton("Disengage");
-		rdbtnEngage.addActionListener(switchEngage);
-		rdbtnDisengage.addActionListener(switchEngage);
-		group.add(rdbtnEngage);
-		group.add(rdbtnDisengage);
-		rdbtnEngage.setEnabled(false);
-		rdbtnDisengage.setEnabled(false);
+		ButtonGroup switchGroup = new ButtonGroup();
+		JRadioButton rdbtnEngageSwitch = new JRadioButton("Engage");	
+		JRadioButton rdbtnDisengageSwitch = new JRadioButton("Disengage");
+		rdbtnEngageSwitch.addActionListener(switchEngage);
+		rdbtnDisengageSwitch.addActionListener(switchEngage);
+		switchGroup.add(rdbtnEngageSwitch);
+		switchGroup.add(rdbtnDisengageSwitch);
+		rdbtnEngageSwitch.setEnabled(false);
+		rdbtnDisengageSwitch.setEnabled(false);
 		
+		ActionListener switchEngageAction= new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				JRadioButton switchBtn=(JRadioButton)e.getSource();
+				String selectedSwitch=comboBoxSwitchList.getSelectedItem().toString();
+				
+				if(switchMap.containsKey(selectedSwitch)){
+					if(switchBtn.getText().equals("Engage")){
+						switchMap.get(selectedSwitch).engageSwitch(selectedSwitch, true);
+					}
+					else if(switchBtn.getText().equals("Disengage")){
+						switchMap.get(selectedSwitch).engageSwitch(selectedSwitch, false);
+					}
+				}
+			}
+		};
+		rdbtnEngageSwitch.addActionListener(switchEngageAction);
+		rdbtnDisengageSwitch.addActionListener(switchEngageAction);
 		
 		comboBoxSwitchList.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				JComboBox<String>  comboBox=(JComboBox<String>)e.getSource();
 				String selected = (String)comboBox.getSelectedItem();
 				if(selected.equals("None")){
-					rdbtnEngage.setEnabled(false);
-					rdbtnDisengage.setEnabled(false);
+					rdbtnEngageSwitch.setEnabled(false);
+					rdbtnDisengageSwitch.setEnabled(false);
 				}
 				else{
-					rdbtnEngage.setEnabled(true);
-					rdbtnDisengage.setEnabled(true);
+					rdbtnEngageSwitch.setEnabled(true);
+					rdbtnDisengageSwitch.setEnabled(true);
+				}
+			}
+		});
+		
+		JLabel lblManuallyEngageRr_1 = new JLabel("Manually Engage");
+		lblManuallyEngageRr_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblManuallyEngageRr_1.setFont(new Font("Tahoma", Font.BOLD, 11));
+		
+		JLabel lblManuallyEngageRr_2 = new JLabel("RR Crossing");
+		lblManuallyEngageRr_2.setHorizontalAlignment(SwingConstants.CENTER);
+		lblManuallyEngageRr_2.setFont(new Font("Tahoma", Font.BOLD, 11));
+		
+		JComboBox comboBoxRR = new JComboBox();
+		comboBoxRR.setModel(new DefaultComboBoxModel(new String[] {"None"}));
+		
+		ButtonGroup rrGroup = new ButtonGroup();
+		JRadioButton rdbtnEngageRR = new JRadioButton("Engage");
+		JRadioButton rdbtnDisengageRR = new JRadioButton("Disengage");
+		rrGroup.add(rdbtnEngageRR);
+		rrGroup.add(rdbtnDisengageRR);
+		rdbtnEngageRR.setEnabled(false);
+		rdbtnDisengageRR.setEnabled(false);
+		
+		ActionListener rrEngageAction= new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				JRadioButton switchBtn=(JRadioButton)e.getSource();
+				String selectedSwitch=comboBoxRR.getSelectedItem().toString();
+				
+				/*
+				if(switchMap.containsKey(selectedSwitch)){
+					if(switchBtn.getText().equals("Engage")){
+						switchMap.get(selectedSwitch).engageSwitch(selectedSwitch, true);
+					}
+					else if(switchBtn.getText().equals("Disengage")){
+						switchMap.get(selectedSwitch).engageSwitch(selectedSwitch, false);
+					}
+				}
+				*/
+			}
+		};
+		rdbtnEngageRR.addActionListener(rrEngageAction);
+		rdbtnEngageRR.addActionListener(rrEngageAction);
+		
+		comboBoxRR.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				JComboBox<String>  comboBox=(JComboBox<String>)e.getSource();
+				String selected = (String)comboBox.getSelectedItem();
+				if(selected.equals("None")){
+					rdbtnEngageRR.setEnabled(false);
+					rdbtnDisengageRR.setEnabled(false);
+				}
+				else{
+					rdbtnEngageRR.setEnabled(true);
+					rdbtnDisengageRR.setEnabled(true);
 				}
 			}
 		});
 		
 		GroupLayout gl_panel_ControllerSelection = new GroupLayout(panel_ControllerSelection);
 		gl_panel_ControllerSelection.setHorizontalGroup(
-			gl_panel_ControllerSelection.createParallelGroup(Alignment.TRAILING)
-				.addGroup(Alignment.LEADING, gl_panel_ControllerSelection.createSequentialGroup()
+			gl_panel_ControllerSelection.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_ControllerSelection.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_panel_ControllerSelection.createParallelGroup(Alignment.LEADING)
-						.addComponent(rdbtnDisengage)
-						.addComponent(rdbtnEngage)
-						.addComponent(comboBoxSwitchList, 0, 153, Short.MAX_VALUE)
-						.addComponent(separator_2, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
-						.addComponent(comboBoxLine_2, 0, 153, Short.MAX_VALUE)
-						.addComponent(lblSelectTrackController, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
-						.addComponent(lblTrackControllerSelection2, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
-						.addComponent(lblTrackControllerSelection1, GroupLayout.PREFERRED_SIZE, 153, Short.MAX_VALUE)
-						.addComponent(separator, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
-						.addComponent(comboBoxTrackController_2, 0, 153, Short.MAX_VALUE)
-						.addComponent(lblSelectLine, GroupLayout.PREFERRED_SIZE, 151, GroupLayout.PREFERRED_SIZE)
 						.addGroup(gl_panel_ControllerSelection.createSequentialGroup()
-							.addComponent(btnPrevLine)
-							.addGap(35)
-							.addComponent(btnNextLine, GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE))
-						.addGroup(gl_panel_ControllerSelection.createSequentialGroup()
-							.addComponent(btnPrevController, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-							.addGap(39)
-							.addComponent(btnNextController))
-						.addComponent(lblTrackControllerOptions, GroupLayout.PREFERRED_SIZE, 152, GroupLayout.PREFERRED_SIZE)
-						.addComponent(separator_3, GroupLayout.PREFERRED_SIZE, 153, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblManuallyEngageSwitch, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap())
+							.addComponent(rdbtnDisengageRR, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+							.addContainerGap())
+						.addGroup(gl_panel_ControllerSelection.createParallelGroup(Alignment.LEADING)
+							.addGroup(gl_panel_ControllerSelection.createSequentialGroup()
+								.addComponent(rdbtnEngageRR, GroupLayout.PREFERRED_SIZE, 61, GroupLayout.PREFERRED_SIZE)
+								.addContainerGap())
+							.addGroup(gl_panel_ControllerSelection.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_panel_ControllerSelection.createSequentialGroup()
+									.addComponent(rdbtnDisengageSwitch)
+									.addContainerGap())
+								.addGroup(gl_panel_ControllerSelection.createParallelGroup(Alignment.LEADING)
+									.addGroup(gl_panel_ControllerSelection.createSequentialGroup()
+										.addComponent(rdbtnEngageSwitch)
+										.addContainerGap())
+									.addGroup(gl_panel_ControllerSelection.createParallelGroup(Alignment.TRAILING)
+										.addGroup(gl_panel_ControllerSelection.createSequentialGroup()
+											.addGroup(gl_panel_ControllerSelection.createParallelGroup(Alignment.TRAILING)
+												.addComponent(comboBoxLine_2, 0, 153, Short.MAX_VALUE)
+												.addComponent(lblTrackControllerSelection2, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
+												.addComponent(lblTrackControllerSelection1, GroupLayout.PREFERRED_SIZE, 153, Short.MAX_VALUE)
+												.addComponent(separator, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
+												.addComponent(lblSelectLine, GroupLayout.PREFERRED_SIZE, 151, GroupLayout.PREFERRED_SIZE)
+												.addGroup(gl_panel_ControllerSelection.createSequentialGroup()
+													.addComponent(btnPrevLine)
+													.addGap(35)
+													.addComponent(btnNextLine, GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE))
+												.addComponent(lblSelectTrackController, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
+												.addComponent(comboBoxTrackController_2, 0, 153, Short.MAX_VALUE)
+												.addGroup(gl_panel_ControllerSelection.createSequentialGroup()
+													.addComponent(btnPrevController, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+													.addGap(39)
+													.addComponent(btnNextController))
+												.addComponent(separator_2, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
+												.addComponent(lblTrackControllerOptions, GroupLayout.PREFERRED_SIZE, 152, GroupLayout.PREFERRED_SIZE)
+												.addComponent(separator_3, GroupLayout.PREFERRED_SIZE, 153, GroupLayout.PREFERRED_SIZE)
+												.addComponent(lblManuallyEngageSwitch, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
+												.addComponent(comboBoxSwitchList, 0, 153, Short.MAX_VALUE)
+												.addComponent(lblManuallyEngageRr_1, GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE))
+											.addContainerGap())
+										.addGroup(gl_panel_ControllerSelection.createSequentialGroup()
+											.addGroup(gl_panel_ControllerSelection.createParallelGroup(Alignment.TRAILING)
+												.addComponent(comboBoxRR, Alignment.LEADING, 0, 147, Short.MAX_VALUE)
+												.addComponent(lblManuallyEngageRr_2, GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE))
+											.addGap(16))))))))
 		);
 		gl_panel_ControllerSelection.setVerticalGroup(
 			gl_panel_ControllerSelection.createParallelGroup(Alignment.LEADING)
@@ -497,29 +593,39 @@ public class TrackControllerUI extends JFrame {
 					.addGroup(gl_panel_ControllerSelection.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnPrevLine)
 						.addComponent(btnNextLine))
-					.addGap(49)
+					.addGap(19)
 					.addComponent(lblSelectTrackController)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(comboBoxTrackController_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_panel_ControllerSelection.createParallelGroup(Alignment.BASELINE)
-						.addComponent(btnPrevController)
-						.addComponent(btnNextController))
-					.addGap(13)
+						.addComponent(btnNextController)
+						.addComponent(btnPrevController))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addComponent(separator_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(lblTrackControllerOptions, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(separator_3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(lblManuallyEngageSwitch, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(comboBoxSwitchList, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(rdbtnEngage)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(rdbtnDisengage)
-					.addContainerGap(96, Short.MAX_VALUE))
+					.addComponent(rdbtnEngageSwitch)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(rdbtnDisengageSwitch)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblManuallyEngageRr_1)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblManuallyEngageRr_2, GroupLayout.PREFERRED_SIZE, 13, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(comboBoxRR, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(rdbtnEngageRR)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(rdbtnDisengageRR)
+					.addContainerGap(28, Short.MAX_VALUE))
 		);
 		panel_ControllerSelection.setLayout(gl_panel_ControllerSelection);
 		panel_1.setLayout(gl_panel_1);
@@ -716,4 +822,11 @@ public class TrackControllerUI extends JFrame {
 		}
 	}
 	
+	public void setSwitchMap(HashMap<String,TrackControllerInterface> switchMap){
+		this.switchMap=switchMap;
+	}
+	
+	private void updateSwitchComboBox(){
+		
+	}
 }

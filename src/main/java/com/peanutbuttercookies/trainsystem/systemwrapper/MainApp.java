@@ -27,6 +27,7 @@ public class MainApp {
 		TrackModelInterface trackModel = new TrackModel();
 		//TODO
 		trackModel.fileRead("C:/Users/Kevin/Downloads/ModifiedTrackLayout.xlsx");
+		//trackModel.fileRead("C:/Users/Chris/Documents/University of Pittsburgh/Junior Year/Software Engineering/ModifiedTrackLayout.xlsx");
 		
 		trackController.setCTC(ctc);
 		TrackControllerUI tcUI = new TrackControllerUI();
