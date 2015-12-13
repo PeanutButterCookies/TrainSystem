@@ -192,5 +192,15 @@ public class Neo4JBlockGraph {
 		
 		return block;
 	}
+	
+	public double getAuthority(String line, int start, int end) {
+		//TODO
+		try(Transaction tx = graph.beginTx()) {
+			
+		} catch(Exception e) {
+			return -1;
+		}
+		return 0;
+	}
 
 }
