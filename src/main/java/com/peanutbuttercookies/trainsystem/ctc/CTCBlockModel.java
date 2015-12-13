@@ -12,6 +12,8 @@ import java.util.Map;
 
 import javax.swing.table.AbstractTableModel;
 
+import org.neo4j.graphdb.Direction;
+
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 
@@ -19,28 +21,33 @@ public class CTCBlockModel extends AbstractTableModel {
 
 	private static final long serialVersionUID = -3573813996444899446L;
 
-	private Map<Integer, CTCBlock> blockMap;
 	private Map<Integer, CTCBlock> switchMap;
 	private Map<String, CTCSection> sections;
+	private Map<Integer, TrackControllerInterface> tcMap;
 	private Thread update;
 	private Neo4JBlockGraph neo4j;
+	private String line;
 
-	public CTCBlockModel(Neo4JBlockGraph neo4j) {
+	public CTCBlockModel(String line, Neo4JBlockGraph neo4j) {
 		this.neo4j = neo4j;
-		blockMap = new LinkedHashMap<Integer, CTCBlock>();
 		switchMap = new LinkedHashMap<Integer, CTCBlock>();
 		sections = new LinkedHashMap<String, CTCSection>();
+		tcMap = new LinkedHashMap<Integer, TrackControllerInterface>();
 		update = new Thread(new TableUpdateThread(this));
 		update.setDaemon(true);
 		update.start();
+		this.line = line;
 	}
 	
-	public CTCBlock getBlock(int blockId) {
-		return blockMap.get(blockId);
+	public void addTc(TrackControllerInterface tc) {
+		if(!tcMap.containsKey(tc.getControllerId())) {
+			tcMap.put(tc.getControllerId(), tc);
+		}
 	}
 
 	public void addBlock(Block block, TrackControllerInterface tc) {
-		//TODO
+		//TODO manage sections
+		neo4j.addBlock(line, block);
 		fireTableDataChanged();
 	}
 
@@ -49,54 +56,41 @@ public class CTCBlockModel extends AbstractTableModel {
 	}
 
 	public List<CTCBlock> getBlocks(CTCSection section) {
-		return sections.get(section.getName()).getBlocks();
-	}
-
-	public void removeBlock(int block, String line) {
-		blockMap.remove(block);
-		switchMap.remove(block);
-		fireTableDataChanged();
+		//TODO
+//		return sections.get(section.getName()).getBlocks();
+		return null;
 	}
 
 	public boolean setOccupied(int blockId) {
-		if (blockMap.containsKey(blockId)) {
-			blockMap.get(blockId).setOccupied(true);
-			fireTableDataChanged();
-			if (blockId == 1 && !blockMap.get(blockMap.get(1).getNextBlock().getBlockNumber()).getNextBlock().isOccupied()) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			System.out.println("That block is not initialized");
+		if(!neo4j.setBlockOccupied(line, blockId)) {
+			System.out.println("Block not initialized");
 			return false;
 		}
+		fireTableDataChanged();
+		if(blockId == 0) {
+			CTCBlock outgoing = neo4j.getAdjacentNode(line, 0, Direction.OUTGOING);
+			if(!outgoing.isOccupied()) {
+				return true;
+			} 
+		}
+		
+		return false;
 	}
 
 	public boolean setUnoccupied(int blockId) {
-		if (blockMap.containsKey(blockId)) {
-			blockMap.get(blockId).setOccupied(false);
-			fireTableDataChanged();
-			if (blockId == 1 && !blockMap.get(2).getNextBlock().isOccupied()) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			System.out.println("That block is not initialized");
+		if(!neo4j.setBlockOccupied(line, blockId)) {
+			System.out.println("Block not initialized");
 			return false;
 		}
-	}
-
-	public Integer getPrevBlock(int blockId) {
-		CTCBlock block = blockMap.get(blockId);
-		if (block == null) {
-			return null;
-		} else if (block.getPrevBlock() == null) {
-			return null;
-		} else {
-			return block.getPrevBlock().getBlockNumber();
+		fireTableDataChanged();
+		if(blockId == 0) {
+			CTCBlock incoming = neo4j.getAdjacentNode(line, 0, Direction.INCOMING);
+			if(!incoming.isOccupied()) {
+				return true;
+			} 
 		}
+		
+		return false;
 	}
 
 	@Override
@@ -106,26 +100,27 @@ public class CTCBlockModel extends AbstractTableModel {
 
 	@Override
 	public int getRowCount() {
-		return blockMap.size();
+		return neo4j.getBlockCount(line);
 	}
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		if (!blockMap.containsKey(rowIndex)) {
+		CTCBlock block = neo4j.getBlock(line, rowIndex);
+		if(block == null) {
 			return null;
 		}
 
 		switch (columnIndex) {
 		case 0:
-			return blockMap.get(rowIndex).getBlockNumber();
+			return block.getBlockNumber();
 		case 1:
-			return blockMap.get(rowIndex).getSection();
+			return block.getSection();
 		case 2:
-			return blockMap.get(rowIndex).isOccupied();
+			return block.isOccupied();
 		case 3:
-			return blockMap.get(rowIndex).isSwitch();
+			return block.isASwitch();
 		case 4:
-			return blockMap.get(rowIndex).getThroughput();
+			return block.getThroughput();
 		default:
 			return null;
 		}
@@ -137,8 +132,4 @@ public class CTCBlockModel extends AbstractTableModel {
 		return CTCBlock.getField(column);
 	}
 
-	// FOR TESTING
-	public Map<Integer, CTCBlock> getBlockMap() {
-		return blockMap;
-	}
 }

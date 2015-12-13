@@ -3,15 +3,18 @@ package com.peanutbuttercookies.trainsystem.ctc;
 import java.io.File;
 import java.util.List;
 
+import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
+import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.graphdb.schema.Schema;
+import org.neo4j.helpers.collection.IteratorUtil;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
 
@@ -67,6 +70,7 @@ public class Neo4JBlockGraph {
 				}
 
 				Relationship rel = node.createRelationshipTo(next, RelTypes.CONNECTED_TO);
+				rel.setProperty("enabled", true);
 				if(block.getTwoWay()) {
 					Relationship rel2 = next.createRelationshipTo(node, RelTypes.CONNECTED_TO);
 					rel2.setProperty("enabled", true);
@@ -116,6 +120,8 @@ public class Neo4JBlockGraph {
 		node.setProperty("aSwitch", block.hasSwitch());
 		node.setProperty("occupied", block.isBlockOccupied());
 		node.setProperty("section", block.getSection());
+		node.setProperty("numOccupied", 0);
+		node.setProperty("startTime", System.nanoTime());
 	}
 
 	private Node makeTempNode(Integer id, Label label) {
@@ -129,6 +135,62 @@ public class Neo4JBlockGraph {
 		// TODO
 
 		return null;
+	}
+	
+	public boolean setBlockOccupied(String line, Integer blockId) {
+		//TODO
+		return false;
+	}
+	
+	public CTCBlock getBlock(String line, Integer blockId) {
+		CTCBlock block = null;
+		try(Transaction tx = graph.beginTx()) {
+			Node node = graph.findNode(DynamicLabel.label(line), ID, blockId);
+			block = new CTCBlock(node);
+			tx.success();
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		return block;
+	}
+	
+	public int getBlockCount(String line) {
+		int count = 0;
+		try(Transaction tx = graph.beginTx()) {
+			ResourceIterator<Node> iterator = graph.findNodes(DynamicLabel.label(line));
+			count = IteratorUtil.count(iterator);
+			tx.success();
+		} catch(Exception e) {
+			e.printStackTrace();
+			return -1;
+		}
+		
+		return count;
+	}
+	
+	public CTCBlock getAdjacentNode(String line, int blockId, Direction direction) {
+		CTCBlock block = null;
+		try(Transaction tx = graph.beginTx()) {
+			Node node = graph.findNode(DynamicLabel.label(line), ID, blockId);
+			Iterable<Relationship> rels = node.getRelationships(direction);
+			Node incoming = null;
+			for(Relationship rel : rels) {
+				if(((boolean)rel.getProperty("enabled"))) {
+					incoming = rel.getStartNode();
+					break;
+				}
+			}
+			if(incoming != null) {
+				block = new CTCBlock(incoming);
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		return block;
 	}
 
 }

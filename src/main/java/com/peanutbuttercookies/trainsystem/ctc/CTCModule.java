@@ -37,7 +37,8 @@ public class CTCModule implements CTCModuleInterface {
 		if (newTrain) {
 			lineTrainMap.get(line).addTrain(new NewCTCTrain());
 		} else {
-			lineTrainMap.get(line).moveHead(model.getPrevBlock(blockId), blockId);
+			//TODO
+//			lineTrainMap.get(line).moveHead(model.getPrevBlock(blockId), blockId);
 		}
 	}
 
@@ -46,7 +47,8 @@ public class CTCModule implements CTCModuleInterface {
 		CTCBlockModel model = lineBlockMap.get(line);
 		boolean removeTrain = model.setUnoccupied(blockId);
 		if (!removeTrain) {
-			lineTrainMap.get(line).moveTail(model.getPrevBlock(blockId), blockId);
+			//TODO
+//			lineTrainMap.get(line).moveTail(model.getPrevBlock(blockId), blockId);
 		} else {
 			lineTrainMap.get(line).removeTrain();
 		}
@@ -60,7 +62,7 @@ public class CTCModule implements CTCModuleInterface {
 	public void importLine(Line line) {
 
 		if (!lineBlockMap.containsKey(line.getLine())) {
-			lineBlockMap.put(line.getLine(), new CTCBlockModel());
+			lineBlockMap.put(line.getLine(), new CTCBlockModel(line.getLine(), neo4j));
 		}
 		if (!lineTrainMap.containsKey(line.getLine())) {
 			lineTrainMap.put(line.getLine(), new CTCTrainModel());

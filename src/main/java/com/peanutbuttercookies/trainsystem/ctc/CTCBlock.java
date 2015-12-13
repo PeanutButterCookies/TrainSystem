@@ -8,11 +8,11 @@ package com.peanutbuttercookies.trainsystem.ctc;
 import java.util.Arrays;
 import java.util.List;
 
-import com.peanutbuttercookies.trainsystem.commonresources.Block;
-import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
+import org.neo4j.graphdb.Node;
 
 public class CTCBlock {
 	private static List<String> fields;
+	private static double ratio = 1.0;
 
 	static {
 		fields = Arrays.asList(new String[] {
@@ -24,43 +24,34 @@ public class CTCBlock {
 		});
 	}
 	
-	private Integer blockNumber;
+	private int blockNumber;
+	private int tc;
+	private double length;
 	private String section;
-	private boolean occupied;
 	private boolean aSwitch;
-	private long starttime;
+	private boolean occupied;
 	private int numOccupied;
-	private TrackControllerInterface tc;
+	private long startTime;
 	
-	public TrackControllerInterface getTc() {
-		return tc;
-	}
-
-	public void setTc(TrackControllerInterface tc) {
-		this.tc = tc;
-	}
-
-	public CTCBlock() {
-		setOccupied(false);
-		starttime = System.currentTimeMillis();
-	}
-
-	public CTCBlock(int blockNumber, String line, String section) {
-		this();
-		setBlockNumber(blockNumber);
-		setSection(section);
-
+	public CTCBlock(Node node) {
+		setAll(node);
 	}
 	
-	public CTCBlock(Block block) {
-		this();
-		setAll(block);
+	public static void setRatio(double aRatio) {
+		ratio = aRatio;
 	}
 	
-	public void setAll(Block block) {
-		setBlockNumber(block.getBlockNumber());
-		setSection(block.getSection());
+	public void setAll(Node node) {
+		setBlockNumber((int)node.getProperty("blockNumber"));
+		setLength((double)node.getProperty("length"));
+		setASwitch((boolean)node.getProperty("aSwitch"));
+		setOccupied((boolean)node.getProperty("occupied"));
+		setSection((String)node.getProperty("section"));
+		setNumOccupied((int)node.getProperty("numOccupied"));
+		setTc((int)node.getProperty("tc"));
+		setStartTime((long)node.getProperty("starttime"));
 	}
+	
 	
 	public Integer getBlockNumber() {
 		return blockNumber;
@@ -68,45 +59,14 @@ public class CTCBlock {
 	public void setBlockNumber(Integer blockNumber) {
 		this.blockNumber = blockNumber;
 	}
-	public boolean isOccupied() {
-		return occupied;
-	}
-	public void setOccupied(boolean occupied) {
-		if(occupied) {
-			numOccupied++;
-		}
-		this.occupied = occupied;
-	}
 
-
-	public String getSection() {
-		return section;
-	}
-
-	public void setSection(String section) {
-		this.section = section;
-	}
-	
-	//TODO change this to work with scaling simulation time
-	public double getThroughput() {
-		long time = System.currentTimeMillis();
-		long diff = time - starttime;
-		double seconds = diff/1000;
-		double minutes = seconds/60;
-		double hours = minutes/60;
-		double throughput = numOccupied/hours;
-		return throughput;
-		
-		
-	}
-	
 	@Override
 	public boolean equals(Object other) {
 		if(!(other instanceof CTCBlock)) {
 			return false;
 		}
 		
-		return blockNumber.equals(((CTCBlock)other).getBlockNumber());
+		return blockNumber == ((CTCBlock)other).getBlockNumber();
 	}
 	
 	@Override
@@ -122,15 +82,80 @@ public class CTCBlock {
 		return fields.get(index);
 	}
 	
+	@Override
 	public String toString() {
-		return blockNumber.toString();
+		if(blockNumber == 0) {
+			return "Yard";
+		}
+		return Integer.toString(blockNumber);
 	}
 
-	public boolean isaSwitch() {
+	public int getTc() {
+		return tc;
+	}
+
+	public void setTc(int tc) {
+		this.tc = tc;
+	}
+
+	public double getLength() {
+		return length;
+	}
+
+	public void setLength(double length) {
+		this.length = length;
+	}
+
+	public String getSection() {
+		return section;
+	}
+
+	public void setSection(String section) {
+		this.section = section;
+	}
+
+	public boolean isASwitch() {
 		return aSwitch;
 	}
 
-	public void setaSwitch(boolean aSwitch) {
+	public void setASwitch(boolean aSwitch) {
 		this.aSwitch = aSwitch;
 	}
+
+	public boolean isOccupied() {
+		return occupied;
+	}
+
+	public void setOccupied(boolean occupied) {
+		this.occupied = occupied;
+	}
+
+	public int getNumOccupied() {
+		return numOccupied;
+	}
+
+	public void setNumOccupied(int numOccupied) {
+		this.numOccupied = numOccupied;
+	}
+
+	public void setBlockNumber(int blockNumber) {
+		this.blockNumber = blockNumber;
+	}
+	
+	public long getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(long startTime) {
+		this.startTime = startTime;
+	}
+
+	public double getThroughput() {
+		long current = System.nanoTime();
+		long time = current - startTime;
+		double dTime = time/ratio;
+		dTime = dTime/1000/1000/1000/60/60;
+		return dTime;
+	}
+
 }
