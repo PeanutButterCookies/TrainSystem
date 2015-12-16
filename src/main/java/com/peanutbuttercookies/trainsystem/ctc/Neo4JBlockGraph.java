@@ -1,6 +1,7 @@
 package com.peanutbuttercookies.trainsystem.ctc;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.neo4j.graphdb.Direction;
@@ -8,6 +9,7 @@ import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.ResourceIterator;
@@ -196,7 +198,23 @@ public class Neo4JBlockGraph {
 	public double getAuthority(String line, int start, int end) {
 		//TODO
 		try(Transaction tx = graph.beginTx()) {
-			
+			Label label = DynamicLabel.label(line);
+			Node startNode = graph.findNode(label, ID, start);
+			Iterable<Path> paths = graph.traversalDescription()
+					.breadthFirst()
+					.relationships(RelTypes.CONNECTED_TO, Direction.OUTGOING)
+					.traverse(startNode);
+			for(Path path : paths) {
+				if(((Integer)path.endNode().getProperty(ID)) != end) {
+					continue;
+				}
+				
+				double length = 0;
+				for(Node n : path.nodes()) {
+					length += (double)n.getProperty("length");
+				}
+				return length;
+			}
 		} catch(Exception e) {
 			return -1;
 		}
