@@ -17,17 +17,16 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 	private CTCModuleInterface ctc;
 	private TrackModelInterface trackModel;
 	private LinkedList<Line> lines = new LinkedList<Line>();
-	private HashMap<String,TrackControllerInterface> switchMap= new HashMap<String,TrackControllerInterface>();
+	private HashMap<String,HashMap<String,LinkedList<Block>>> switchList = new HashMap<String,HashMap<String,LinkedList<Block>>>();
 	
 	public TrackControllerStaticModule() {
 		lines = new LinkedList<Line>();
+		
 	}
 
 	@Override
 	public boolean setTrackControllers(Line line) {
 		if (line.getAllBlocks().size() > 1) {
-			// alter private global variables
-			lines.add(line);
 			// initialize all local variables
 			int divider;
 			int offset = 0;
@@ -80,9 +79,11 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 
 			// Assigns the track controller objects to the line
 			line.setTrackControllers(tc1, tc2);
-			this.setupSwitchMap(line);
+			// alter private global variables
+			lines.add(line);
+			this.setupSwitchMap(lines);
+			ui.setSwitchList(switchList);
 			ui.setLines(lines);
-			ui.setSwitchMap(switchMap);
 			ui.updateVariableTable();
 
 			return true;
@@ -111,18 +112,56 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 		this.trackModel = initTrackModel;
 	}
 	
-	private void setupSwitchMap(Line line){
-		Iterator<TrackControllerInterface> tcIterator = line.getAllTrackControllers().iterator();
-		while(tcIterator.hasNext()){
-			TrackControllerInterface currTC = tcIterator.next();
-			Iterator<Block> blockIterator = currTC.getSection().iterator();
-			while(blockIterator.hasNext()){
-				Block currBlock = blockIterator.next();
-				if(currBlock.hasSwitch()){
-					switchMap.put(Integer.toString(currBlock.getSwitchBlockId()), currTC);
+	private void setupSwitchMap(LinkedList<Line> line){
+		
+		//TESTING ONLY
+		System.out.println("***Entering setupSwitchMap***");
+		//TESTING ONLY
+		
+		Iterator<Line> lineIterator = line.iterator();
+		while(lineIterator.hasNext()){
+			
+			Line currLine=lineIterator.next();
+			
+			//TESTING ONLY
+			System.out.println("Current Line: "+currLine.getLine());
+			//TESTING ONLY
+			
+			if(!switchList.containsKey(currLine.getLine())){
+				HashMap<String,LinkedList<Block>> tcSwitches = new HashMap<String,LinkedList<Block>>();
+				
+				Iterator<TrackControllerInterface> tcIterator = currLine.getAllTrackControllers().iterator();
+				while(tcIterator.hasNext()){
+					TrackControllerInterface currTC = tcIterator.next();
+					LinkedList<Block> switchBlocks = new LinkedList<Block>();
+					
+					//TESTING ONLY
+					System.out.println("Current Track Controller: "+currTC.getControllerId());
+					//TESTING ONLY
+					
+					Iterator<Block> blockIterator = currTC.getSection().iterator();
+					while(blockIterator.hasNext()){
+						Block currBlock = blockIterator.next();
+						if(currBlock.getMasterSwitch()){
+							switchBlocks.add(currBlock);
+							
+							//TESTING ONLY
+							System.out.println("Line: "+currBlock.getLine()+"\tBlock "+currBlock.getBlockNumber()+"\tSwitch ID: "+currBlock.getSwitchBlockId());
+							//TESTING ONLY
+						}
+					}
+					
+					tcSwitches.put(Integer.toString(currTC.getControllerId()), switchBlocks);
 				}
+				
+				switchList.put(currLine.getLine(), tcSwitches);
 			}
 		}
+		
+		//TESTING ONLY
+		System.out.println("***Exiting setupSwitchMap***");
+		//TESTING ONLY
+		
 	}
 
 }

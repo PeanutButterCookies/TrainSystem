@@ -21,7 +21,8 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 	private final int endBlock;
 	private final int overlapBlock;
 	private final HashMap<String,LinkedList<Block>> switchList;
-	private PLCProgram_OLD plcProgram;
+	private PLCProgram plcProgramA;
+	private PLCProgram plcProgramB;
 	
 	public TrackController(String initLine, int initControllerId, LinkedList<Block> initSection,
 			int initStartBlock, int initEndBlock, int initOverlapBlock, CTCModuleInterface initCtc,
@@ -32,7 +33,8 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 		startBlock		=initStartBlock;
 		endBlock		=initEndBlock;
 		overlapBlock	=initOverlapBlock;
-		plcProgram		=null;
+		plcProgramA		=new PLCProgram();
+		plcProgramB		=new PLCProgram();
 		this.ctc		=initCtc;
 		this.trackModel	=initTrackModel;
 		switchList		=setSwitchList(section);
@@ -100,8 +102,9 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 	}
 	
 	@Override
-	public void setPLCProgram(PLCProgram_OLD newPlcProgram){
-		this.plcProgram=newPlcProgram;
+	public void setPLCProgram(String plcProgramFileLocation){
+		this.plcProgramA.loadPLCProgram(plcProgramFileLocation, 0);
+		this.plcProgramB.loadPLCProgram(plcProgramFileLocation, 1);
 	}
 	
 	@Override
@@ -142,6 +145,11 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 			}
 		}
 		return switchMap;
+	}
+
+	@Override
+	public HashMap<String, LinkedList<Block>> getSwitchList() {
+		return this.switchList;
 	}
 
 }

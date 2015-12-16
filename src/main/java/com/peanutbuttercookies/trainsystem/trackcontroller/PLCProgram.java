@@ -122,6 +122,29 @@ public class PLCProgram implements PLCProgramInterface {
 			Expression expression=jexl.createExpression(expressionString);
 			JexlContext context = new MapContext();
 			
+			if(expressionString.contains("CB_occupied")){
+				context.set("CB_occupied", currBlock.isBlockOccupied());
+			}
+			if(expressionString.contains("PB_occupied")){
+				context.set("PB_occupied", currBlock.getPrevBlock().isBlockOccupied());
+			}
+			if(expressionString.contains("NB_1_occupied")){
+				context.set("NB_1_occupied", currBlock.getNext().isBlockOccupied());
+			}
+			if(expressionString.contains("NB_2_occupied")){
+				context.set("NB_2_occupied", currBlock.getNext().getNext().isBlockOccupied());
+			}
+			if(expressionString.contains("NB_3_occupied")){
+				context.set("NB_3_occupied", currBlock.getNext().getNext().getNext().isBlockOccupied());
+			}
+			if(expressionString.contains("NB_4_occupied")){
+				context.set("NB_4_occupied", currBlock.getNext().getNext().getNext().getNext().isBlockOccupied());
+			}
+			if(expressionString.contains("NB_rr")){
+				context.set("NB_rr", currBlock.getNext().hasRRCrossing());
+			}
+			
+			
 			for(int i=0; i<3; i++){
 				result&=(boolean)expression.evaluate(context);
 			}
@@ -131,6 +154,27 @@ public class PLCProgram implements PLCProgramInterface {
 			//how to set context, fill in later
 			context.setVariable("plcVariableName", juel.createValueExpression(expressionString, String.class));
 			
+			if(expressionString.contains("CB_occupied")){
+				context.setVariable("CB_occupied", juel.createValueExpression(currBlock.isBlockOccupied(), Boolean.class));
+			}
+			if(expressionString.contains("PB_occupied")){
+				context.setVariable("PB_occupied",  juel.createValueExpression(currBlock.getPrevBlock().isBlockOccupied(), Boolean.class));
+			}
+			if(expressionString.contains("NB_1_occupied")){
+				context.setVariable("NB_1_occupied",  juel.createValueExpression(currBlock.getNext().isBlockOccupied(), Boolean.class));
+			}
+			if(expressionString.contains("NB_2_occupied")){
+				context.setVariable("NB_2_occupied", juel.createValueExpression(currBlock.getNext().getNext().isBlockOccupied(), Boolean.class));
+			}
+			if(expressionString.contains("NB_3_occupied")){
+				context.setVariable("NB_3_occupied", juel.createValueExpression(currBlock.getNext().getNext().getNext().isBlockOccupied(), Boolean.class));
+			}
+			if(expressionString.contains("NB_4_occupied")){
+				context.setVariable("NB_4_occupied", juel.createValueExpression(currBlock.getNext().getNext().getNext().getNext().isBlockOccupied(), Boolean.class));
+			}
+			if(expressionString.contains("NB_rr")){
+				context.setVariable("NB_rr", juel.createValueExpression(currBlock.getNext().hasRRCrossing(), Boolean.class));
+			}
 			
 			ValueExpression expression=juel.createValueExpression(context,expressionString, String.class);
 			for(int i=0; i<3; i++){
