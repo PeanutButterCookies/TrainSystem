@@ -67,12 +67,12 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 			for (int i = 0; i < divider; i++) {
 				section_1.add(blocks.get(i));
 			}
-			for (int i = divider-1; i < blocks.size()-1; i++) {
+			for (int i = divider-1; i < blocks.size(); i++) {
 				section_2.add(blocks.get(i));
 				}
 			TrackController tc1 = new TrackController(line.getLine(), 1, section_1, 1, divider, divider, ctc,
 					trackModel);
-			TrackController tc2 = new TrackController(line.getLine(), 2, section_2, divider, blocks.size()-1, divider,
+			TrackController tc2 = new TrackController(line.getLine(), 2, section_2, divider, blocks.size(), divider,
 					ctc, trackModel);
 			
 			// Sets up the TC sections
@@ -80,7 +80,7 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 				blocks.get(i).addListener(tc1);
 				blocks.get(i).addListener(this);
 			}
-			for (int i = divider-1; i < blocks.size()-1; i++) {
+			for (int i = divider-1; i < blocks.size(); i++) {
 				blocks.get(i).addListener(tc2);
 				if(i!=divider){
 					blocks.get(i).addListener(this);
@@ -90,13 +90,6 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 			// Assigns the track controller objects to the line
 			line.setTrackControllers(tc1, tc2);
 			// alter private global variables
-			
-			/*
-			Iterator<TrackControllerInterface> tcIterator = line.getAllTrackControllers().iterator();
-			while(tcIterator.hasNext()){
-				tcIterator.next().setPLCProgram(this.getClass().getResourceAsStream("/init.plc"));
-			}
-			*/
 			
 			lines.add(line);
 			this.setupSwitchMap(lines);
