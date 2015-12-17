@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.traincontroller.TrainController;
+import com.peanutbuttercookies.trainsystem.traincontroller.TrainControllerAuthentication;
 import com.peanutbuttercookies.trainsystem.traincontroller.TrainControllerUI;
 
 public class TrainWrapper {
@@ -13,6 +14,7 @@ public class TrainWrapper {
 	private ArrayList<TrainController> controllers = new ArrayList<TrainController>();
 	private TrainUI trainUi = new TrainUI();
 	private TrainControllerUI controlUi = new TrainControllerUI();
+	private TrainControllerAuthentication authenticate = new TrainControllerAuthentication("admin","password",controlUi);
 
 	public TrainWrapper() {
 		// TODO Auto-generated constructor stub

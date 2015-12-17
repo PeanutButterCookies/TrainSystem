@@ -262,7 +262,6 @@ public class TrainControllerUI extends JFrame {
 		gbc_eBrakesButton.gridy = 6;
 		contentPane.add(eBrakesButton, gbc_eBrakesButton);
 		
-		setVisible(true);
 		
 	}
 	
