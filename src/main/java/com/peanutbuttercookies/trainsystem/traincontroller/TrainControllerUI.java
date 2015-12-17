@@ -84,7 +84,6 @@ public class TrainControllerUI extends JFrame {
 		gbc_selectController.gridx = 3;
 		gbc_selectController.gridy = 0;
 		contentPane.add(selectController, gbc_selectController);
-		selectController.addItem(1);
 		if(trainController != null){
 			trainController = (TrainController) selectController.getSelectedItem();
 		}
