@@ -1,8 +1,0 @@
-Line Section BlockNum BlckLen BlockGrade SpeedLim Infra Elevation CumElevation SwitchBlock ArrowDirection
-Red A 1 50 0.5 70 none .25 .25 Switch6 Head
-Red A 2 50 0.5 70 StationA .50 .75 none Head
-Red B 3 50 0.5 70 none .75 1.50 none Head
-Red B 4 50 0.5 70 none 1.00 2.50 none Head
-Red C 5 50 0.5 70 StationB .75 3.25 none Head
-Red C 6 50 0.5 70 none .50 3.75 Switch7 none
-Red C 7 50 0.5 70 none .38 4.13 none Head

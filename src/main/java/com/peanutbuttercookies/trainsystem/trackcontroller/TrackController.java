@@ -84,55 +84,36 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 	}
 	
 	@Override
-	public void engageSwitch(String switchName, boolean engagement){
-		
-		//TEST ONLY
-		System.out.println("***ENTERING engageSwitch()***");
-		//TEST ONLY
-		
+	public boolean engageSwitch(String switchName, boolean engagement){
 		if(this.switchList.containsKey(switchName)){
-			
-			//TEST ONLY
-			System.out.println(">>Checkpoint : inside first if");
-			//TEST ONLY
-			
 			Iterator<Block> switchBlockIterator=this.switchList.get(switchName).iterator();
 			while(switchBlockIterator.hasNext()){
-				
-				//TEST ONLY
-				System.out.println(">>Checkpoint : inside while");
-				//TEST ONLY
-				
 				Block currBlock=switchBlockIterator.next();
 				if(currBlock.getMasterSwitch()){
-					
-					//TEST ONLY
-					System.out.println(">>Checkpoint : inside second if, engagement="+engagement+"\tblock="+currBlock.isSwitchEngaged());
-					//TEST ONLY
-					
 					if(currBlock.isSwitchEngaged()!=engagement){
-						
-						//TEST ONLY
-						System.out.println(">>Checkpoint pre-engagement: engagement="+engagement+"\tcurrent switch engagement="+currBlock.isSwitchEngaged());
-						//TEST ONLY
-						
 						currBlock.setSwitchEngagement();
-						
-						//TEST ONLY
-						System.out.println(">>Checkpoint post-engagement: current switch engagement="+currBlock.isSwitchEngaged());
-						//TEST ONLY
-						
-						break;
+						return true;
 					}
 				}
-			}	
+			}
+			return false;
 		}
 		else{
 			System.err.println("ERROR: THIS TC DOES NOT CONTAIN SWITCH  "+switchName);
+			return false;
 		}
-		//TEST ONLY
-		System.out.println("***EXITING engageSwitch()***");
-		//TEST ONLY
+	}
+	
+	@Override
+	public boolean engageRRCrossing(int blockId, boolean engagement) {
+		if(blockId>=startBlock && blockId<=endBlock && section.get(blockId).hasRRCrossing()){
+			section.get(blockId).setRRCrossingEngagement(engagement);
+			return true;
+		}
+		else{
+			System.out.println("ERROR: "+this.line+" line TC#"+this.controllerId+"cannot engage crossing on block #"+blockId);
+			return false;
+		}
 	}
 	
 	@Override
@@ -196,5 +177,4 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 		
 		return switchMap;
 	}
-	
 }

@@ -1,3 +1,10 @@
+/*
+* TrainControllerInterface
+*
+* 2.2, 12/17/15
+*
+* Autumn Good
+*/
 package com.peanutbuttercookies.trainsystem.traincontroller;
 
 public interface TrainControllerInterface {
@@ -14,9 +21,9 @@ public interface TrainControllerInterface {
 	void setSpeedLimit(double limit);
 	void calcPower(double currentSpeed);
 	void setLights(String lights);
-	void run();
+	boolean run();
 	void setBlockId(int id);
 	void setId(int id);
 	void setAlive(boolean b);
-
+	void setDistance(double distance);
 }
