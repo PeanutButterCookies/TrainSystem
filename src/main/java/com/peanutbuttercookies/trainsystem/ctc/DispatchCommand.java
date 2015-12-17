@@ -1,12 +1,14 @@
 package com.peanutbuttercookies.trainsystem.ctc;
 
-public class SpeedAuthCommand implements Command {
+import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
+
+public class DispatchCommand implements Command {
 	
 	private int rec;
 	private int authority;
 	private int speed;
 	
-	public SpeedAuthCommand(int rec, int authority, int speed ) {
+	public DispatchCommand(int rec, int authority, int speed ) {
 		setRec(rec);
 		setAuthority(authority);
 		setSpeed(speed);
@@ -34,5 +36,11 @@ public class SpeedAuthCommand implements Command {
 	@Override
 	public String toString() {
 		return "Block " + rec + " to receive " + speed + " speed and " + authority + " authority";
+	}
+
+	@Override
+	public boolean send(CTCModuleInterface ctc, String line) {
+		ctc.dispatch(line, speed, rec, authority);
+		return false;
 	}
 }

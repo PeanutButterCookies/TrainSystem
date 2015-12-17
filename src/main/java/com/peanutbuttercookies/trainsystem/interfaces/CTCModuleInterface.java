@@ -28,10 +28,10 @@ public interface CTCModuleInterface {
 	public void setUi(CTCModuleUI ui);
 
 	// for use by the CTCUI	
-	public boolean dispatch(String line, String speed, CTCTrain train, Integer end);
+	public boolean dispatch(String line, int speed, int train, int end);
 	public boolean repair(String line, CTCBlock block);
-	public boolean changeSwitch(String line, CTCBlock block);
-	public boolean setSchedule(String line, String filename, ScheduleModel model);
+	public boolean changeSwitch(String line, int block, boolean engaged);
+	public boolean setSchedule(String line, String filename);
 	public ScheduleModel newScheduleModel(String line);
 	public CTCBlockModel newBlockModel(String line);
 	public CTCTrainModel newTrainModel(String line);
@@ -46,6 +46,6 @@ public interface CTCModuleInterface {
 	public void setBlockOccupied(String line, int blockId);
 	public void setBlockUnoccupied(String line, int blockId);
 	public void importLine(Line line);
-	public void switchChanged(String line, int switchId, int blockId);
+	public void switchChanged(String line, int blockId, boolean engaged);
 
 }

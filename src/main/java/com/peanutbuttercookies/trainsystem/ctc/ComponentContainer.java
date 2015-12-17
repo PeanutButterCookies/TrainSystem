@@ -223,7 +223,7 @@ public class ComponentContainer extends JPanel implements ActionListener {
 		add(sharedPanel);
 
 	}
-
+	
 	public String getLine() {
 		return line;
 	}
@@ -232,7 +232,14 @@ public class ComponentContainer extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent arg0) {
 		switch ((String) usesCombo.getSelectedItem()) {
 		case "Dispatch":
-			module.dispatch(line, speed.getText(), (CTCTrain) trainCBox.getSelectedItem(),
+			int speedInt = 0;
+			try {
+				speedInt = Integer.parseInt(speed.getText().replaceAll("[^\\d]", ""));
+			} catch (Exception e) {
+				return;
+			}
+			speedInt = (int) (1609.34 * speedInt / 3600); 
+			module.dispatch(line, speedInt, ((CTCTrain)trainCBox.getSelectedItem()).getHead(),
 					(Integer) blockCBox.getSelectedItem());
 		}
 	}

@@ -5,6 +5,7 @@
 
 package com.peanutbuttercookies.trainsystem.ctc;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
@@ -24,11 +25,13 @@ public class CTCModule implements CTCModuleInterface {
 
 	private Map<String, CTCBlockModel> lineBlockMap;
 	private Map<String, CTCTrainModel> lineTrainMap;
+	private Map<String, ScheduleModel> lineScheduleMap;
 	private int maxTrain = 0;
 
 	public CTCModule() {
 		lineBlockMap = new HashMap<String, CTCBlockModel>();
 		lineTrainMap = new HashMap<String, CTCTrainModel>();
+		lineScheduleMap = new HashMap<String, ScheduleModel>();
 		neo4j = new Neo4JBlockGraph();
 	}
 
@@ -140,20 +143,13 @@ public class CTCModule implements CTCModuleInterface {
 	}
 
 	@Override
-	public boolean dispatch(String line, String speed, CTCTrain train, Integer end) {
+	public boolean dispatch(String line, int speed, int train, int end) {
 
-		int speedInt = 0;
-		try {
-			speedInt = Integer.parseInt(speed.replaceAll("[^\\d]", ""));
-		} catch (Exception e) {
-			return false;
-		}
-		speedInt = (int) (1609.34 * speedInt / 3600);
 		CTCBlockModel model = lineBlockMap.get(line);
-		int authority = model.getAuthority(train.getHead(), end);
-		CTCBlock start = model.getBlock(train.getHead());
+		int authority = model.getAuthority(train, end);
+		CTCBlock start = model.getBlock(train);
 		TrackControllerInterface tc = lineBlockMap.get(line).getTC(start);
-		tc.setSpeedAuthority(train.getHead(), speedInt, authority);
+		tc.setSpeedAuthority(train, speed, authority);
 		return true;
 	}
 
@@ -164,20 +160,29 @@ public class CTCModule implements CTCModuleInterface {
 	}
 
 	@Override
-	public boolean changeSwitch(String line, CTCBlock block) {
-		// TODO Auto-generated method stub
+	public boolean changeSwitch(String line, int blockId, boolean engaged) {
+		CTCBlock block = neo4j.getBlock(line, blockId);
+		TrackControllerInterface tc = lineBlockMap.get(line).getTC(block);
+		tc.engageSwitch(Integer.toString(block.getSwitchNum()), engaged);
 		return false;
 	}
 
 	@Override
-	public boolean setSchedule(String line, String filename, ScheduleModel model) {
-		// TODO
-		return false;
+	public boolean setSchedule(String line, String filename) {
+		try {
+			lineScheduleMap.get(line).importSchedule(filename);
+		} catch (NumberFormatException | IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 
 	@Override
 	public ScheduleModel newScheduleModel(String line) {
-		return new ScheduleModel();
+		ScheduleModel model = new ScheduleModel(lineBlockMap.get(line), this, line);
+		lineScheduleMap.put(line, model);
+		return model;
 	}
 
 	@Override
@@ -187,9 +192,8 @@ public class CTCModule implements CTCModuleInterface {
 	}
 
 	@Override
-	public void switchChanged(String line, int switchId, int blockId) {
-		// TODO Auto-generated method stub
-
+	public void switchChanged(String line, int blockId, boolean engaged) {
+		neo4j.engageSwitch(line, blockId, engaged);
 	}
 
 	@Override

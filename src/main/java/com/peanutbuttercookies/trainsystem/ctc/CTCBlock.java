@@ -20,7 +20,7 @@ public class CTCBlock {
 			"Section",
 			"Station",
 			"Occupied",
-			"Switch",
+			"Current Switch Block",
 			"Throughput"
 		});
 	}
@@ -34,6 +34,7 @@ public class CTCBlock {
 	private int numOccupied;
 	private long startTime;
 	private String station;
+	private int switchNum;
 	
 	public CTCBlock(Node node) {
 		setAll(node);
@@ -53,6 +54,7 @@ public class CTCBlock {
 		setTc((int)node.getProperty("tc"));
 		setStartTime((long)node.getProperty("starttime"));
 		setStation((String)node.getProperty("station"));
+		setSwitchNum((int)node.getProperty("switchNum"));
 	}
 	
 	
@@ -167,6 +169,14 @@ public class CTCBlock {
 
 	public void setStation(String station) {
 		this.station = station;
+	}
+
+	public int getSwitchNum() {
+		return switchNum;
+	}
+
+	public void setSwitchNum(int switchNum) {
+		this.switchNum = switchNum;
 	}
 
 }

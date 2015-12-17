@@ -48,6 +48,7 @@ public class Neo4JBlockGraph {
 			Label label =  DynamicLabel.label(line);
 			schema.indexFor(label).on(ID).create();
 			schema.indexFor(label).on("station").create();
+			tx.success();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -130,6 +131,7 @@ public class Neo4JBlockGraph {
 		node.setProperty("numOccupied", 0);
 		node.setProperty("starttime", System.nanoTime());
 		node.setProperty("tc", tc);
+		node.setProperty("switchNum", block.getSwitchNum());
 		if(!block.getIsYard()) {
 			node.setProperty("station", block.getStationName());
 		} else {
@@ -147,6 +149,7 @@ public class Neo4JBlockGraph {
 		try(Transaction tx = graph.beginTx()) {
 			Node node = graph.findNode(DynamicLabel.label(line), ID, blockId);
 			node.setProperty("occupied", occupied);
+			tx.success();
 		} catch(Exception e) {
 			e.printStackTrace();
 			return false;
@@ -211,6 +214,8 @@ public class Neo4JBlockGraph {
 			if(incoming != null) {
 				block = new CTCBlock(incoming);
 			}
+			
+			tx.success();
 		} catch(Exception e) {
 			e.printStackTrace();
 			return null;
@@ -227,6 +232,7 @@ public class Neo4JBlockGraph {
 				Node node = graph.findNode(label, ID, i);
 				length += (int)node.getProperty("length");
 			}
+			tx.success();
 			return length;
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -252,6 +258,7 @@ public class Neo4JBlockGraph {
 				}
 				return list;
 			}
+			tx.success();
 		} catch(Exception e) {
 			e.printStackTrace();
 			return null;
@@ -268,12 +275,68 @@ public class Neo4JBlockGraph {
 					next.add((Integer)r.getEndNode().getProperty(ID));
 				}
 			}
-			
+			tx.success();
 			return next;
 		} catch(Exception e) {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	public synchronized Command getSwitchCommand(String line, int switchId, int nextId) {
+		try(Transaction tx = graph.beginTx()) {
+			Label label = DynamicLabel.label(line);
+			Node node = graph.findNode(label, ID, switchId);
+			for( Relationship rel : node.getRelationships(Direction.OUTGOING)) {
+				if(rel.getEndNode().getProperty(ID).equals(nextId)) {
+					boolean engaged = (boolean)rel.getProperty("engaged");
+					return new SwitchCommand(switchId, engaged);
+				}
+			}
+			tx.success();
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		return null;
+	}
+	
+	public synchronized boolean engageSwitch(String line, int switchId, boolean engaged) {
+		try(Transaction tx = graph.beginTx()) {
+			Node node = graph.findNode(DynamicLabel.label(line), ID, switchId);
+			for(Relationship rel : node.getRelationships(Direction.OUTGOING)) {
+				if((boolean)rel.getProperty("switch")) {
+					if((boolean)rel.getProperty("enabled") == engaged) {
+						rel.setProperty("enabled", true);
+					} else {
+						rel.setProperty("enabled", false);
+					}
+				}
+			}
+			tx.success();
+		} catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public synchronized CTCBlock getCurrentSwitch(String line, int switchId) {
+		try(Transaction tx = graph.beginTx()) {
+			Node node = graph.findNode(DynamicLabel.label(line), ID, switchId);
+			for(Relationship rel : node.getRelationships(Direction.OUTGOING)) {
+				if((boolean)rel.getProperty("switch") && (boolean)rel.getProperty("enabled")) {
+					return new CTCBlock(node);
+				}
+			}
+			tx.success();
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		return null;
 	}
 
 }

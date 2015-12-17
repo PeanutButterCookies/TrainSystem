@@ -1,11 +1,14 @@
 package com.peanutbuttercookies.trainsystem.ctc;
 
+import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
+
 public class SwitchCommand implements Command {
 	private int switchId;
 	private boolean engaged;
 	
 	public SwitchCommand(int switchId, boolean engaged) {
-		
+		this.switchId = switchId;
+		this.engaged = engaged;
 	}
 	
 	public int getSwitchId() {
@@ -25,5 +28,11 @@ public class SwitchCommand implements Command {
 	@Override
 	public String toString() {
 		return "Switch at block " + switchId + " set to " + ((engaged)? "engaged" : "disengaged");
+	}
+
+	@Override
+	public boolean send(CTCModuleInterface ctc, String line) {
+		ctc.changeSwitch(line, switchId, engaged);
+		return true;
 	}
 }
