@@ -1,4 +1,4 @@
-package com.peanutbuttercookies.trainsystem.trackmodel;
+package com.peanutbuttercookies.trainsystem.trackmodeltest;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,9 +19,10 @@ import com.peanutbuttercookies.trainsystem.commonresources.Line;
 import com.peanutbuttercookies.trainsystem.interfaces.ExcelFileDownloaderInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
+import com.peanutbuttercookies.trainsystem.trackmodel.TrackModelUI;
 import com.peanutbuttercookies.trainsystem.train.TrainModelInterface;
 
-public class TrackModel implements TrackModelInterface {
+public class TestTrackModel implements TrackModelInterface {
 	private TrackControllerInterface trackComm;
 	private TrainModelInterface trainComm;
 	private TrackModelUI tmUI;
@@ -31,17 +32,8 @@ public class TrackModel implements TrackModelInterface {
 	private Map<String, LinkedList<Block>> yardMap;
 	private Map<Integer, LinkedList<Block>> switchMap;
 
-
-<<<<<<< HEAD
-	
-=======
->>>>>>> branch 'master' of https://github.com/PeanutButterCookies/TrainSystem.git
-	
-<<<<<<< HEAD
-=======
-	
->>>>>>> branch 'master' of https://github.com/PeanutButterCookies/TrainSystem.git
-
+	public TestTrackModel() throws IOException {
+	}
 
 	public void fileRead(String filename) throws IOException {
 		track = new LinkedList<Line>();
@@ -57,8 +49,6 @@ public class TrackModel implements TrackModelInterface {
 		organizeYard();
 		initSwitchDirection();
 	}
-
-	
 
 	public void excelReader(String filePath) throws IOException {
 		FileInputStream inputStream = new FileInputStream(new File(filePath));
@@ -129,8 +119,7 @@ public class TrackModel implements TrackModelInterface {
 				String[] tokens = infra.split(delims);
 				for (int i = 0; i < tokens.length; i++) {
 					if (!tokens[i].equals("UNDERGROUND") && !tokens[i].contains("STATION")
-							&& !tokens[i].equals("CROSSING") && !tokens[i].equals("RAILWAY")
-							&& !tokens[i].equals("SWITCH"))
+							&& !tokens[i].equals("CROSSING") && !tokens[i].equals("RAILWAY"))
 						if (station.length() > 1) {
 							station = station + " " + tokens[i];
 						} else {
@@ -254,12 +243,13 @@ public class TrackModel implements TrackModelInterface {
 					}
 				}
 			}
+			System.out.println();
 		}
 	}
 
 	public void organizeSwitch() {
-		for (int key : switchMap.keySet()) {
-			LinkedList<Block> newList = switchMap.get(key);
+		for (int i = 0; i < switchMap.size(); i++) {
+			LinkedList<Block> newList = switchMap.get(i);
 			Block master = newList.get(0);
 			for (int j = 0; j < newList.size(); j++) {
 				if (newList.get(j).getMasterSwitch())
@@ -340,29 +330,27 @@ public class TrackModel implements TrackModelInterface {
 				}
 				boolean nextSwitch = false;
 				boolean prevSwitch = false;
-				if ((curBlock.getSwitchNum() == nextBlock.getSwitchNum() || curBlock.getSwitchNum() < 0
-						|| nextBlock.getSwitchNum() < 0) && !nextBlock.getIsYard()) {
+				if (curBlock.getSwitchNum() == nextBlock.getSwitchNum() || curBlock.getSwitchNum() < 0
+						|| nextBlock.getSwitchNum() < 0 && !nextBlock.getIsYard()) {
 					nextSwitch = true;
 				}
-				if ((curBlock.getSwitchNum() == prevBlock.getSwitchNum() || curBlock.getSwitchNum() < 0
-						|| prevBlock.getSwitchNum() < 0) && !prevBlock.getIsYard()) {
+				if (curBlock.getSwitchNum() == prevBlock.getSwitchNum() || curBlock.getSwitchNum() < 0
+						|| prevBlock.getSwitchNum() < 0 && !prevBlock.getIsYard()) {
 					prevSwitch = true;
 				}
-				
-				
 				if (curBlock.getBackwards()) {
 					if (prevSwitch) {
 						curBlock.setNext(prevBlock);
 						curBlock.setNextPossible(prevBlock);
-						if(prevBlock.hasStation()){
-							curBlock.setBeacon(true, prevBlock.getStationName());
+						if (nextBlock.hasStation()) {
+							curBlock.setBeacon(true, nextBlock.getStationName());
 						}
 					}
 				} else {
 					if (nextSwitch) {
 						curBlock.setNext(nextBlock);
 						curBlock.setNextPossible(nextBlock);
-						if(nextBlock.hasStation()){
+						if (nextBlock.hasStation()) {
 							curBlock.setBeacon(true, nextBlock.getStationName());
 						}
 					}
@@ -371,23 +359,26 @@ public class TrackModel implements TrackModelInterface {
 					if (nextBlock.getTwoWay() && nextSwitch) {
 						curBlock.setNextPossible(nextBlock);
 						nextBlock.setNextPossible(curBlock);
-						if(nextBlock.hasStation()){
+						if (nextBlock.hasStation()) {
 							curBlock.setBeacon(true, nextBlock.getStationName());
 						}
 					}
 					if (nextSwitch & (nextBlock.getArrowDirection() == -1 || nextBlock.getArrowDirection() == 2)) {
 						curBlock.setNextPossible(nextBlock);
-						if(nextBlock.hasStation()){
+						if (nextBlock.hasStation()) {
 							curBlock.setBeacon(true, nextBlock.getStationName());
 						}
 					}
 					if (nextSwitch & (nextBlock.getArrowDirection() == 1 || nextBlock.getArrowDirection() == 3)) {
 						nextBlock.setNextPossible(curBlock);
+						if (nextBlock.hasStation()) {
+							curBlock.setBeacon(true, nextBlock.getStationName());
+						}
 					}
 					if (prevBlock.getTwoWay() && prevSwitch) {
 						curBlock.setNextPossible(prevBlock);
 						prevBlock.setNextPossible(curBlock);
-						if(prevBlock.hasStation()){
+						if (prevBlock.hasStation()) {
 							curBlock.setBeacon(true, prevBlock.getStationName());
 						}
 					}
@@ -396,7 +387,7 @@ public class TrackModel implements TrackModelInterface {
 					}
 					if (prevSwitch & (prevBlock.getArrowDirection() == 1 || prevBlock.getArrowDirection() == 3)) {
 						curBlock.setNextPossible(prevBlock);
-						if(prevBlock.hasStation()){
+						if (prevBlock.hasStation()) {
 							curBlock.setBeacon(true, prevBlock.getStationName());
 						}
 					}
@@ -404,22 +395,24 @@ public class TrackModel implements TrackModelInterface {
 					if (curBlock.getArrowDirection() == 1) {
 						if (nextSwitch && nextBlock.getTwoWay()) {
 							curBlock.setNextPossible(nextBlock);
-							if(nextBlock.hasStation()){
+							if (nextBlock.hasStation()) {
 								curBlock.setBeacon(true, nextBlock.getStationName());
 							}
-						} 
-						else if (nextSwitch && nextBlock.getArrowDirection() == -1
+						} else if (nextSwitch && nextBlock.getArrowDirection() == -1
 								|| nextBlock.getArrowDirection() == 2) {
 							curBlock.setNextPossible(nextBlock);
-							if(nextBlock.hasStation()){
+							if (nextBlock.hasStation()) {
 								curBlock.setBeacon(true, nextBlock.getStationName());
 							}
 						}
 						if (prevSwitch && prevBlock.getTwoWay()) {
 							curBlock.setNextPossible(prevBlock);
+							if (prevBlock.hasStation()) {
+								curBlock.setBeacon(true, prevBlock.getStationName());
+							}
 						} else if (prevSwitch && prevBlock.getArrowDirection() == -1) {
 							curBlock.setNextPossible(prevBlock);
-							if(prevBlock.hasStation()){
+							if (prevBlock.hasStation()) {
 								curBlock.setBeacon(true, prevBlock.getStationName());
 							}
 						}
@@ -469,19 +462,30 @@ public class TrackModel implements TrackModelInterface {
 		}
 	}
 
+	@Override
+	public void setTC(TrackControllerInterface trackComm) {
+		this.trackComm = trackComm;
 
+	}
+
+	@Override
+	public void setTI(TrainModelInterface trainComm) {
+		this.trainComm = trainComm;
+	}
 
 	@Override
 	public void setUI(TrackModelUI tmUI) {
-		// TODO Auto-generated method stub
-		
+		this.tmUI = tmUI;
 	}
-
-
 
 	@Override
 	public LinkedList<Line> getTrack() {
 		// TODO Auto-generated method stub
 		return track;
 	}
+	
+	private void setTrack()	{
+		this.trackComm.setTrack(track);
+	}
+	
 }

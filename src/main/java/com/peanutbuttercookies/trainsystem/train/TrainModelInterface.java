@@ -6,13 +6,12 @@ import com.peanutbuttercookies.trainsystem.commonresources.Block;
 public interface TrainModelInterface extends Runnable {
 	void setBlock(Block block);
 	void setAngle(double angle);
-	void brakes();
 	void setSpeedLimits(double limit);
 	void setLights(String lights);
 	void setDoors(boolean doors);
 	void setPower(double power);
 	void emergencyBrakes();
-	void setSpeedAndAuth(double speed, int auth);
+	void setSpeedAndAuth(double speed, double auth);
 	double getLength();
 	double getWidth();
 	double getHeight();
@@ -22,7 +21,9 @@ public interface TrainModelInterface extends Runnable {
 	double getNumCars();
 	double getCurrentSpeed();
 	double getAcceleration();
+	void setBrakes(boolean brakes);
+	void setEmergencyBrakes(boolean eBrakes);
+	void setCurrentlySelected(boolean b);
 
 }
-
 
