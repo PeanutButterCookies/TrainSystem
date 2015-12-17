@@ -91,6 +91,12 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 			line.setTrackControllers(tc1, tc2);
 			// alter private global variables
 			
+			/*
+			Iterator<TrackControllerInterface> tcIterator = line.getAllTrackControllers().iterator();
+			while(tcIterator.hasNext()){
+				tcIterator.next().setPLCProgram(this.getClass().getResourceAsStream("/init.plc"));
+			}
+			*/
 			
 			lines.add(line);
 			this.setupSwitchMap(lines);
