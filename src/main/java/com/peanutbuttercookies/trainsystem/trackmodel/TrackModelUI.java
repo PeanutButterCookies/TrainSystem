@@ -298,9 +298,13 @@ public class TrackModelUI extends JFrame {
 		infoList.addElement("Line " + line.get(0).getLine());
 		infoList.addElement("Section " + line.get(0).getSection());
 		infoList.addElement("Block " + line.get(0).getBlockNumber());
+		infoList.addElement("Signal " + line.get(0).getLight());
 		infoList.addElement("Block Length " + line.get(0).getBlockLength());
 		infoList.addElement("Block Grade " + line.get(0).getBlockGrade());
 		infoList.addElement("Speed Limit " + line.get(0).getSpeedLimit());
+		if(line.get(0).isBlockOccupied())	{
+			infoList.addElement("Next " + line.get(0).getTrainNext().getBlockNumber());
+		}
 		infoList.addElement("INFRASTRUCTURE ");
 		if (line.get(0).hasStation()) {
 			infoList.addElement("Station " + line.get(0).getStationName());
@@ -352,9 +356,13 @@ public class TrackModelUI extends JFrame {
 		infoList.addElement("Line " + line.get(blockNum).getLine());
 		infoList.addElement("Section " + line.get(blockNum).getSection());
 		infoList.addElement("Block " + line.get(blockNum).getBlockNumber());
+		infoList.addElement("Signal " + line.get(blockNum).getLight());
 		infoList.addElement("Block Length " + line.get(blockNum).getBlockLength());
 		infoList.addElement("Block Grade " + line.get(blockNum).getBlockGrade());
 		infoList.addElement("Speed Limit " + line.get(blockNum).getSpeedLimit());
+		if(line.get(blockNum).isBlockOccupied())	{
+			infoList.addElement("Next " + line.get(blockNum).getTrainNext().getBlockNumber());
+		}
 		infoList.addElement("INFRASTRUCTURE ");
 		if (line.get(blockNum).hasStation()) {
 			infoList.addElement("Station " + line.get(blockNum).getStationName());

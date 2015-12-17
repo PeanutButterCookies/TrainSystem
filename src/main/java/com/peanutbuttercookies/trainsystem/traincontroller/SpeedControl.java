@@ -270,4 +270,9 @@ public class SpeedControl {
 	public void setControl(TrainController control) {
 		this.control = control;
 	}
+
+	public void setRatio(double clockRatio) {
+		// TODO Auto-generated method stub
+		
+	}
 }

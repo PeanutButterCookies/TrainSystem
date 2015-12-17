@@ -85,11 +85,6 @@ public class TestTrackController implements TrackControllerInterface {
 
 	}
 
-	@Override
-	public void engageSwitch(String switchName, boolean engagement) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public boolean setPLCProgram(String plcProgramFileLocation) {
@@ -101,5 +96,23 @@ public class TestTrackController implements TrackControllerInterface {
 	public HashMap<String, LinkedList<Block>> getSwitchList() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean engageSwitch(String switchName, boolean engagement) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean engageRRCrossing(int blockId, boolean engagement) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean markBlockForMaintanence(int blockId, boolean needsRepair) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

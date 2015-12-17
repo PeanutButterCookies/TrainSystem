@@ -11,7 +11,7 @@ import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 
 public class TrackController implements TrackControllerInterface,BlockOccupationListener {
-	private final CTCModuleInterface ctc;
+	private CTCModuleInterface ctc;
 	private final TrackModelInterface trackModel;
 	
 	private final String line;
@@ -211,5 +211,10 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 		}
 		
 		return switchMap;
+	}
+
+	public void setCTC(CTCModuleInterface ctc) {
+		// TODO Auto-generated method stub
+		this.ctc = ctc;
 	}
 }

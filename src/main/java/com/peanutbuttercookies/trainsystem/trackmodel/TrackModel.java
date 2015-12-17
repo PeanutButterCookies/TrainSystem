@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -24,10 +25,11 @@ import com.peanutbuttercookies.trainsystem.commonresources.Line;
 import com.peanutbuttercookies.trainsystem.interfaces.ExcelFileDownloaderInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
+import com.peanutbuttercookies.trainsystem.trackcontroller.TrackControllerStaticModule;
 import com.peanutbuttercookies.trainsystem.train.TrainModelInterface;
 
 public class TrackModel implements TrackModelInterface {
-	private TrackControllerInterface trackComm;
+	private TrackControllerStaticModule tc;
 	private TrainModelInterface trainComm;
 	private TrackModelUI tmUI;
 	private ExcelFileDownloaderInterface excelDownloader;
@@ -53,6 +55,11 @@ public class TrackModel implements TrackModelInterface {
 		makeYard();
 		organizeYard();
 		initSwitchDirection();
+		
+		List<Line> lines = getTrack();
+		for(Line line : lines) {
+			//tc.setTrackControllers(line);
+		}
 	}
 
 	/**
@@ -506,5 +513,9 @@ public class TrackModel implements TrackModelInterface {
 	@Override
 	public void setUI(TrackModelUI tmUI) {
 		this.tmUI = tmUI;
+	}
+	
+	public void setTrackController(TrackControllerStaticModule tc)	{
+		this.tc = tc;
 	}
 }

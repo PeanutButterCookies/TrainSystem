@@ -41,12 +41,6 @@ public class TestTrainModel implements TrainModelInterface {
 	}
 
 	@Override
-	public void brakes() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void setSpeedLimits(double limit) {
 		// TODO Auto-generated method stub
 		
@@ -66,12 +60,6 @@ public class TestTrainModel implements TrainModelInterface {
 
 	@Override
 	public void setPower(double power) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void emergencyBrakes() {
 		// TODO Auto-generated method stub
 		
 	}
@@ -128,5 +116,23 @@ public class TestTrainModel implements TrainModelInterface {
 	public double getAcceleration() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public void setBrakes(boolean brakes) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setEmergencyBrakes(boolean eBrakes) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setCurrentlySelected(boolean b) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -68,6 +68,7 @@ public class Block {
 		this.blockOccupied = true;
 		this.isYard = true;
 		this.setTwoWay(true);
+		
 	}
 
 	public Block(String initLine, String initSection, int initBlockNumber, double initBlockLength,
@@ -104,8 +105,11 @@ public class Block {
 		this.temp = 70;
 		this.hasBeacon = false;
 
-		if (infrastructureRRCrossing) {
+		if(infrastructureRRCrossing == true) {
 			this.setLight(1);
+		}
+		else	{
+			this.setLight(0);
 		}
 	}
 
@@ -302,8 +306,9 @@ public class Block {
 	}
 
 	public void setMasterSwitch(boolean input) {
-		this.masterSwitch = input;
-		this.setLight(1);
+		if(input)	{
+			setLight(1);
+		}
 	}
 
 	public boolean getMasterSwitch() {
@@ -353,7 +358,6 @@ public class Block {
 	}
 
 	public void setSpeedAuthority(double speed, double authority) {
-		System.out.println("Block Number: " + blockNumber + ", Speed: " + speed + ", Authority: " + authority);
 		if (blockNumber == 0) {
 			trainComm = trainWrap.createTrain(speed, authority, this);
 		} else {
@@ -452,17 +456,27 @@ public class Block {
 		this.light = signal;
 	}
 
-	public String getLight() {
-		if (light == 1)	{
+	public Integer getLight() {
+		return light;
+	}
+	
+	public String getLightString() {
+		if(light == 1)	{
 			return "Green";
 		}
-		else if (light == 2) {
+		else if(light == 1)	{
 			return "Yellow";
-		} 
-		else if (light == 3) {
+		}
+		else if(light == 1)	{
 			return "Red";
 		}
-		return null;
+		else	{
+			return "No Light";
+		}
+	}
+
+	public Block getTrainNext() {
+		return trainNext;
 	}
 
 }
