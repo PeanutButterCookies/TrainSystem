@@ -8,4 +8,5 @@ public interface PLCProgramInterface {
 	boolean engageSwitch(Block currBlock);
 	boolean engageRRCrossing(Block currBlock);
 	boolean loadPLCProgram(String fileLocation, int loadType);
+	boolean maintenance(Block currBlock);
 }
