@@ -7,12 +7,14 @@
 */
 package com.peanutbuttercookies.trainsystem.traincontroller;
 
+import com.peanutbuttercookies.trainsystem.commonresources.SystemClock;
 
 public class SpeedControl {
 	//private double mass = 0;
 	private double commandSpeed = 0;
 	private double speed = 0;
 	//private double acceleration = 0;
+	private double ratio = 1;
 	private double power = 0;
 	private double speedLimit = 0;
 	private double auth = 0;
@@ -34,7 +36,6 @@ public class SpeedControl {
 	private final double MAX_SPEED = 19;
 	private final double KI = 300;
 	private final double KP = 70000;
-
 	
 	public SpeedControl(TrainController con) {
 		// TODO Auto-generated constructor stub
@@ -75,7 +76,7 @@ public class SpeedControl {
 				arriveTime = System.currentTimeMillis();
 				control.arriveSequence();
 			}
-			if(System.currentTimeMillis()-arriveTime >= DWELL_TIME*Clock.getRatio()){
+			if(System.currentTimeMillis()-arriveTime >= DWELL_TIME*ratio){
 				arriveTime = 0;
 				control.departSequence();
 			}
