@@ -1,4 +1,3 @@
-
 package com.peanutbuttercookies.trainsystem.traincontroller;
 
 import com.peanutbuttercookies.trainsystem.train.TrainModelInterface;
@@ -284,3 +283,4 @@ public class TrainController implements TrainControllerInterface {
 	}
 	
 }
+
