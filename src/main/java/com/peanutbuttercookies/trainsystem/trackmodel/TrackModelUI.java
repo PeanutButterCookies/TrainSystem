@@ -1,5 +1,6 @@
 package com.peanutbuttercookies.trainsystem.trackmodel;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -8,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -19,6 +21,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EmptyBorder;
@@ -71,10 +74,24 @@ public class TrackModelUI extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		
-		
 		JTextPane textPane = new JTextPane();
-		/*
-		sectionList = new DefaultListModel<String>();
+
+		
+		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.X_AXIS));
+		JLabel userLabel = new JLabel("Enter username: ");
+		JTextField userName = new JTextField(20);
+		contentPane.add(userLabel, BorderLayout.NORTH);
+		contentPane.add(userName, BorderLayout.SOUTH);
+		JLabel passLabel = new JLabel("Enter password: ");
+		JTextField password = new JTextField(20);
+		contentPane.add(passLabel, BorderLayout.NORTH);
+		contentPane.add(password, BorderLayout.SOUTH);
+		setVisible(true);
+		
+		
+		
+				
+		/*sectionList = new DefaultListModel<String>();
 		blockList = new DefaultListModel<Integer>();
 		infoList = new DefaultListModel<String>();
 		lineList = new DefaultListModel<String>();
@@ -259,11 +276,9 @@ public class TrackModelUI extends JFrame {
 					}
 				}
 			}
-		});
-		*/
-
+		});*/
 	}
-
+	
 	private void loadTrack(LinkedList<Block> newLine) {
 		line = newLine;
 	}

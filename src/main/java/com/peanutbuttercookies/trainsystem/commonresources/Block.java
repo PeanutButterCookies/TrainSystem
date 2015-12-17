@@ -4,10 +4,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.peanutbuttercookies.trainsystem.interfaces.BlockOccupationListener;
-import com.peanutbuttercookies.trainsystem.trackmodeltest.TestTrainModel;
 import com.peanutbuttercookies.trainsystem.train.TrainModelInterface;
+import com.peanutbuttercookies.trainsystem.train.TrainWrapper;
 
 public class Block {
+	private static TrainWrapper trainWrap = null;
 	private final String line;
 	private final String section;
 	private final int blockNumber;
@@ -48,6 +49,7 @@ public class Block {
 	private boolean rrCrossingEngaged;
 	private LinkedList<BlockOccupationListener> listeners;
 	private TrainModelInterface trainComm = null;
+	
 
 	public Block(String initLine, boolean isYard) {
 		this(initLine, "", 0, 0, 0, 0, 0, 0, false, false, true, false, false, false, null, -2, 0);
@@ -305,7 +307,7 @@ public class Block {
 
 	public void setNext(Block next) {
 		this.next = next;
-		next.setPrev(this);
+		next.setPrev(this);	
 	}
 
 	public boolean isRRCrossingEngaged() {
@@ -327,19 +329,15 @@ public class Block {
 	public void setSpeedAuthority(double speed, double authority) {
 		System.out.println("Block Number: " + blockNumber + ", Speed: " + speed + ", Authority: " + authority);
 		if (blockNumber == 0) {
-			trainComm = new TestTrainModel();
-			Thread thread = new Thread(trainComm);
-			thread.setDaemon(true);
-			trainComm.setBlock(this);
-			setTrainOccupation(true, null, trainComm);
-			System.out.println(next.getBlockNumber());
-			trainComm.setSpeedAndAuth(speed, authority);
-			thread.start();
+			trainComm = trainWrap.createTrain(speed, authority, this);
 		} else {
 			trainComm.setSpeedAndAuth(speed, authority);
 		}
 	}
-
+	
+	public static void setTrainWrapper(TrainWrapper trainWrapper) {
+		trainWrap = trainWrapper;
+	}
 	public void setBackwards() {
 		this.backwards = true;
 	}
@@ -373,6 +371,9 @@ public class Block {
 	}
 
 	public void setTrainNext() {
+		if(next.getBlockNumber() == 0){
+			trainWrap.destroyTrain(trainComm);
+		}
 		if (next == trainPrev) {
 			trainNext = prev;
 		} else {
