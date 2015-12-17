@@ -338,6 +338,8 @@ public class TrainUI extends JFrame {
 		selectTrain.addItem(train);
 		if(selectTrain.getItemCount() == 1){
 			selectTrain.setSelectedItem(train);
+			train.setCurrentlySelected(true);
+			this.train = (TrainModel)selectTrain.getSelectedItem();
 			updateUI();
 		}
 	}

@@ -325,6 +325,8 @@ public class TrainControllerUI extends JFrame {
 		selectController.addItem(controller);
 		if(selectController.getItemCount() == 1){
 			selectController.setSelectedItem(controller);
+			controller.setCurrentlySelected(true);
+			this.trainController = (TrainController)selectController.getSelectedItem();
 			updateUI();
 		}
 	}
