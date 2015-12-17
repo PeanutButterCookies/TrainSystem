@@ -20,7 +20,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>com.peanutbuttercookies.trainsyste.systemwrapper.MainApp</mainClass>
+							<mainClass>com.peanutbuttercookies.trainsystem.systemwrapper.MainApp</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
