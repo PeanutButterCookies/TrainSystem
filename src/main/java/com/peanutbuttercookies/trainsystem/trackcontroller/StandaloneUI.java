@@ -82,6 +82,7 @@ public class StandaloneUI extends JFrame {
 		btnLoad.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				if(textField.getText()!=null){
+					fileLocation=textField.getText();
 					loadExcel();
 				}
 			}
@@ -125,10 +126,14 @@ public class StandaloneUI extends JFrame {
 					.addContainerGap(159, Short.MAX_VALUE))
 		);
 		contentPane.setLayout(gl_contentPane);
+		setVisible(true);
 	}
 	
 	private void loadExcel(){
 		
+		if(fileLocation==null){
+			return;
+		}
 		try {
 			trackModel.fileRead(fileLocation);
 		} catch (IOException e) {

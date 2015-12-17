@@ -55,6 +55,9 @@ public class PLCProgram implements PLCProgramInterface {
 		return evaluateExpression(maintenanceExpression,currBlock);
 	}
 	
+	/**
+	 * Loads the PLC program, parses the expression strings from the file and stores them for later logic
+	 */
 	@Override
 	public boolean loadPLCProgram(String file) {
 		if(file.contains(".plc")){

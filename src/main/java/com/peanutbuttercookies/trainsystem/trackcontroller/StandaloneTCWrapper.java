@@ -12,7 +12,6 @@ public class StandaloneTCWrapper {
 		CTCModuleInterface ctc = new StandaloneCTCModule();
 		TrackControllerStaticModule trackController = new TrackControllerStaticModule();
 		TrackModelInterface trackModel = new StandaloneTrackLoader();
-		
 		new StandaloneUI(ctc,trackController,trackModel);
 	}
 

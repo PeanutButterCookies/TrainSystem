@@ -41,6 +41,7 @@ public class StandaloneTrackLoader implements TrackModelInterface {
 		line = new LinkedList<Block>();
 		yardMap = new HashMap<String, LinkedList<Block>>();
 		switchMap = new HashMap<Integer, LinkedList<Block>>();
+		System.out.println(filename);
 		filename = filename.replace("\\", "/");
 		excelReader(filename);
 		findDirection();

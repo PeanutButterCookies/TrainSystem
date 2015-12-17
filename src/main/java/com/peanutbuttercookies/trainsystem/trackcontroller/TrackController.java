@@ -84,6 +84,9 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 		}
 	}
 	
+	/**
+	 * checks PLC logic and current switch engagement, switches engagement if different
+	 */
 	@Override
 	public boolean engageSwitch(String switchName, boolean engagement){
 		if(this.switchList.containsKey(switchName)){
