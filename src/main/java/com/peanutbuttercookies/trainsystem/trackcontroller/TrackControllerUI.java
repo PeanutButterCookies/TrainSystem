@@ -315,6 +315,7 @@ public class TrackControllerUI extends JFrame {
 				
 				
 				updateSwitchComboBox();
+				updateRRComboBox();
 				updateVariableTable();
 			}
 		});
@@ -335,6 +336,7 @@ public class TrackControllerUI extends JFrame {
 				}
 				displayedLine=comboBoxLine_2.getSelectedItem().toString();
 				updateSwitchComboBox();
+				updateRRComboBox();
 				updateVariableTable();
 			}
 		});
@@ -351,6 +353,7 @@ public class TrackControllerUI extends JFrame {
 				}
 				displayedLine=comboBoxLine_2.getSelectedItem().toString();
 				updateSwitchComboBox();
+				updateRRComboBox();
 				updateVariableTable();
 			}
 		});
@@ -375,6 +378,7 @@ public class TrackControllerUI extends JFrame {
 				JComboBox<String>  comboBox=(JComboBox<String> )e.getSource();
 				displayedController = (String)comboBox.getSelectedItem();
 				updateSwitchComboBox();
+				updateRRComboBox();
 				updateVariableTable();
 			}
 		});
@@ -392,6 +396,7 @@ public class TrackControllerUI extends JFrame {
 					}
 					displayedController=comboBoxTrackController_2.getSelectedItem().toString();
 					updateSwitchComboBox();
+					updateRRComboBox();
 					updateVariableTable();
 				}
 			}
@@ -410,6 +415,7 @@ public class TrackControllerUI extends JFrame {
 					}
 					displayedController=comboBoxTrackController_2.getSelectedItem().toString();
 					updateSwitchComboBox();
+					updateRRComboBox();
 					updateVariableTable();
 				}
 			}
@@ -610,6 +616,7 @@ public class TrackControllerUI extends JFrame {
 						correctLine=currLine;
 					}
 					else{
+						rrBlockId=selectedItem;
 						Iterator<Line> lineIterator=lines.iterator();
 						Line currLine=lineIterator.next();
 						while(!currLine.getLine().equals(displayedLine) && lineIterator.hasNext()){
@@ -625,7 +632,7 @@ public class TrackControllerUI extends JFrame {
 			}
 		};
 		rdbtnEngageRR.addActionListener(rrEngageAction);
-		rdbtnEngageRR.addActionListener(rrEngageAction);
+		rdbtnDisengageRR.addActionListener(rrEngageAction);
 		
 		comboBoxRR.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
@@ -657,6 +664,7 @@ public class TrackControllerUI extends JFrame {
 							correctLine=currLine;
 						}
 						else{
+							rrBlockId=selectedItem;
 							Iterator<Line> lineIterator=lines.iterator();
 							Line currLine=lineIterator.next();
 							while(!currLine.getLine().equals(displayedLine) && lineIterator.hasNext()){
@@ -670,12 +678,12 @@ public class TrackControllerUI extends JFrame {
 						Iterator<Block> rrBlockIterator = rrList.get(correctLine.getLine()).get(Integer.toString(correctTC.getControllerId())).values().iterator();
 						while(rrBlockIterator.hasNext()){
 							Block currRRBlock=rrBlockIterator.next();
-							if(currRRBlock.equals(rrBlockId)){
+							if(Integer.toString(currRRBlock.getBlockNumber()).equals(rrBlockId)){
 								if(currRRBlock.isRRCrossingEngaged()){
-									rdbtnEngageSwitch.doClick();
+									rdbtnEngageRR.doClick();
 								}
 								else{
-									rdbtnDisengageSwitch.doClick();
+									rdbtnDisengageRR.doClick();
 								}
 								break;
 							}
@@ -820,7 +828,7 @@ public class TrackControllerUI extends JFrame {
 						currTC=tcIterator.next();
 					}
 					
-					currTC.setPLCProgram(textFieldFileLocation.getText());
+					new LoadPLCSuccessFrame(currTC.setPLCProgram(textFieldFileLocation.getText()));
 				}
 			}
 		});
@@ -843,13 +851,7 @@ public class TrackControllerUI extends JFrame {
 				chooser.setAcceptAllFileFilterUsed(false);
 				
 				if(chooser.showOpenDialog(null)==JFileChooser.APPROVE_OPTION){
-					System.out.println("getCurrentDirectory(): "+chooser.getCurrentDirectory());
-					System.out.println("getSelectedFile(): "+chooser.getSelectedFile());
-					
 					textFieldFileLocation.setText(chooser.getSelectedFile().getPath());
-				}
-				else{
-					System.out.println("No Selection");
 				}
 			}
 		});
@@ -979,7 +981,11 @@ public class TrackControllerUI extends JFrame {
 		Iterator<Block> blockIterator=currTC.getSection().iterator();
 		while(blockIterator.hasNext()){
 			Block currBlock=blockIterator.next();
-			if(currBlock.getBlockNumber()==currTC.getOverlapBlock() && currBlock.getBlockNumber()==currTC.getStartBlock() && counter+1>tableVariableDisplay.getRowCount()/2){
+			/*
+			if(currBlock.getBlockNumber()==currTC.getOverlapBlock() && currBlock.getBlockNumber()==currTC.getStartBlock() 
+					&& counter+1>tableVariableDisplay.getRowCount()/2){
+					*/
+			if(currBlock.getBlockNumber()==currTC.getOverlapBlock() && currBlock.getBlockNumber()==currTC.getEndBlock()){
 				continue;
 			}
 			tableVariableDisplay.setValueAt(currBlock.getLine(), counter, 0);					//Line

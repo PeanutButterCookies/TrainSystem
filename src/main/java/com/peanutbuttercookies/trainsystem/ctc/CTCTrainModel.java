@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.AbstractTableModel;
 
 public class CTCTrainModel extends AbstractTableModel {
@@ -11,6 +12,8 @@ public class CTCTrainModel extends AbstractTableModel {
 	private static final long serialVersionUID = 3648136737558041721L;
 
 	private List<CTCTrain> trains;
+	private DefaultComboBoxModel<CTCTrain> comboModel;
+	private int max = 1;
 	
 	public CTCTrainModel() {
 		trains = new LinkedList<CTCTrain>();
@@ -53,8 +56,16 @@ public class CTCTrainModel extends AbstractTableModel {
 		
 	}
 	
-	public void addTrain(CTCTrain train) {
+	public void addNewTrain() {
+		comboModel.addElement(new NewCTCTrain());
+	}
+	public void addTrain() {
+		CTCTrain train = new CTCTrain();
+		train.setHead(0);
+		train.setTail(0);
+		train.setTrainId(max++);
 		trains.add(train);
+		comboModel.addElement(train);
 		fireTableDataChanged();
 	}
 	
@@ -81,10 +92,19 @@ public class CTCTrainModel extends AbstractTableModel {
 		while(iterator.hasNext()) {
 			CTCTrain train = iterator.next();
 			if(train.getTail().equals(0)) {
+				comboModel.removeElement(train);
 				iterator.remove();
 				break;
 			}
 		}
 		fireTableDataChanged();
+	}
+
+	public DefaultComboBoxModel<CTCTrain> getComboModel() {
+		return comboModel;
+	}
+
+	public void setComboModel(DefaultComboBoxModel<CTCTrain> comboModel) {
+		this.comboModel = comboModel;
 	}
 }

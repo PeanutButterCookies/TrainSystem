@@ -106,12 +106,17 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 	
 	@Override
 	public boolean engageRRCrossing(int blockId, boolean engagement) {
-		if(blockId>=startBlock && blockId<=endBlock && section.get(blockId).hasRRCrossing()){
-			section.get(blockId).setRRCrossingEngagement(engagement);
+		if(blockId>=startBlock && blockId<=endBlock && section.get(blockId-this.startBlock).hasRRCrossing()){
+			section.get(blockId-startBlock).setRRCrossingEngagement(engagement);
 			return true;
 		}
 		else{
 			System.out.println("ERROR: "+this.line+" line TC#"+this.controllerId+"cannot engage crossing on block #"+blockId);
+			
+			//TEST ONLY
+			System.out.println("startblock="+startBlock+"\tendblock="+endBlock+"\ttrue-read blockid="+section.get(blockId-startBlock).getBlockNumber());
+			//TEST ONLY
+			
 			return false;
 		}
 	}

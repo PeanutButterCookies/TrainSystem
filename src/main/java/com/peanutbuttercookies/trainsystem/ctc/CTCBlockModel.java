@@ -5,12 +5,18 @@
 
 package com.peanutbuttercookies.trainsystem.ctc;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
 
 import javax.swing.table.AbstractTableModel;
+
+import org.neo4j.graphdb.Direction;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
@@ -19,141 +25,100 @@ public class CTCBlockModel extends AbstractTableModel {
 
 	private static final long serialVersionUID = -3573813996444899446L;
 
-	private Map<Integer, CTCBlock> blockMap;
-	private Map<Integer, CTCBlock> switchMap;
+	private Set<Integer> switches;
 	private Map<String, CTCSection> sections;
+	private Map<Integer, TrackControllerInterface> tcMap;
 	private Thread update;
+	private Neo4JBlockGraph neo4j;
+	private String line;
+	private int scheduleBlock = -1;
+	private ScheduleModel model;
 
-	public CTCBlockModel() {
-		blockMap = new LinkedHashMap<Integer, CTCBlock>();
-		switchMap = new LinkedHashMap<Integer, CTCBlock>();
+	public CTCBlockModel(String line, Neo4JBlockGraph neo4j) {
+		this.neo4j = neo4j;
+		switches = new LinkedHashSet<Integer>();
 		sections = new LinkedHashMap<String, CTCSection>();
+		tcMap = new LinkedHashMap<Integer, TrackControllerInterface>();
 		update = new Thread(new TableUpdateThread(this));
 		update.setDaemon(true);
 		update.start();
-	}
-	
-	public CTCBlock getBlock(int blockId) {
-		return blockMap.get(blockId);
+		this.line = line;
 	}
 
 	public void addBlock(Block block, TrackControllerInterface tc) {
-		if (block == null) {
-			return;
-		}
-		CTCBlock ctcBlock = null;
-		if (blockMap.containsKey(block.getBlockNumber())) {
-			ctcBlock = blockMap.get(block.getBlockNumber());
-			ctcBlock.setAll(block);
-		} else {
-			ctcBlock = new CTCBlock(block);
-		}
-		ctcBlock.setTc(tc);
-
-		if (!sections.containsKey(ctcBlock.getSection())) {
-			sections.put(ctcBlock.getSection(), new CTCSection(ctcBlock.getSection()));
+		if (!sections.containsKey(block.getSection())) {
+			System.out.println("Section added: " + block.getSection());
+			CTCSection section = new CTCSection(block.getSection());
+			sections.put(block.getSection(), section);
 		}
 
-		sections.get(ctcBlock.getSection()).addBlock(ctcBlock);
-		if (ctcBlock.isSwitch()) {
-			switchMap.put(ctcBlock.getBlockNumber(), ctcBlock);
+		if (!tcMap.containsKey(tc.getControllerId())) {
+			tcMap.put(tc.getControllerId(), tc);
 		}
 
-		if (block.getBlockNumber() == 1) {
-			//System.out.println("Prev block set to null");
-			ctcBlock.setPrevBlock(null);
-		} else {
-			int index = (block.getNextPossible().size() > 1)? 1:0;
-			Integer prev = block.getNextPossible().get(index).getBlockNumber();
-			if (blockMap.containsKey(prev)) {
-				//System.out.println("Used an old CTCBlock");
-				ctcBlock.setPrevBlock(blockMap.get(prev));
-			} else {
-				//System.out.println("Made a new CTCBlock");
-				CTCBlock newBlock = new CTCBlock(block.getNextPossible().get(index));
-				blockMap.put(prev, newBlock);
-				ctcBlock.setPrevBlock(newBlock);
-			}
+		sections.get(block.getSection()).addBlock(block.getBlockNumber());
+		if (block.hasSwitch()) {
+			switches.add(block.getBlockNumber());
 		}
 
-		if(block.getBlockNumber() != 1 && block.getNextPossible().size() == 1) {
-			ctcBlock.setNextBlock(null);
-		} else {
-			Integer next = block.getNextPossible().get(0).getBlockNumber();
-			if (blockMap.containsKey(next)) {
-				ctcBlock.setNextBlock(blockMap.get(next));
-			} else {
-				CTCBlock newBlock = new CTCBlock(block.getNextPossible().get(0));
-				blockMap.put(next, newBlock);
-				ctcBlock.setNextBlock(newBlock);
-			}
-		}
-		if (ctcBlock.getBlockNumber() > 9)
-			System.out.println("Bad block");
-		if (!blockMap.containsKey(ctcBlock.getBlockNumber())) {
-			blockMap.put(ctcBlock.getBlockNumber(), ctcBlock);
-		}
-		
-		System.out.println("This: " +ctcBlock);
-		System.out.println("Next: " + ctcBlock.getNextBlock());
-		System.out.println("Prev: " + ctcBlock.getPrevBlock());
-		
+		neo4j.addBlock(line, block, tc.getControllerId());
 		fireTableDataChanged();
+	}
+
+	public CTCBlock getBlock(int blockId) {
+		return neo4j.getBlock(line, blockId);
 	}
 
 	public Collection<CTCSection> getSections() {
 		return sections.values();
 	}
 
-	public List<CTCBlock> getBlocks(CTCSection section) {
+	public List<Integer> getBlocks(CTCSection section) {
 		return sections.get(section.getName()).getBlocks();
 	}
 
-	public void removeBlock(int block, String line) {
-		blockMap.remove(block);
-		switchMap.remove(block);
-		fireTableDataChanged();
-	}
-
 	public boolean setOccupied(int blockId) {
-		if (blockMap.containsKey(blockId)) {
-			blockMap.get(blockId).setOccupied(true);
-			fireTableDataChanged();
-			if (blockId == 1 && !blockMap.get(blockMap.get(1).getNextBlock().getBlockNumber()).getNextBlock().isOccupied()) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			System.out.println("That block is not initialized");
+		if (!neo4j.setBlockOccupied(line, blockId, true)) {
+			System.out.println("Block not initialized");
 			return false;
 		}
+		fireTableDataChanged();
+		if (blockId == 0) {
+			CTCBlock outgoing = neo4j.getAdjacentNode(line, 0, Direction.OUTGOING);
+			if (!outgoing.isOccupied()) {
+				return true;
+			}
+		}
+		
+		if(blockId == scheduleBlock) {
+			model.next();
+		}
+
+		return false;
+	}
+	
+	public void setModel(ScheduleModel model) {
+		this.model = model;
+	}
+
+	public void setScheduleBlock(int scheduleBlock) {
+		this.scheduleBlock = scheduleBlock;
 	}
 
 	public boolean setUnoccupied(int blockId) {
-		if (blockMap.containsKey(blockId)) {
-			blockMap.get(blockId).setOccupied(false);
-			fireTableDataChanged();
-			if (blockId == 1 && !blockMap.get(2).getNextBlock().isOccupied()) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			System.out.println("That block is not initialized");
+		if (!neo4j.setBlockOccupied(line, blockId, false)) {
+			System.out.println("Block not initialized");
 			return false;
 		}
-	}
-
-	public Integer getPrevBlock(int blockId) {
-		CTCBlock block = blockMap.get(blockId);
-		if (block == null) {
-			return null;
-		} else if (block.getPrevBlock() == null) {
-			return null;
-		} else {
-			return block.getPrevBlock().getBlockNumber();
+		fireTableDataChanged();
+		if (blockId == 0) {
+			CTCBlock incoming = neo4j.getAdjacentNode(line, 0, Direction.INCOMING);
+			if (!incoming.isOccupied()) {
+				return true;
+			}
 		}
+
+		return false;
 	}
 
 	@Override
@@ -163,26 +128,35 @@ public class CTCBlockModel extends AbstractTableModel {
 
 	@Override
 	public int getRowCount() {
-		return blockMap.size();
+		return neo4j.getBlockCount(line);
 	}
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		if (!blockMap.containsKey(rowIndex)) {
+		CTCBlock block = neo4j.getBlock(line, rowIndex);
+		if (block == null) {
 			return null;
 		}
 
 		switch (columnIndex) {
 		case 0:
-			return blockMap.get(rowIndex).getBlockNumber();
+			return block.getBlockNumber();
 		case 1:
-			return blockMap.get(rowIndex).getSection();
+			return block.getSection();
 		case 2:
-			return blockMap.get(rowIndex).isOccupied();
+			return (block.getStation() == null) ? "" : block.getStation();
 		case 3:
-			return blockMap.get(rowIndex).isSwitch();
+			return block.isOccupied();
 		case 4:
-			return blockMap.get(rowIndex).getThroughput();
+			if(!block.isASwitch()) {
+				return "";
+			} else {
+				return neo4j.getCurrentSwitch(line, rowIndex).getBlockNumber();
+			}
+		case 5:
+			return block.getThroughput();
+		case 6:
+			return (block.getRR() == null)? "" : block.getRR();
 		default:
 			return null;
 		}
@@ -194,8 +168,39 @@ public class CTCBlockModel extends AbstractTableModel {
 		return CTCBlock.getField(column);
 	}
 
-	// FOR TESTING
-	public Map<Integer, CTCBlock> getBlockMap() {
-		return blockMap;
+	public TrackControllerInterface getTC(CTCBlock block) {
+		return tcMap.get(block.getTc());
+	}
+
+	public int getAuthority(int start, int end) {
+		List<Integer> nodes = neo4j.getShortestPath(line, start, end);
+		int authority = neo4j.getAuthority(line, nodes);
+		return authority;
+	}
+
+	public Vector<Integer> getSwitches() {
+		Vector<Integer> switchList = new Vector<Integer>();
+		for (Integer i : switches) {
+			switchList.add(i);
+		}
+		return switchList;
+	}
+
+	public List<Command> getCommands(String start, String end, double time) {
+		CTCBlock one = neo4j.getBlock(line, start);
+		CTCBlock two = neo4j.getBlock(line, end);
+		List<Integer> blocks = neo4j.getShortestPath(line, one.getBlockNumber(), two.getBlockNumber());
+		List<Command> commands = new ArrayList<Command>();
+		for (int i = 0; i < blocks.size(); i++) {
+			int id = blocks.get(i);
+			CTCBlock block = neo4j.getBlock(line, id);
+			if (block.isASwitch()) {
+				commands.add(neo4j.getSwitchCommand(line, id, blocks.get(i + 1)));
+			}
+		}
+		int authority = neo4j.getAuthority(line, blocks);
+		int speed = (int) (authority/time/60);
+		commands.add(new DispatchCommand(one.getBlockNumber(), authority, speed));
+		return commands;
 	}
 }

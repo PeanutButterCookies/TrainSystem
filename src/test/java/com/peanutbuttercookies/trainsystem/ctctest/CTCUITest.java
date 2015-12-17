@@ -7,6 +7,7 @@ import com.peanutbuttercookies.trainsystem.commonresources.Line;
 import com.peanutbuttercookies.trainsystem.ctc.CTCBlock;
 import com.peanutbuttercookies.trainsystem.ctc.CTCModule;
 import com.peanutbuttercookies.trainsystem.ctc.CTCModuleUI;
+import com.peanutbuttercookies.trainsystem.trackcontroller.TrackControllerStaticModule;
 
 public class CTCUITest {
 	public static final String LINE = "TestLine";
@@ -29,17 +30,16 @@ public class CTCUITest {
 			prev = curr;
 			blocks.add(curr);
 		}
-		curr.setNext(null);
+		curr.setNext(blocks.get(0));
 		
+
 		Line line = new Line(LINE, blocks);
-		TestTrackController tc = new TestTrackController(blocks);
-		line.setTrackControllers(tc, new TestTrackController(new LinkedList<Block>()));
 		CTCModule ctc = new CTCModule();
 		CTCModuleUI ui = new CTCModuleUI(ctc);
 		ctc.setUi(ui);
 		ctc.importLine(line);
-//		line = new Line("Test2", blocks);
-//		ctc.importLine(line);
+		line = new Line("Test2", blocks);
+		ctc.importLine(line);
 		ctc.setBlockOccupied(LINE, 0);
 		for(int i=1; i<9; i++) {
 			Thread.sleep(500);
@@ -48,14 +48,11 @@ public class CTCUITest {
 			ctc.setBlockUnoccupied(LINE, i-1);
 		}
 		
-		for(CTCBlock block : ctc.getBlockModel(LINE).getBlockMap().values()) {
-			System.out.println(block.getBlockNumber());
-		}
 		
 	}
 	
 	private static Block initBlock(int blockNum) {
-		return new Block(LINE, SECTION, blockNum, BLOCK_LENGTH, 0, SPEED_LIMIT, 0, 0, false, false, false, false, false, false, null, 0, 0, 0);
+		return new Block(LINE, SECTION, blockNum, BLOCK_LENGTH, 0, SPEED_LIMIT, 0, 0, false, false, false, false, false, false, null, 0, 0);
 
 	}
 }

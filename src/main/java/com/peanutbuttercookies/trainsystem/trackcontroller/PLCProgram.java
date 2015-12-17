@@ -61,12 +61,6 @@ public class PLCProgram implements PLCProgramInterface {
 	@Override
 	public boolean loadPLCProgram(String fileLocation, int loadType) {
 		
-		//TEST ONLY
-		System.out.println("***Entering loadPLCProgram***");
-		System.out.println("loadType: "+loadType);
-		System.out.println("fileLocation: "+fileLocation);
-		//TEST ONLY
-		
 		if(fileLocation.contains(".plc")){
 			
 			//TEST ONLY

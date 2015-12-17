@@ -40,18 +40,22 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 
 			// sets the dividing point to separate the line into two sections
 			// controlled by the two TCs
-			divider = blocks.size() / 2;
+			divider = (blocks.size()-1) / 2;
 			while (!split) {
 				if (divider == offset) {
 					System.err.println("ERROR: COULD NOT FIND A VIABLE SPLITTING POINT");
 					return false;
 				}
 				if (blocks.get(divider + offset - 1).getSwitchNum() == -1
-						&& blocks.get(divider + offset).getSwitchNum() == -1) {
+						&& blocks.get(divider + offset).getSwitchNum() == -1
+						&& !blocks.get(divider + offset).hasRRCrossing()
+						&& !blocks.get(divider + offset - 1).hasRRCrossing()) {
 					split = true;
 					divider += offset;
 				} else if (blocks.get(divider - offset - 1).getSwitchNum() == -1
-						&& blocks.get(divider - offset).getSwitchNum() == -1) {
+						&& blocks.get(divider - offset).getSwitchNum() == -1
+						&& !blocks.get(divider - offset).hasRRCrossing()
+						&& !blocks.get(divider - offset - 1).hasRRCrossing()) {
 					split = true;
 					divider -= (offset + 1);
 				} else {
@@ -60,23 +64,23 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 			}
 			
 			// Sets up the TC sections
-			for (int i = 0; i <= divider; i++) {
+			for (int i = 0; i < divider; i++) {
 				section_1.add(blocks.get(i));
 			}
-			for (int i = divider; i < blocks.size(); i++) {
+			for (int i = divider-1; i < blocks.size()-1; i++) {
 				section_2.add(blocks.get(i));
 				}
 			TrackController tc1 = new TrackController(line.getLine(), 1, section_1, 1, divider, divider, ctc,
 					trackModel);
-			TrackController tc2 = new TrackController(line.getLine(), 2, section_2, divider, blocks.size(), divider,
+			TrackController tc2 = new TrackController(line.getLine(), 2, section_2, divider, blocks.size()-1, divider,
 					ctc, trackModel);
 			
 			// Sets up the TC sections
-			for (int i = 0; i <= divider; i++) {
+			for (int i = 0; i < divider; i++) {
 				blocks.get(i).addListener(tc1);
 				blocks.get(i).addListener(this);
 			}
-			for (int i = divider; i < blocks.size(); i++) {
+			for (int i = divider-1; i < blocks.size()-1; i++) {
 				blocks.get(i).addListener(tc2);
 				if(i!=divider){
 					blocks.get(i).addListener(this);

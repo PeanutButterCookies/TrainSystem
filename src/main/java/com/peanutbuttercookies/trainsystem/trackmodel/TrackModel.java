@@ -32,8 +32,6 @@ public class TrackModel implements TrackModelInterface {
 	private Map<Integer, LinkedList<Block>> switchMap;
 
 
-	
-	
 
 
 	public void fileRead(String filename) throws IOException {
