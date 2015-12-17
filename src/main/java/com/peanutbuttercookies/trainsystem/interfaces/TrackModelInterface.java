@@ -18,9 +18,6 @@ public interface TrackModelInterface {
 
 	public LinkedList<Line> getTrack();
 
-	public void setTC(TrackControllerInterface trackComm);
-
 	public void fileRead(String filename) throws IOException;
 
-	void setTI(TrainModelInterface trainComm);
 }
