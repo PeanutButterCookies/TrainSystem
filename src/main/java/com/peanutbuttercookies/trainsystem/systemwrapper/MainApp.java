@@ -20,6 +20,7 @@ import com.peanutbuttercookies.trainsystem.trackcontroller.TrackControllerStatic
 import com.peanutbuttercookies.trainsystem.trackcontroller.TrackControllerUI;
 import com.peanutbuttercookies.trainsystem.trackmodel.TrackModel;
 import com.peanutbuttercookies.trainsystem.trackmodel.TrackModelUI;
+import com.peanutbuttercookies.trainsystem.train.TrainWrapper;
 
 public class MainApp {
 	public static void main(String[] args) throws IOException {
@@ -43,17 +44,11 @@ public class MainApp {
 			trackController.setTrackControllers(line);
 			ctc.importLine(line);
 		}
-		
-		for(TrackControllerInterface t : lines.get(0).getAllTrackControllers()) {
-			for(Block b : t.getSection()) {
-				System.out.println(b.getBlockNumber());
-			}
-		}
-		
-		System.exit(0);
+
 		
 
 		tcUI.setLines(lines);
+		Block.setTrainWrapper(new TrainWrapper());
 		CTCModuleUI ctcUI = new CTCModuleUI(ctc);
 		ctc.setUi(ctcUI);
 		TrackModelUI tmUI = new TrackModelUI(trackModel);

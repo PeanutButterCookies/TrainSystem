@@ -52,7 +52,6 @@ public class TrainUI extends JFrame {
 	 */
 	public TrainUI() {
 		//train = trainModel;
-		train = (TrainModel) selectTrain.getSelectedItem();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -205,6 +204,7 @@ public class TrainUI extends JFrame {
 		gbc_lblHeight.gridy = 3;
 		contentPane.add(lblHeight, gbc_lblHeight);
 		
+		train = (TrainModel) selectTrain.getItemAt(0);
 		height = new JTextField();
 		height.setEditable(false);
 		GridBagConstraints gbc_height = new GridBagConstraints();

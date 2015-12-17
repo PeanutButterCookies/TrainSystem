@@ -210,7 +210,6 @@ public class Neo4JBlockGraph {
 		CTCBlock block = null;
 		try(Transaction tx = graph.beginTx()) {
 			Node node = graph.findNode(DynamicLabel.label(line), ID, blockId);
-			System.out.println((int)node.getProperty(ID));
 			block = new CTCBlock(node);
 			tx.success();
 		} catch(Exception e) {

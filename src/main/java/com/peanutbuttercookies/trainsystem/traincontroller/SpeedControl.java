@@ -276,4 +276,12 @@ public class SpeedControl {
 	public void setControl(TrainController control) {
 		this.control = control;
 	}
+
+	public double getRatio() {
+		return ratio;
+	}
+
+	public void setRatio(double ratio) {
+		this.ratio = ratio;
+	}
 }
