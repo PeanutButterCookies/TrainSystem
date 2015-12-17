@@ -266,7 +266,7 @@ public class TrainControllerUI extends JFrame {
 		
 	}
 	
-	public void addConrollerToList(TrainController controller){
+	public void addControllerToList(TrainController controller){
 		selectController.addItem(controller);
 		if(selectController.getItemCount() == 1){
 			selectController.setSelectedItem(controller);
@@ -274,7 +274,7 @@ public class TrainControllerUI extends JFrame {
 		}
 	}
 	
-	public void removeTrainFromList(TrainController control){
+	public void removeControllerFromList(TrainController control){
 		selectController.removeItem(control);
 	}
 	

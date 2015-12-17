@@ -7,6 +7,7 @@ public class TrainSpecs {
 	private double emptyMass = 36378.1;
 	private int numCars = 1;
 	private int maxCapac = 222;
+	
 	public int getMaxCapac() {
 		return maxCapac;
 	}

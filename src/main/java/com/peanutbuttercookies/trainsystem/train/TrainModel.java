@@ -7,23 +7,24 @@ import com.peanutbuttercookies.trainsystem.traincontroller.TrainControllerInterf
 
 public class TrainModel implements TrainModelInterface, Runnable {
 
-	public int id;
-	public double distanceTraveled;
+	public TrainControllerInterface controller = null;
+	private int id = 0;
+	private double distanceTraveled = 0;
 	private double currentSpeed = 0;
-	private double currentAccleration;
-	public boolean currentlySelected = false;
-	public Block currentBlock;
-	double power;
+	private double currentAccleration = 0;
+	private boolean currentlySelected = false;
+	private Block currentBlock = null;
+	private double power = 0;
 	private Engine engine = new Engine(this);
-	public double auth;
+	private double auth = 0;
 	private TrainSpecs specs = new TrainSpecs();
-	public TrainControllerInterface controller;
 	private Passengers passengers = new Passengers();
-	private boolean doors;
-	private double grade;
-	private double mass;
-	//TrainUI gui = new TrainUI(this);
+	private boolean doors = false;
+	private double grade = 0;
+	private double mass = 0;
+	private TrainUI gui = null;
 	//private double power;
+	
 	
 	public TrainModel() {
 		// TODO Auto-generated constructor stub
@@ -33,11 +34,6 @@ public class TrainModel implements TrainModelInterface, Runnable {
 		
 	}
 	
-	public TrainModel(int id){
-		this.id = id;
-		setMass();
-	}
-
 	public void setId(int id){
 		this.id = id;
 		controller.setId(id);
@@ -47,13 +43,13 @@ public class TrainModel implements TrainModelInterface, Runnable {
 		// TODO Auto-generated method stub
 		
 		grade = angle;
-		engine.grade = angle;
+		engine.setGrade(angle);
 	}
 
 	@Override
 	public void setBrakes(boolean brakes) {
 		// TODO Auto-generated method stub
-		engine.brakes = brakes;
+		engine.setBrakes(brakes);
 		
 	}
 
@@ -92,7 +88,7 @@ public class TrainModel implements TrainModelInterface, Runnable {
 	@Override
 	public void setEmergencyBrakes(boolean eBrakes) {
 		// TODO Auto-generated method stub
-		engine.emergencyBrakes = eBrakes;
+		engine.setEmergencyBrakes(eBrakes);
 	}
 
 	@Override
@@ -104,7 +100,7 @@ public class TrainModel implements TrainModelInterface, Runnable {
 	
 	public void setMass(){
 		mass = specs.getEmptyMass() + passengers.getPassMass(specs.getMaxCapac());
-		engine.mass = mass;
+		engine.setMass(mass);
 	}
 
 	
@@ -158,13 +154,13 @@ public class TrainModel implements TrainModelInterface, Runnable {
 	@Override
 	public double getCurrentSpeed() {
 		// TODO Auto-generated method stub
-		return engine.currentSpeed;
+		return engine.getCurrentSpeed();
 	}
 
 	@Override
 	public double getAcceleration() {
 		// TODO Auto-generated method stub
-		return engine.currentAccel;
+		return engine.getCurrentAccel();
 	}
 	
 	public void setCurrentlySelected(boolean selected){
@@ -191,6 +187,99 @@ public class TrainModel implements TrainModelInterface, Runnable {
 		out += id;
 		return out;
 	}
+	
+	public double getDistanceTraveled() {
+		return distanceTraveled;
+	}
+
+	public void setDistanceTraveled(double distanceTraveled) {
+		this.distanceTraveled = distanceTraveled;
+	}
+
+	public double getCurrentAccleration() {
+		return currentAccleration;
+	}
+
+	public void setCurrentAccleration(double currentAccleration) {
+		this.currentAccleration = currentAccleration;
+	}
+
+	public Block getCurrentBlock() {
+		return currentBlock;
+	}
+
+	public void setCurrentBlock(Block currentBlock) {
+		this.currentBlock = currentBlock;
+	}
+
+	public Engine getEngine() {
+		return engine;
+	}
+
+	public void setEngine(Engine engine) {
+		this.engine = engine;
+	}
+
+	public double getAuth() {
+		return auth;
+	}
+
+	public void setAuth(double auth) {
+		this.auth = auth;
+	}
+
+	public TrainSpecs getSpecs() {
+		return specs;
+	}
+
+	public void setSpecs(TrainSpecs specs) {
+		this.specs = specs;
+	}
+
+	public Passengers getPassengers() {
+		return passengers;
+	}
+
+	public void setPassengers(Passengers passengers) {
+		this.passengers = passengers;
+	}
+
+	public double getGrade() {
+		return grade;
+	}
+
+	public void setGrade(double grade) {
+		this.grade = grade;
+	}
+
+	public TrainUI getGui() {
+		return gui;
+	}
+
+	public void setGui(TrainUI gui) {
+		this.gui = gui;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public boolean isCurrentlySelected() {
+		return currentlySelected;
+	}
+
+	public boolean isDoors() {
+		return doors;
+	}
+
+	public void setCurrentSpeed(double currentSpeed) {
+		this.currentSpeed = currentSpeed;
+	}
+
+	public void setMass(double mass) {
+		this.mass = mass;
+	}
+
 }
 
 class Passengers{
