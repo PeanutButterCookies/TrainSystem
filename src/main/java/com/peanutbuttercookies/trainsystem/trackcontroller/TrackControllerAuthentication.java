@@ -3,6 +3,7 @@ package com.peanutbuttercookies.trainsystem.trackcontroller;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -23,8 +24,6 @@ public class TrackControllerAuthentication extends JFrame {
 	private JPasswordField passwordField;
 	private JTextField textField;
 	
-	private String username;
-	private String password;
 	/*
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -43,10 +42,8 @@ public class TrackControllerAuthentication extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public TrackControllerAuthentication(String username, String password, TrackControllerUI ui) {
+	public TrackControllerAuthentication(final String username, final String password, TrackControllerUI ui) {
 		
-		this.username=username;
-		this.password=password;
 		TrackControllerAuthentication self = this;
 		
 		setTitle("Track Controller Login");
@@ -85,7 +82,8 @@ public class TrackControllerAuthentication extends JFrame {
 		btnLogin.setFont(new Font("Tahoma", Font.BOLD, 11));
 		btnLogin.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				if(textField.getText().equals(username) && passwordField.getPassword().toString().equals(password)){
+				
+				if(textField.getText().equals(username) && Arrays.equals(passwordField.getPassword(), password.toCharArray())){
 					ui.setVisible(true);
 					self.setVisible(false);
 				}

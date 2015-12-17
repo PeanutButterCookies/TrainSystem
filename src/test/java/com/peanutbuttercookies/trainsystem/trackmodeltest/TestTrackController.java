@@ -92,9 +92,9 @@ public class TestTrackController implements TrackControllerInterface {
 	}
 
 	@Override
-	public void setPLCProgram(String plcProgramFileLocation) {
+	public boolean setPLCProgram(String plcProgramFileLocation) {
 		// TODO Auto-generated method stub
-
+		return false;
 	}
 
 	@Override

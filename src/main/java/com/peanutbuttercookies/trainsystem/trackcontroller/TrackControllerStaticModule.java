@@ -26,6 +26,7 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 
 	@Override
 	public boolean setTrackControllers(Line line) {
+		
 		if (line.getAllBlocks().size() > 1) {
 			// initialize all local variables
 			int divider;
@@ -39,25 +40,30 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 			// controlled by the two TCs
 			divider = blocks.size() / 2;
 			while (!split) {
-				// System.out.println("Divider: " + divider + "\tOffset:
-				// "+offset);
 				if (divider == offset) {
 					System.err.println("ERROR: COULD NOT FIND A VIABLE SPLITTING POINT");
 					return false;
 				}
-				if (blocks.get(divider + offset - 1).getSwitchBlockId() == -1
-						&& blocks.get(divider + offset).getSwitchBlockId() == -1) {
+				if (blocks.get(divider + offset - 1).getSwitchNum() == -1
+						&& blocks.get(divider + offset).getSwitchNum() == -1) {
 					split = true;
 					divider += offset;
-				} else if (blocks.get(divider - offset - 1).getSwitchBlockId() == -1
-						&& blocks.get(divider - offset).getSwitchBlockId() == -1) {
+				} else if (blocks.get(divider - offset - 1).getSwitchNum() == -1
+						&& blocks.get(divider - offset).getSwitchNum() == -1) {
 					split = true;
 					divider -= (offset + 1);
 				} else {
 					offset++;
 				}
 			}
-
+			
+			// Sets up the TC sections
+			for (int i = 0; i <= divider; i++) {
+				section_1.add(blocks.get(i));
+			}
+			for (int i = divider; i < blocks.size(); i++) {
+				section_2.add(blocks.get(i));
+				}
 			TrackController tc1 = new TrackController(line.getLine(), 1, section_1, 1, divider, divider, ctc,
 					trackModel);
 			TrackController tc2 = new TrackController(line.getLine(), 2, section_2, divider, blocks.size(), divider,
@@ -65,21 +71,21 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 			
 			// Sets up the TC sections
 			for (int i = 0; i <= divider; i++) {
-				section_1.add(blocks.get(i));
 				blocks.get(i).addListener(tc1);
 				blocks.get(i).addListener(this);
 			}
 			for (int i = divider; i < blocks.size(); i++) {
-				section_2.add(blocks.get(i));
 				blocks.get(i).addListener(tc2);
 				if(i!=divider){
 					blocks.get(i).addListener(this);
 				}
 			}
-
+			
 			// Assigns the track controller objects to the line
 			line.setTrackControllers(tc1, tc2);
 			// alter private global variables
+			
+			
 			lines.add(line);
 			this.setupSwitchMap(lines);
 			ui.setSwitchList(switchList);
@@ -113,19 +119,10 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 	}
 	
 	private void setupSwitchMap(LinkedList<Line> line){
-		
-		//TESTING ONLY
-		System.out.println("***Entering setupSwitchMap***");
-		//TESTING ONLY
-		
 		Iterator<Line> lineIterator = line.iterator();
 		while(lineIterator.hasNext()){
 			
 			Line currLine=lineIterator.next();
-			
-			//TESTING ONLY
-			System.out.println("Current Line: "+currLine.getLine());
-			//TESTING ONLY
 			
 			if(!switchList.containsKey(currLine.getLine())){
 				HashMap<String,LinkedList<Block>> tcSwitches = new HashMap<String,LinkedList<Block>>();
@@ -134,20 +131,12 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 				while(tcIterator.hasNext()){
 					TrackControllerInterface currTC = tcIterator.next();
 					LinkedList<Block> switchBlocks = new LinkedList<Block>();
-					
-					//TESTING ONLY
-					System.out.println("Current Track Controller: "+currTC.getControllerId());
-					//TESTING ONLY
-					
+
 					Iterator<Block> blockIterator = currTC.getSection().iterator();
 					while(blockIterator.hasNext()){
 						Block currBlock = blockIterator.next();
 						if(currBlock.getMasterSwitch()){
 							switchBlocks.add(currBlock);
-							
-							//TESTING ONLY
-							System.out.println("Line: "+currBlock.getLine()+"\tBlock "+currBlock.getBlockNumber()+"\tSwitch ID: "+currBlock.getSwitchBlockId());
-							//TESTING ONLY
 						}
 					}
 					
@@ -157,10 +146,6 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 				switchList.put(currLine.getLine(), tcSwitches);
 			}
 		}
-		
-		//TESTING ONLY
-		System.out.println("***Exiting setupSwitchMap***");
-		//TESTING ONLY
 		
 	}
 

@@ -17,5 +17,6 @@ public interface TrainControllerInterface {
 	void run();
 	void setBlockId(int id);
 	void setId(int id);
+	void setAlive(boolean b);
 
 }

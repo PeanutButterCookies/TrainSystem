@@ -1,4 +1,7 @@
 /target/
 /bin/
 /.classpath
+<<<<<<< HEAD
 /.settings/
+=======
+>>>>>>> branch 'master' of https://github.com/PeanutButterCookies/TrainSystem.git

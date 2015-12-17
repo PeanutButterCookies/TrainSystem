@@ -32,8 +32,15 @@ public class TrackModel implements TrackModelInterface {
 	private Map<Integer, LinkedList<Block>> switchMap;
 
 
+<<<<<<< HEAD
 	
+=======
+>>>>>>> branch 'master' of https://github.com/PeanutButterCookies/TrainSystem.git
 	
+<<<<<<< HEAD
+=======
+	
+>>>>>>> branch 'master' of https://github.com/PeanutButterCookies/TrainSystem.git
 
 
 	public void fileRead(String filename) throws IOException {

@@ -22,7 +22,7 @@ public interface TrackControllerInterface {
 	public LinkedList<Block> getSection();
 	public Block getBlock(int index);
 	public void engageSwitch(String switchName, boolean engagement);
-	public void setPLCProgram(String plcProgramFileLocation);
+	public boolean setPLCProgram(String plcProgramFileLocation);
 	public void setSpeedAuthority(int blockId, int speed, int authority);
 	public HashMap<String, LinkedList<Block>> getSwitchList();
 }

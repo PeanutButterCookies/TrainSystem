@@ -60,10 +60,26 @@ public class PLCProgram implements PLCProgramInterface {
 	
 	@Override
 	public boolean loadPLCProgram(String fileLocation, int loadType) {
+		
+		//TEST ONLY
+		System.out.println("***Entering loadPLCProgram***");
+		System.out.println("loadType: "+loadType);
+		System.out.println("fileLocation: "+fileLocation);
+		//TEST ONLY
+		
 		if(fileLocation.contains(".plc")){
+			
+			//TEST ONLY
+			System.out.println(">>Checkpoint: Before try");
+			//TEST ONLY
 			
 			try(BufferedReader bufferReader = new BufferedReader(new FileReader(fileLocation))){
 				String currentLine=bufferReader.readLine();
+				
+				//TEST ONLY
+				System.out.println(">>Checkpoint: Inside try, before while");
+				int counter=0;
+				//TEST ONLY
 				
 				while(currentLine!=null){
 					String[] sections = currentLine.split(":");
@@ -74,16 +90,47 @@ public class PLCProgram implements PLCProgramInterface {
 					
 					if(sections[0].toLowerCase().equals("stop")){
 						stopExpression=sections[1];
+						
+						//TEST ONLY
+						System.out.println(">>Checkpoint: inside stop if");
+						//TEST ONLY
+						
 					}
 					else if(sections[0].toLowerCase().equals("slowdown")){
 						slowDownExpression=sections[1];
+						
+						//TEST ONLY
+						System.out.println(">>Checkpoint: inside slowdown if");
+						//TEST ONLY
+						
 					}
 					else if(sections[0].toLowerCase().contains("switch")){
 						switchExpression=sections[1];
+						
+						//TEST ONLY
+						System.out.println(">>Checkpoint: inside switch if");
+						//TEST ONLY
+						
 					}
 					else if(sections[0].toLowerCase().contains("rrcrossing")){
 						rrCrossingExpression=sections[1];
+						
+						//TEST ONLY
+						System.out.println(">>Checkpoint: inside rrcrossing if");
+						//TEST ONLY
+						
 					}
+					
+					currentLine=bufferReader.readLine();
+					
+					//TEST ONLY
+					System.out.println(">>Checkpoint: inside while, counter="+counter);
+					counter++;
+					if(counter>100){
+						System.out.println(">>Breakpoint: counter maxed out");
+						break;
+					}
+					//TEST ONLY
 				}
 			}
 			catch(IOException e){
@@ -91,15 +138,29 @@ public class PLCProgram implements PLCProgramInterface {
 				return false;
 			}
 			
+			
+			//TEST ONLY
+			System.out.println(">>Checkpoint: Outside try");
+			//TEST ONLY
 			this.loadType=loadType;
 			
 			switch(loadType){
 			case 0:{
 				jexl=new JexlEngine();
+				
+				//TEST ONLY
+				System.out.println("***Exiting loadPLCProgram***");
+				//TEST ONLY
+				
 				return true;
 			}
 			case 1:{
 				juel= new ExpressionFactoryImpl();
+				
+				//TEST ONLY
+				System.out.println("***Exiting loadPLCProgram***");
+				//TEST ONLY
+				
 				return true;
 			}
 			default:{
