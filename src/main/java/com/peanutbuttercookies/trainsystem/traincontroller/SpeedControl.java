@@ -1,4 +1,5 @@
 
+<<<<<<< HEAD
 package com.peanutbuttercookies.trainsystem.traincontroller;
 
 
@@ -29,7 +30,11 @@ public class SpeedControl {
 	private final double MAX_SPEED = 19;
 	private final double KI = 300;
 	private final double KP = 70000;
-	
+	private double uk = 0;
+	private double uk_prev = 0;
+	private double ek = 0;
+	private double ek_prev = 0;
+	private double maxPower = 120000; //in W
 	
 	public SpeedControl(TrainController con) {
 		// TODO Auto-generated constructor stub
@@ -73,11 +78,13 @@ public class SpeedControl {
 		
 		ek_prev = ek;
 		uk_prev = uk;
+
 		maxAllowedPower = verifyPower(speed);
 		if(maxAllowedPower>power){
 			control.gui.updateUI();
 			//control.train.setPower(power);
-			return power;}
+			return power;
+		}
 		else
 			control.gui.updateUI();
 			//control.train.setPower(0);
