@@ -219,7 +219,14 @@ public class TrackControllerUI extends JFrame {
 			new String[] {
 				"Line", "Block ID", "Track Controller ID", "Switch ID", "Block Occupied", "Switch Engaged", "RR Crossing", "Crossing Engaged", "Lights"
 			}
-		));
+		) {
+			boolean[] columnEditables = new boolean[] {
+				false, false, false, false, false, false, false, false, false
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
 		tableVariableDisplay.getColumnModel().getColumn(0).setResizable(false);
 		tableVariableDisplay.getColumnModel().getColumn(0).setPreferredWidth(43);
 		tableVariableDisplay.getColumnModel().getColumn(1).setResizable(false);
@@ -453,17 +460,7 @@ public class TrackControllerUI extends JFrame {
 				JRadioButton button = (JRadioButton) e.getSource();
 				String selectedItem=comboBoxSwitchList.getSelectedItem().toString();
 				if(button.isSelected()){
-					boolean engagement=false;
-					
-					if(button.getText().equals("Engage")){
-						engagement=true;
-					}
-					else if(button.getText().equals("Disengage")){
-						engagement=false;
-					}
-					else{
-						System.err.println("ERROR: LABELS INCORRECTLY READ");
-					}
+					boolean engagement=button.getText().equals("Engage");
 					
 					String[] tokens=selectedItem.split(" ");
 					String switchName=tokens[1];
@@ -1012,7 +1009,16 @@ public class TrackControllerUI extends JFrame {
 				tableVariableDisplay.setValueAt(currBlock.isRRCrossingEngaged(), counter, 7);	//Crossing Engaged
 			}
 			
-			tableVariableDisplay.setValueAt("N/A", counter, 8);									//Lights
+			String lights="";
+			if(currBlock.hasRRCrossing() || currBlock.getMasterSwitch()){
+				switch(currBlock.getLight()){
+				case 1:{lights="GREEN";}break;
+				case 2:{lights="YELLOW";}break;
+				case 3:{lights="RED";}break;
+				default:{lights="";}
+				}
+			}
+			tableVariableDisplay.setValueAt(lights, counter, 8);									//Lights
 			counter++;
 			
 		}

@@ -117,7 +117,7 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 			return true;
 		}
 		else{
-			System.out.println("ERROR: "+this.line+" line TC#"+this.controllerId+"cannot engage crossing on block #"+blockId);
+			System.err.println("ERROR: "+this.line+" line TC#"+this.controllerId+"cannot engage crossing on block #"+blockId);
 			return false;
 		}
 	}

@@ -24,7 +24,7 @@ public class PLCProgram implements PLCProgramInterface {
 	private String stopExpression			="(NB_1_occupied || NB_2_occupied)";
 	private String slowDownExpression		="(NB_3_occupied || NB_4_occupied)";
 	private String switchExpression			="(!CB_occupied)";
-	private String rrCrossingExpression		="(NB_rr && !NB_1_occupied)";
+	private String rrCrossingExpression		="(CB_rr || (NB_rr && !NB_1_occupied))";
 	private String maintenanceExpression	="(!PB_occupied && !CB_occupied)";
 
 	
@@ -131,6 +131,9 @@ public class PLCProgram implements PLCProgramInterface {
 			}
 			if(expressionString.contains("NB_4_occupied")){
 				context.set("NB_4_occupied", currBlock.getNext().getNext().getNext().getNext().isBlockOccupied());
+			}
+			if(expressionString.contains("CB_rr")){
+				context.set("CB_rr", currBlock.hasRRCrossing());
 			}
 			if(expressionString.contains("NB_rr")){
 				context.set("NB_rr", currBlock.getNext().hasRRCrossing());
