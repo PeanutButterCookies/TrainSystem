@@ -10,8 +10,8 @@ import org.junit.Test;
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.commonresources.Line;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
-import com.peanutbuttercookies.trainsystem.trackcontroller.TrackController;
 import com.peanutbuttercookies.trainsystem.trackmodel.TrackModel;
+import com.peanutbuttercookies.trainsystem.train.TrainModelInterface;
 
 public class excelTest {
 
@@ -94,13 +94,64 @@ public class excelTest {
 	}
 
 	@Test
-	public void testSpeedAuthority() throws IOException {
+	public void testTemperature() throws IOException {
 		TrackModelInterface trackModel = new TrackModel();
-		trackModel.fileRead("C:/Users/Fauzul/Documents/COE1186/TrackTest.xlsx");
-		TestTrackController testTrackController = new TestTrackController();
-		trackModel.setTC(testTrackController);
+		trackModel.fileRead("C:/Users/Fauzul/Documents/COE1186/TrackLayout.xlsx");
 		LinkedList<Line> track = trackModel.getTrack();
-		testTrackController.setTrack(track);
-		testTrackController.setSpeedAuthority("red", 1, 70, 70);
+		LinkedList<Block> redLine = track.get(0).getAllBlocks();
+		LinkedList<Block> greenLine = track.get(1).getAllBlocks();
+		
+		Block newBlock = redLine.get(0);
+		for(int i = 0; i<100; i++)	{
+			newBlock.setTemp(i);
+			assertEquals(i, newBlock.getTemp());
+		}
+	}
+	
+	public void testOccupied() throws IOException {
+		TrackModelInterface trackModel = new TrackModel();
+		trackModel.fileRead("C:/Users/Fauzul/Documents/COE1186/TrackLayout.xlsx");
+		LinkedList<Line> track = trackModel.getTrack();
+		LinkedList<Block> redLine = track.get(0).getAllBlocks();
+		
+		for(int i = 0; i<redLine.size(); i++)	{
+			Block newBlock = redLine.get(i);
+			if(i%2 == 1){
+				newBlock.setBlockOccupation(true);
+			}
+			else	{
+				newBlock.setBlockOccupation(false);
+			}
+		}
+		
+		for(int i = 0; i<redLine.size(); i++)	{
+			Block newBlock = redLine.get(i);
+			if(i%2 == 1){
+				assertEquals(newBlock.isBlockOccupied(), true);
+			}
+			else	{
+				assertEquals(newBlock.isBlockOccupied(), false);
+			}
+		}
+		
+		for(int i = 0; i<redLine.size(); i++)	{
+			Block newBlock = redLine.get(i);
+			if(i%2 == 0){
+				newBlock.setBlockOccupation(true);
+			}
+			else	{
+				newBlock.setBlockOccupation(false);
+			}
+		}
+		
+		for(int i = 0; i<redLine.size(); i++)	{
+			Block newBlock = redLine.get(i);
+			if(i%2 == 1){
+				assertEquals(newBlock.isBlockOccupied(), true);
+			}
+			else	{
+				assertEquals(newBlock.isBlockOccupied(), false);
+			}
+		}
 	}
 }

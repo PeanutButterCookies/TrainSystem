@@ -188,7 +188,7 @@ public class ExcelFileDownloader implements ExcelFileDownloaderInterface {
 					tempBlocks.add(new Block(line,section,blockNumber,blockLength,blockGrade,speedLimit,
 							elevation, cumaltiveElevation,switchToYard,switchFromYard,infrastructureSwitch,
 							infrastructureUnderground,infrastructureRRCrossing,infrastructureStation,
-							stationName,switchBlockId,arrowDirectionAId,arrowDirectionBId));
+							stationName,switchBlockId,arrowDirectionAId));
 				}
 				
 				//lines.add(new Line(lineName,(LinkedList<Block>)tempBlocks.clone()));

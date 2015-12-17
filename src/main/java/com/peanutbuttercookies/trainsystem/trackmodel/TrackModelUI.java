@@ -1,5 +1,6 @@
 package com.peanutbuttercookies.trainsystem.trackmodel;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -8,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -17,13 +19,16 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.commonresources.Line;
@@ -53,6 +58,7 @@ public class TrackModelUI extends JFrame {
 	private JList list_2;
 	private JList list_3;
 	private JLabel lblTemperatureController;
+	private boolean validUser;
 
 	/**
 	 * Create the frame.
@@ -64,13 +70,18 @@ public class TrackModelUI extends JFrame {
 		line = new LinkedList<Block>();
 		track = new LinkedList<Line>();
 		int curLine = 0;
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 653, 469);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
+		validUser = false;
 
 		JTextPane textPane = new JTextPane();
+
+		contentPane = new JPanel();
+		setContentPane(contentPane);
+
 		sectionList = new DefaultListModel<String>();
 		blockList = new DefaultListModel<Integer>();
 		infoList = new DefaultListModel<String>();
@@ -86,9 +97,12 @@ public class TrackModelUI extends JFrame {
 
 		slider.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
-				curViewBlock.setTemp(slider.getValue());
-				lblTemperatureController.setText("Temperature Controller: " + slider.getValue());
+				if (curViewBlock != null) {
+					curViewBlock.setTemp(slider.getValue());
+					lblTemperatureController.setText("Temperature Controller: " + slider.getValue());
+				}
 			}
+
 		});
 
 		JScrollPane scrollPane = new JScrollPane(list_1);
@@ -111,6 +125,8 @@ public class TrackModelUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser chooser = new JFileChooser();
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("XLSX files", "xlsx");
+				chooser.setFileFilter(filter);
 				int ret = chooser.showOpenDialog(null);
 				if (ret == JFileChooser.APPROVE_OPTION) {
 					File file = chooser.getSelectedFile();
@@ -122,7 +138,6 @@ public class TrackModelUI extends JFrame {
 					}
 					;
 					initDisplay(0);
-					System.out.println("DISPLAYED");
 				}
 			}
 		});
@@ -178,16 +193,16 @@ public class TrackModelUI extends JFrame {
 										.addComponent(lblTemperatureController)
 										.addPreferredGap(ComponentPlacement.RELATED)
 										.addComponent(slider, GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)))
-				.addPreferredGap(ComponentPlacement.RELATED).addGroup(
-						gl_contentPane.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_contentPane.createSequentialGroup().addComponent(btnFixBlock)
+				.addPreferredGap(ComponentPlacement.RELATED)
+				.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_contentPane.createSequentialGroup().addComponent(btnFixBlock).addContainerGap())
+						.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_contentPane.createSequentialGroup().addComponent(btnBreakBlock)
 										.addContainerGap())
-								.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-										.addGroup(gl_contentPane.createSequentialGroup().addComponent(btnBreakBlock)
-												.addGap(14))
-										.addGroup(gl_contentPane.createSequentialGroup()
-												.addComponent(btnSwitchEngage, GroupLayout.DEFAULT_SIZE,
-														GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addGroup(
+										gl_contentPane
+												.createSequentialGroup().addComponent(btnSwitchEngage,
+														GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, 8)
 												.addContainerGap())))));
 		gl_contentPane.setVerticalGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPane.createSequentialGroup().addContainerGap()
@@ -256,7 +271,6 @@ public class TrackModelUI extends JFrame {
 				}
 			}
 		});
-
 	}
 
 	private void loadTrack(LinkedList<Block> newLine) {
@@ -280,32 +294,45 @@ public class TrackModelUI extends JFrame {
 		infoList.addElement("Block Length " + line.get(0).getBlockLength());
 		infoList.addElement("Block Grade " + line.get(0).getBlockGrade());
 		infoList.addElement("Speed Limit " + line.get(0).getSpeedLimit());
-		infoList.addElement("Sation " + line.get(0).getStationName());
+		infoList.addElement("INFRASTRUCTURE ");
+		if (line.get(0).hasStation()) {
+			infoList.addElement("Station " + line.get(0).getStationName());
+		}
+		if (line.get(0).hasRRCrossing()) {
+			infoList.addElement("Railroad Crossing");
+		}
+		if (line.get(0).isUnderground()) {
+			infoList.addElement("Railroad Crossing");
+		}
+		if (line.get(0).getBeacon() != null) {
+			infoList.addElement("Beacon: " + line.get(0).getBeacon());
+		}
 		infoList.addElement("Elevation " + line.get(0).getElevation());
 		infoList.addElement("Cumulative Elevation " + line.get(0).getCumulativeElevation());
-		infoList.addElement("Switch " + line.get(0).getSwitchNum());
-		infoList.addElement("Master Switch: " + line.get(0).getMasterSwitch());
-		infoList.addElement("Direction " + line.get(0).getArrowDirection());
+		if (line.get(0).hasSwitch()) {
+			infoList.addElement("Switch: " + line.get(0).getSwitchNum());
+		}
+		// infoList.addElement("Master Switch: " +
+		// line.get(0).getMasterSwitch());
+		// infoList.addElement("Direction " + line.get(0).getArrowDirection());
 		infoList.addElement("Occupancy " + line.get(0).isBlockOccupied());
-		infoList.addElement("Two Way: " + line.get(0).getTwoWay());
-		infoList.addElement("Next: " + line.get(0).getNext().getBlockNumber());
-		infoList.addElement("Prev: " + line.get(0).getPrev().getBlockNumber());
-		infoList.addElement("NEXT POSSIBLE BLOCKS");
-		LinkedList<Block> nextBlocks = new LinkedList<Block>(line.get(0).getNextPossible());
-		String nextPos = "";
-		for (int i = 0; i < nextBlocks.size(); i++) {
-			nextPos += nextBlocks.get(i).getBlockNumber() + " ";
-		}
-		infoList.addElement(nextPos);
-		if (line.get(0).getSwitchList() != null) {
-			infoList.addElement("SWITCH LIST");
-			nextBlocks = new LinkedList<Block>(line.get(0).getSwitchList());
-			nextPos = "";
-			for (int i = 0; i < nextBlocks.size(); i++) {
-				nextPos += nextBlocks.get(i).getBlockNumber() + " ";
-			}
-			infoList.addElement(nextPos);
-		}
+		// infoList.addElement("Two Way: " + line.get(0).getTwoWay());
+		// infoList.addElement("Next: " +
+		// line.get(0).getNext().getBlockNumber());
+		// infoList.addElement("Prev: " +
+		// line.get(0).getPrev().getBlockNumber());
+		/*
+		 * infoList.addElement("NEXT POSSIBLE BLOCKS"); LinkedList<Block>
+		 * nextBlocks = new LinkedList<Block>(line.get(0).getNextPossible());
+		 * String nextPos = ""; for (int i = 0; i < nextBlocks.size(); i++) {
+		 * nextPos += nextBlocks.get(i).getBlockNumber() + " "; }
+		 * infoList.addElement(nextPos); if (line.get(0).getSwitchList() !=
+		 * null) { infoList.addElement("SWITCH LIST"); nextBlocks = new
+		 * LinkedList<Block>(line.get(0).getSwitchList()); nextPos = ""; for
+		 * (int i = 0; i < nextBlocks.size(); i++) { nextPos +=
+		 * nextBlocks.get(i).getBlockNumber() + " "; }
+		 * infoList.addElement(nextPos); }
+		 */
 
 		for (int i = 0; i < track.size(); i++) {
 			if (!lineList.contains(track.get(i).getAllBlocks().get(0).getLine()))
@@ -341,33 +368,47 @@ public class TrackModelUI extends JFrame {
 		infoList.addElement("Block Length " + line.get(blockNum).getBlockLength());
 		infoList.addElement("Block Grade " + line.get(blockNum).getBlockGrade());
 		infoList.addElement("Speed Limit " + line.get(blockNum).getSpeedLimit());
-		infoList.addElement("Infrastructure " + line.get(blockNum).getStationName());
-		infoList.addElement("Beacon: " + line.get(blockNum).getBeacon());
+		infoList.addElement("INFRASTRUCTURE ");
+		if (line.get(blockNum).hasStation()) {
+			infoList.addElement("Station " + line.get(blockNum).getStationName());
+		}
+		if (line.get(blockNum).hasRRCrossing()) {
+			infoList.addElement("Railroad Crossing");
+		}
+		if (line.get(blockNum).isUnderground()) {
+			infoList.addElement("Railroad Crossing");
+		}
+		if (line.get(blockNum).getBeacon() != null) {
+			infoList.addElement("Beacon: " + line.get(blockNum).getBeacon());
+		}
 		infoList.addElement("Elevation " + line.get(blockNum).getElevation());
 		infoList.addElement("Cumulative Elevation " + line.get(blockNum).getCumulativeElevation());
-		infoList.addElement("Switch " + line.get(blockNum).getSwitchNum());
-		infoList.addElement("Master Switch: " + line.get(blockNum).getMasterSwitch());
-		infoList.addElement("Direction " + line.get(blockNum).getArrowDirection());
+		if (line.get(blockNum).hasSwitch()) {
+			infoList.addElement("Switch: " + line.get(blockNum).getSwitchNum());
+		}
+		// infoList.addElement("Master Switch: " +
+		// line.get(blockNum).getMasterSwitch());
+		// infoList.addElement("Direction " +
+		// line.get(blockNum).getArrowDirection());
 		infoList.addElement("Occupancy " + line.get(blockNum).isBlockOccupied());
-		infoList.addElement("Two Way: " + line.get(blockNum).getTwoWay());
-		infoList.addElement("Next: " + line.get(blockNum).getNext().getBlockNumber());
-		infoList.addElement("Prev: " + line.get(blockNum).getPrev().getBlockNumber());
-		infoList.addElement("NEXT POSSIBLE BLOCKS");
-		LinkedList<Block> nextBlocks = new LinkedList<Block>(line.get(blockNum).getNextPossible());
-		String nextPos = "";
-		for (int i = 0; i < nextBlocks.size(); i++) {
-			nextPos += nextBlocks.get(i).getBlockNumber() + " ";
-		}
-		infoList.addElement(nextPos);
-		if (line.get(blockNum).getSwitchList() != null) {
-			infoList.addElement("SWITCH LIST");
-			nextBlocks = new LinkedList<Block>(line.get(blockNum).getSwitchList());
-			nextPos = "";
-			for (int i = 0; i < nextBlocks.size(); i++) {
-				nextPos += nextBlocks.get(i).getBlockNumber() + " ";
-			}
-			infoList.addElement(nextPos);
-		}
+		// infoList.addElement("Two Way: " + line.get(blockNum).getTwoWay());
+		// infoList.addElement("Next: " +
+		// line.get(blockNum).getNext().getBlockNumber());
+		// infoList.addElement("Prev: " +
+		// line.get(blockNum).getPrev().getBlockNumber());
+		// infoList.addElement("NEXT POSSIBLE BLOCKS");
+		/*
+		 * LinkedList<Block> nextBlocks = new
+		 * LinkedList<Block>(line.get(blockNum).getNextPossible()); String
+		 * nextPos = ""; for (int i = 0; i < nextBlocks.size(); i++) { nextPos
+		 * += nextBlocks.get(i).getBlockNumber() + " "; }
+		 * infoList.addElement(nextPos); if (line.get(blockNum).getSwitchList()
+		 * != null) { infoList.addElement("SWITCH LIST"); nextBlocks = new
+		 * LinkedList<Block>(line.get(blockNum).getSwitchList()); nextPos = "";
+		 * for (int i = 0; i < nextBlocks.size(); i++) { nextPos +=
+		 * nextBlocks.get(i).getBlockNumber() + " "; }
+		 * infoList.addElement(nextPos); }
+		 */
 
 	}
 }

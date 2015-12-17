@@ -28,24 +28,25 @@ public interface CTCModuleInterface {
 	public void setUi(CTCModuleUI ui);
 
 	// for use by the CTCUI	
-	public boolean dispatch(String line, String speed, CTCBlock block, CTCTrain train);
+	public boolean dispatch(String line, int speed, int train, int end);
 	public boolean repair(String line, CTCBlock block);
-	public boolean changeSwitch(String line, CTCBlock block);
-	public boolean setSchedule(String line, String filename, ScheduleModel model);
+	public boolean changeSwitch(String line, int block, boolean engaged);
+	public boolean setSchedule(String line, String filename);
 	public ScheduleModel newScheduleModel(String line);
 	public CTCBlockModel newBlockModel(String line);
 	public CTCTrainModel newTrainModel(String line);
 	public DefaultComboBoxModel<CTCTrain> newTrainCombo(String line);
 	public DefaultComboBoxModel<CTCSection> newSectionCombo(String line);
-	public DefaultComboBoxModel<CTCBlock> newBlockCombo(String line, CTCSection section);
-	public boolean setTrainComponent(ComponentContainer container);
-	public void setClockSpeed(double clockSpeed);
-	public boolean engageRRCrossing(String line, int blockId);
+	public DefaultComboBoxModel<Integer> newBlockCombo(String line, CTCSection section);
+	public DefaultComboBoxModel<Integer> newSwitchCombo(String line);
+	public DefaultComboBoxModel<Integer> newSwitchDestCombo(String line, int switchBlock);
+	public boolean engageRRCrossing(String line, int blockId, boolean engaged);
 	
 	// for use by the track controller
 	public void setBlockOccupied(String line, int blockId);
 	public void setBlockUnoccupied(String line, int blockId);
 	public void importLine(Line line);
-	public void switchChanged(String line, int switchId, int blockId);
+	public void switchChanged(String line, int blockId, boolean engaged);
+	public void setRRCrossingEngaged(String line, int blockId, boolean engaged);
 
 }
