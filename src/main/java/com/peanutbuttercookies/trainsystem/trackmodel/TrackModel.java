@@ -1,3 +1,8 @@
+/*
+ * Fauzul Azim
+ * 12/17/2015
+ */
+
 package com.peanutbuttercookies.trainsystem.trackmodel;
 
 import java.io.File;
@@ -31,18 +36,10 @@ public class TrackModel implements TrackModelInterface {
 	private Map<String, LinkedList<Block>> yardMap;
 	private Map<Integer, LinkedList<Block>> switchMap;
 
-
-<<<<<<< HEAD
-	
-=======
->>>>>>> branch 'master' of https://github.com/PeanutButterCookies/TrainSystem.git
-	
-<<<<<<< HEAD
-=======
-	
->>>>>>> branch 'master' of https://github.com/PeanutButterCookies/TrainSystem.git
-
-
+	/**
+	 * This method takes in a file in order to parse through it and set up the
+	 * track
+	 */
 	public void fileRead(String filename) throws IOException {
 		track = new LinkedList<Line>();
 		line = new LinkedList<Block>();
@@ -58,8 +55,13 @@ public class TrackModel implements TrackModelInterface {
 		initSwitchDirection();
 	}
 
-	
-
+	/**
+	 * Parses through the Excel file and passes rows of data over to be
+	 * converted into block information
+	 * 
+	 * @param filePath
+	 * @throws IOException
+	 */
 	public void excelReader(String filePath) throws IOException {
 		FileInputStream inputStream = new FileInputStream(new File(filePath));
 
@@ -87,6 +89,11 @@ public class TrackModel implements TrackModelInterface {
 
 	}
 
+	/**
+	 * Takes in a row of Excel and uses information to design Block class
+	 * 
+	 * @param row
+	 */
 	public void iterateRow(Row row) {
 		String lineStr = row.getCell(0).getStringCellValue();
 		String section = row.getCell(1).getStringCellValue();
@@ -198,6 +205,11 @@ public class TrackModel implements TrackModelInterface {
 		line.add(newBlock);
 	}
 
+	/**
+	 * Iterates through track in order to find out what blocks are two way and
+	 * which are backwards (HEAD to TAIL) in order to differentiate logic from
+	 * TAIL TO HEAD blocks
+	 */
 	public void findDirection() {
 		for (int i = 0; i < track.size(); i++) {
 			line = track.get(i).getAllBlocks();
@@ -231,32 +243,12 @@ public class TrackModel implements TrackModelInterface {
 		}
 	}
 
-	public void organizeYard() {
-		for (String key : yardMap.keySet()) {
-			LinkedList<Block> yardPos = yardMap.get(key);
-			for (int i = 0; i < yardPos.size(); i++) {
-				String lineStr = yardPos.get(i).getLine();
-				Block curBlock = yardPos.get(i);
-				for (int j = 0; j < track.size(); j++) {
-					if (track.get(i).getLine().equals(lineStr))
-						;
-					{
-						LinkedList<Block> curLine = track.get(i).getAllBlocks();
-						Block yardBlock = curLine.get(curLine.size() - 1);
-						if (curBlock.isToYard()) {
-							curBlock.setNext(yardBlock);
-							curBlock.setNextPossible(yardBlock);
-						}
-						if (curBlock.isFromYard()) {
-							yardBlock.setNext(curBlock);
-							yardBlock.setNextPossible(curBlock);
-						}
-					}
-				}
-			}
-		}
-	}
 
+
+	/**
+	 * Organizes the switches by designating master blocks that can switch to
+	 * either other block and slaves that can only engage with master
+	 */
 	public void organizeSwitch() {
 		for (int key : switchMap.keySet()) {
 			LinkedList<Block> newList = switchMap.get(key);
@@ -321,6 +313,9 @@ public class TrackModel implements TrackModelInterface {
 		}
 	}
 
+	/**
+	 * sets what possible blocks each block can go to
+	 */
 	public void setNextPossible() {
 		for (int i = 0; i < track.size(); i++) {
 			line = track.get(i).getAllBlocks();
@@ -348,13 +343,12 @@ public class TrackModel implements TrackModelInterface {
 						|| prevBlock.getSwitchNum() < 0) && !prevBlock.getIsYard()) {
 					prevSwitch = true;
 				}
-				
-				
+
 				if (curBlock.getBackwards()) {
 					if (prevSwitch) {
 						curBlock.setNext(prevBlock);
 						curBlock.setNextPossible(prevBlock);
-						if(prevBlock.hasStation()){
+						if (prevBlock.hasStation()) {
 							curBlock.setBeacon(true, prevBlock.getStationName());
 						}
 					}
@@ -362,7 +356,7 @@ public class TrackModel implements TrackModelInterface {
 					if (nextSwitch) {
 						curBlock.setNext(nextBlock);
 						curBlock.setNextPossible(nextBlock);
-						if(nextBlock.hasStation()){
+						if (nextBlock.hasStation()) {
 							curBlock.setBeacon(true, nextBlock.getStationName());
 						}
 					}
@@ -371,13 +365,13 @@ public class TrackModel implements TrackModelInterface {
 					if (nextBlock.getTwoWay() && nextSwitch) {
 						curBlock.setNextPossible(nextBlock);
 						nextBlock.setNextPossible(curBlock);
-						if(nextBlock.hasStation()){
+						if (nextBlock.hasStation()) {
 							curBlock.setBeacon(true, nextBlock.getStationName());
 						}
 					}
 					if (nextSwitch & (nextBlock.getArrowDirection() == -1 || nextBlock.getArrowDirection() == 2)) {
 						curBlock.setNextPossible(nextBlock);
-						if(nextBlock.hasStation()){
+						if (nextBlock.hasStation()) {
 							curBlock.setBeacon(true, nextBlock.getStationName());
 						}
 					}
@@ -387,7 +381,7 @@ public class TrackModel implements TrackModelInterface {
 					if (prevBlock.getTwoWay() && prevSwitch) {
 						curBlock.setNextPossible(prevBlock);
 						prevBlock.setNextPossible(curBlock);
-						if(prevBlock.hasStation()){
+						if (prevBlock.hasStation()) {
 							curBlock.setBeacon(true, prevBlock.getStationName());
 						}
 					}
@@ -396,7 +390,7 @@ public class TrackModel implements TrackModelInterface {
 					}
 					if (prevSwitch & (prevBlock.getArrowDirection() == 1 || prevBlock.getArrowDirection() == 3)) {
 						curBlock.setNextPossible(prevBlock);
-						if(prevBlock.hasStation()){
+						if (prevBlock.hasStation()) {
 							curBlock.setBeacon(true, prevBlock.getStationName());
 						}
 					}
@@ -404,14 +398,13 @@ public class TrackModel implements TrackModelInterface {
 					if (curBlock.getArrowDirection() == 1) {
 						if (nextSwitch && nextBlock.getTwoWay()) {
 							curBlock.setNextPossible(nextBlock);
-							if(nextBlock.hasStation()){
+							if (nextBlock.hasStation()) {
 								curBlock.setBeacon(true, nextBlock.getStationName());
 							}
-						} 
-						else if (nextSwitch && nextBlock.getArrowDirection() == -1
+						} else if (nextSwitch && nextBlock.getArrowDirection() == -1
 								|| nextBlock.getArrowDirection() == 2) {
 							curBlock.setNextPossible(nextBlock);
-							if(nextBlock.hasStation()){
+							if (nextBlock.hasStation()) {
 								curBlock.setBeacon(true, nextBlock.getStationName());
 							}
 						}
@@ -419,7 +412,7 @@ public class TrackModel implements TrackModelInterface {
 							curBlock.setNextPossible(prevBlock);
 						} else if (prevSwitch && prevBlock.getArrowDirection() == -1) {
 							curBlock.setNextPossible(prevBlock);
-							if(prevBlock.hasStation()){
+							if (prevBlock.hasStation()) {
 								curBlock.setBeacon(true, prevBlock.getStationName());
 							}
 						}
@@ -442,14 +435,9 @@ public class TrackModel implements TrackModelInterface {
 		}
 	}
 
-	public void makeYard() {
-		for (int i = 0; i < track.size(); i++) {
-			LinkedList<Block> newLine = track.get(i).getAllBlocks();
-			Block yardBlock = new Block(newLine.get(0).getLine(), true);
-			newLine.add(yardBlock);
-		}
-	}
-
+	/**
+	 * Initializes each switch and to what block they point to
+	 */
 	public void initSwitchDirection() {
 		for (int i = 0; i < switchMap.size(); i++) {
 			LinkedList<Block> newList = switchMap.get(i);
@@ -468,20 +456,55 @@ public class TrackModel implements TrackModelInterface {
 			}
 		}
 	}
-
-
-
-	@Override
-	public void setUI(TrackModelUI tmUI) {
-		// TODO Auto-generated method stub
-		
+	
+	/**
+	 * Creates a yard block and adds it to the end of each line
+	 */
+	public void makeYard() {
+		for (int i = 0; i < track.size(); i++) {
+			LinkedList<Block> newLine = track.get(i).getAllBlocks();
+			Block yardBlock = new Block(newLine.get(0).getLine(), true);
+			newLine.add(yardBlock);
+		}
 	}
-
-
+	
+	/**
+	 * Organizes the yard by getting the blocks that are going
+	 * to/from the yard and connecting the yard to them
+	 */
+	public void organizeYard() {
+		for (String key : yardMap.keySet()) {
+			LinkedList<Block> yardPos = yardMap.get(key);
+			for (int i = 0; i < yardPos.size(); i++) {
+				String lineStr = yardPos.get(i).getLine();
+				Block curBlock = yardPos.get(i);
+				for (int j = 0; j < track.size(); j++) {
+					if (track.get(i).getLine().equals(lineStr))
+						;
+					{
+						LinkedList<Block> curLine = track.get(i).getAllBlocks();
+						Block yardBlock = curLine.get(curLine.size() - 1);
+						if (curBlock.isToYard()) {
+							curBlock.setNext(yardBlock);
+							curBlock.setNextPossible(yardBlock);
+						}
+						if (curBlock.isFromYard()) {
+							yardBlock.setNext(curBlock);
+							yardBlock.setNextPossible(curBlock);
+						}
+					}
+				}
+			}
+		}
+	}
 
 	@Override
 	public LinkedList<Line> getTrack() {
-		// TODO Auto-generated method stub
 		return track;
+	}
+
+	@Override
+	public void setUI(TrackModelUI tmUI) {
+		this.tmUI = tmUI;
 	}
 }

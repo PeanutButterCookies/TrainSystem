@@ -1,3 +1,8 @@
+/*
+ * Fauzul Azim
+ * 12/17/2015
+ */
+
 package com.peanutbuttercookies.trainsystem.trackmodel;
 
 import java.awt.BorderLayout;
@@ -71,7 +76,7 @@ public class TrackModelUI extends JFrame {
 		track = new LinkedList<Line>();
 		int curLine = 0;
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 653, 469);
+		setBounds(100, 100, 700, 500);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -142,7 +147,7 @@ public class TrackModelUI extends JFrame {
 			}
 		});
 
-		JButton btnBreakBlock = new JButton("Break Block");
+		JButton btnBreakBlock = new JButton("Break Block/Failures");
 		btnBreakBlock.addActionListener(new ActionListener() {
 
 			@Override
@@ -151,6 +156,8 @@ public class TrackModelUI extends JFrame {
 				update(curView);
 			}
 		});
+		
+	
 
 		JButton btnSwitchEngage = new JButton("Switch Engage");
 		btnSwitchEngage.addActionListener(new ActionListener() {
@@ -202,7 +209,7 @@ public class TrackModelUI extends JFrame {
 								.addGroup(
 										gl_contentPane
 												.createSequentialGroup().addComponent(btnSwitchEngage,
-														GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, 8)
+														GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 												.addContainerGap())))));
 		gl_contentPane.setVerticalGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPane.createSequentialGroup().addContainerGap()
@@ -312,27 +319,7 @@ public class TrackModelUI extends JFrame {
 		if (line.get(0).hasSwitch()) {
 			infoList.addElement("Switch: " + line.get(0).getSwitchNum());
 		}
-		// infoList.addElement("Master Switch: " +
-		// line.get(0).getMasterSwitch());
-		// infoList.addElement("Direction " + line.get(0).getArrowDirection());
 		infoList.addElement("Occupancy " + line.get(0).isBlockOccupied());
-		// infoList.addElement("Two Way: " + line.get(0).getTwoWay());
-		// infoList.addElement("Next: " +
-		// line.get(0).getNext().getBlockNumber());
-		// infoList.addElement("Prev: " +
-		// line.get(0).getPrev().getBlockNumber());
-		/*
-		 * infoList.addElement("NEXT POSSIBLE BLOCKS"); LinkedList<Block>
-		 * nextBlocks = new LinkedList<Block>(line.get(0).getNextPossible());
-		 * String nextPos = ""; for (int i = 0; i < nextBlocks.size(); i++) {
-		 * nextPos += nextBlocks.get(i).getBlockNumber() + " "; }
-		 * infoList.addElement(nextPos); if (line.get(0).getSwitchList() !=
-		 * null) { infoList.addElement("SWITCH LIST"); nextBlocks = new
-		 * LinkedList<Block>(line.get(0).getSwitchList()); nextPos = ""; for
-		 * (int i = 0; i < nextBlocks.size(); i++) { nextPos +=
-		 * nextBlocks.get(i).getBlockNumber() + " "; }
-		 * infoList.addElement(nextPos); }
-		 */
 
 		for (int i = 0; i < track.size(); i++) {
 			if (!lineList.contains(track.get(i).getAllBlocks().get(0).getLine()))
@@ -386,29 +373,6 @@ public class TrackModelUI extends JFrame {
 		if (line.get(blockNum).hasSwitch()) {
 			infoList.addElement("Switch: " + line.get(blockNum).getSwitchNum());
 		}
-		// infoList.addElement("Master Switch: " +
-		// line.get(blockNum).getMasterSwitch());
-		// infoList.addElement("Direction " +
-		// line.get(blockNum).getArrowDirection());
 		infoList.addElement("Occupancy " + line.get(blockNum).isBlockOccupied());
-		// infoList.addElement("Two Way: " + line.get(blockNum).getTwoWay());
-		// infoList.addElement("Next: " +
-		// line.get(blockNum).getNext().getBlockNumber());
-		// infoList.addElement("Prev: " +
-		// line.get(blockNum).getPrev().getBlockNumber());
-		// infoList.addElement("NEXT POSSIBLE BLOCKS");
-		/*
-		 * LinkedList<Block> nextBlocks = new
-		 * LinkedList<Block>(line.get(blockNum).getNextPossible()); String
-		 * nextPos = ""; for (int i = 0; i < nextBlocks.size(); i++) { nextPos
-		 * += nextBlocks.get(i).getBlockNumber() + " "; }
-		 * infoList.addElement(nextPos); if (line.get(blockNum).getSwitchList()
-		 * != null) { infoList.addElement("SWITCH LIST"); nextBlocks = new
-		 * LinkedList<Block>(line.get(blockNum).getSwitchList()); nextPos = "";
-		 * for (int i = 0; i < nextBlocks.size(); i++) { nextPos +=
-		 * nextBlocks.get(i).getBlockNumber() + " "; }
-		 * infoList.addElement(nextPos); }
-		 */
-
 	}
 }
