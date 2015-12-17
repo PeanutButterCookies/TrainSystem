@@ -1,1 +1,5 @@
 /target/
+/.classpath
+/.settings
+/graph/
+/graph.db/
