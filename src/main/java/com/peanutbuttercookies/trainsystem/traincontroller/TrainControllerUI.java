@@ -148,7 +148,7 @@ public class TrainControllerUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try{
 					double speed = Double.parseDouble(enterSpeedText.getText());
-					trainController.setSpeed(speed);
+					trainController.setSpeed(speed*0.44704);
 				} catch(NumberFormatException n) {	
 					System.out.println("Not valid");
 				} catch(NullPointerException p) {
