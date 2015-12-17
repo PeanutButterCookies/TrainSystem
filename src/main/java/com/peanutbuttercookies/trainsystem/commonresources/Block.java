@@ -358,6 +358,7 @@ public class Block {
 	}
 
 	public void setSpeedAuthority(double speed, double authority) {
+		System.out.println("block");
 		if (blockNumber == 0) {
 			trainComm = trainWrap.createTrain(speed, authority, this);
 		} else {
@@ -478,5 +479,4 @@ public class Block {
 	public Block getTrainNext() {
 		return trainNext;
 	}
-
 }

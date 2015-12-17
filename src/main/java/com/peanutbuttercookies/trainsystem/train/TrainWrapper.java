@@ -34,6 +34,7 @@ public class TrainWrapper {
 	 * @return
 	 */
 	public TrainModelInterface createTrain(double speed, double auth, Block block){
+		System.out.println("creating train");
 		TrainModel train = new TrainModel();
 		TrainController trainControl = new TrainController(train);
 		Thread thread = new Thread(train);

@@ -7,8 +7,6 @@
 */
 package com.peanutbuttercookies.trainsystem.traincontroller;
 
-import com.peanutbuttercookies.trainsystem.commonresources.SystemClock;
-
 public class SpeedControl {
 	//private double mass = 0;
 	private double commandSpeed = 0;

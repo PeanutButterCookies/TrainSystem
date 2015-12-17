@@ -5,7 +5,6 @@
 
 package com.peanutbuttercookies.trainsystem.trackmodel;
 
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -14,7 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -24,10 +22,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
-import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EmptyBorder;
@@ -292,42 +288,42 @@ public class TrackModelUI extends JFrame {
 		lineList.clear();
 		sectionList.clear();
 		blockList.clear();
-		curView = 0;
-		curViewBlock = line.get(0);
-		slider.setValue(line.get(0).getTemp());
-		infoList.addElement("Line " + line.get(0).getLine());
-		infoList.addElement("Section " + line.get(0).getSection());
-		infoList.addElement("Block " + line.get(0).getBlockNumber());
-		infoList.addElement("Signal " + line.get(0).getLight());
-		infoList.addElement("Block Length " + line.get(0).getBlockLength());
-		infoList.addElement("Block Grade " + line.get(0).getBlockGrade());
-		infoList.addElement("Speed Limit " + line.get(0).getSpeedLimit());
-		if(line.get(0).isBlockOccupied())	{
-			infoList.addElement("Next " + line.get(0).getTrainNext().getBlockNumber());
+		curView = 1;
+		curViewBlock = line.get(1);
+		slider.setValue(line.get(1).getTemp());
+		infoList.addElement("Line " + line.get(1).getLine());
+		infoList.addElement("Section " + line.get(1).getSection());
+		infoList.addElement("Block " + line.get(1).getBlockNumber());
+		infoList.addElement("Signal " + line.get(1).getLight());
+		infoList.addElement("Block Length " + line.get(1).getBlockLength());
+		infoList.addElement("Block Grade " + line.get(1).getBlockGrade());
+		infoList.addElement("Speed Limit " + line.get(1).getSpeedLimit());
+		if(line.get(1).isBlockOccupied())	{
+			infoList.addElement("Next " + line.get(2).getTrainNext().getBlockNumber());
 		}
 		infoList.addElement("INFRASTRUCTURE ");
-		if (line.get(0).hasStation()) {
-			infoList.addElement("Station " + line.get(0).getStationName());
+		if (line.get(1).hasStation()) {
+			infoList.addElement("Station " + line.get(1).getStationName());
 		}
-		if (line.get(0).hasRRCrossing()) {
+		if (line.get(1).hasRRCrossing()) {
 			infoList.addElement("Railroad Crossing");
 		}
-		if (line.get(0).isUnderground()) {
+		if (line.get(1).isUnderground()) {
 			infoList.addElement("Railroad Crossing");
 		}
-		if (line.get(0).getBeacon() != null) {
+		if (line.get(1).getBeacon() != null) {
 			infoList.addElement("Beacon: " + line.get(0).getBeacon());
 		}
 		infoList.addElement("Elevation " + line.get(0).getElevation());
 		infoList.addElement("Cumulative Elevation " + line.get(0).getCumulativeElevation());
-		if (line.get(0).hasSwitch()) {
+		if (line.get(1).hasSwitch()) {
 			infoList.addElement("Switch: " + line.get(0).getSwitchNum());
 		}
 		infoList.addElement("Occupancy " + line.get(0).isBlockOccupied());
 
-		for (int i = 0; i < track.size(); i++) {
-			if (!lineList.contains(track.get(i).getAllBlocks().get(0).getLine()))
-				lineList.addElement("" + track.get(i).getAllBlocks().get(0).getLine());
+		for (int i = 1; i < track.size(); i++) {
+			if (!lineList.contains(track.get(i).getAllBlocks().get(1).getLine()))
+				lineList.addElement("" + track.get(i).getAllBlocks().get(1).getLine());
 		}
 
 		for (int i = 0; i < line.size(); i++) {
@@ -350,6 +346,7 @@ public class TrackModelUI extends JFrame {
 
 	public void update(int blockNum) {
 		infoList.clear();
+		blockNum = blockNum +1;
 		curView = blockNum;
 		curViewBlock = line.get(blockNum);
 		slider.setValue(line.get(blockNum).getTemp());

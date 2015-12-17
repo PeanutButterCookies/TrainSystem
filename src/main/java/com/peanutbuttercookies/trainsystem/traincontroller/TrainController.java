@@ -8,9 +8,6 @@
 package com.peanutbuttercookies.trainsystem.traincontroller;
 
 import com.peanutbuttercookies.trainsystem.train.TrainModelInterface;
-import com.peanutbuttercookies.trainsystem.traincontroller.SpeedControl;
-import com.peanutbuttercookies.trainsystem.traincontroller.TrainControllerInterface;
-import com.peanutbuttercookies.trainsystem.traincontroller.TrainControllerUI;
 
 public class TrainController implements TrainControllerInterface {
 

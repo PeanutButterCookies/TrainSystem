@@ -149,7 +149,7 @@ public class ComponentContainer extends JPanel implements ActionListener {
 		allBlocks = new HashMap<CTCSection, DefaultComboBoxModel<Integer>>();
 		allSections.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				blockCBox.setModel(allBlocks.get((allSections).getItemAt(0)));
+				blockCBox.setModel(allBlocks.get((allSections).getSelectedItem()));
 			}
 		});
 

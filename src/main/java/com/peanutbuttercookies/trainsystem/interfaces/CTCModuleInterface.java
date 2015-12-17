@@ -15,7 +15,6 @@ import com.peanutbuttercookies.trainsystem.ctc.CTCModuleUI;
 import com.peanutbuttercookies.trainsystem.ctc.CTCSection;
 import com.peanutbuttercookies.trainsystem.ctc.CTCTrain;
 import com.peanutbuttercookies.trainsystem.ctc.CTCTrainModel;
-import com.peanutbuttercookies.trainsystem.ctc.ComponentContainer;
 import com.peanutbuttercookies.trainsystem.ctc.ScheduleModel;
 
 /**

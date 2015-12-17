@@ -7,6 +7,7 @@
 */
 package com.peanutbuttercookies.trainsystem.traincontroller;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,11 +22,8 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.border.EmptyBorder;
-
-
 import javax.swing.SwingConstants;
-import java.awt.Color;
+import javax.swing.border.EmptyBorder;
 
 public class TrainControllerAuthentication extends JFrame {
 	private JPanel contentPane;
@@ -36,7 +34,7 @@ public TrainControllerAuthentication(final String username, final String passwor
 		
 		TrainControllerAuthentication self = this;
 		
-		setTitle("Track Controller Login");
+		setTitle("Train Controller Login");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 375, 175);
 		contentPane = new JPanel();

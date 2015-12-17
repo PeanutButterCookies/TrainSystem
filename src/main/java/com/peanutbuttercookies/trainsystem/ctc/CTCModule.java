@@ -14,7 +14,6 @@ import javax.swing.DefaultComboBoxModel;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.commonresources.Line;
-import com.peanutbuttercookies.trainsystem.ctctest.TestTrackController;
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 
@@ -36,13 +35,11 @@ public class CTCModule implements CTCModuleInterface {
 
 	@Override
 	public void setBlockOccupied(String line, int blockId) {
-		System.out.println("Setting block occupied: " + blockId);
 		CTCBlockModel model = lineBlockMap.get(line);
 		boolean newTrain = model.setOccupied(blockId);
 		if (newTrain) {
 			lineTrainMap.get(line).addTrain();
 		} else {
-			System.out.println("Block ID: " + blockId);
 			lineTrainMap.get(line).moveHead(model.getBlock(blockId).getBlockNumber(),
 					model.getPrevBlock(blockId).getBlockNumber());
 
@@ -130,7 +127,6 @@ public class CTCModule implements CTCModuleInterface {
 			return null;
 		}
 		DefaultComboBoxModel<CTCSection> model = new DefaultComboBoxModel<CTCSection>();
-		System.out.println("Size: " + lineBlockMap.get(line).getSections().size());
 		for (CTCSection section : lineBlockMap.get(line).getSections()) {
 			model.addElement(section);
 		}
@@ -151,6 +147,11 @@ public class CTCModule implements CTCModuleInterface {
 		int authority = model.getAuthority(train, end);
 		CTCBlock start = model.getBlock(train);
 		TrackControllerInterface tc = lineBlockMap.get(line).getTC(start);
+		for(Block b : tc.getSection()) {
+			if(b.getBlockNumber() == train) {
+				System.out.println("TC has " + train);
+			}
+		}
 		tc.setSpeedAuthority(train, speed, authority);
 		return true;
 	}

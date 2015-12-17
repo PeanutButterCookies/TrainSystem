@@ -23,10 +23,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.commonresources.Line;
 import com.peanutbuttercookies.trainsystem.interfaces.ExcelFileDownloaderInterface;
-import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 import com.peanutbuttercookies.trainsystem.trackcontroller.TrackControllerStaticModule;
 import com.peanutbuttercookies.trainsystem.train.TrainModelInterface;
+
 
 public class TrackModel implements TrackModelInterface {
 	private TrackControllerStaticModule tc;
@@ -471,7 +471,7 @@ public class TrackModel implements TrackModelInterface {
 		for (int i = 0; i < track.size(); i++) {
 			LinkedList<Block> newLine = track.get(i).getAllBlocks();
 			Block yardBlock = new Block(newLine.get(0).getLine(), true);
-			newLine.add(yardBlock);
+			newLine.add(0, yardBlock);
 		}
 	}
 	
@@ -490,7 +490,7 @@ public class TrackModel implements TrackModelInterface {
 						;
 					{
 						LinkedList<Block> curLine = track.get(i).getAllBlocks();
-						Block yardBlock = curLine.get(curLine.size() - 1);
+						Block yardBlock = curLine.get(0);
 						if (curBlock.isToYard()) {
 							curBlock.setNext(yardBlock);
 							curBlock.setNextPossible(yardBlock);

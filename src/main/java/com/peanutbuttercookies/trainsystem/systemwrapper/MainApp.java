@@ -26,30 +26,28 @@ public class MainApp {
 		CTCModuleInterface ctc = new CTCModule();
 		TrackControllerStaticModule trackController = new TrackControllerStaticModule();
 		TrackModelInterface trackModel = new TrackModel();
-
-		//TODO
-
-		trackModel.fileRead("C:/Users/Fauzul/Documents/COE1186/trackLayout.xlsx");
-
-		//trackModel.fileRead("C:/Users/Kevin/Downloads/Track Layout & Vehicle Data vF1.xlsx");
-		//trackModel.fileRead("C:/Users/Chris/Documents/University of Pittsburgh/Junior Year/Software Engineering/ModifiedTrackLayout.xlsx");
-//		trackModel.fileRead("C:/Users/Chris/Documents/University of Pittsburgh/Junior Year/Software Engineering/Track Layout & Vehicle Data vF1.xlsx");
-
 		
+		//trackModel.fileRead(getClass().getResource("trackLayout.xlsx"));
+
+	
 		trackController.setCTC(ctc);
 		TrackControllerUI tcUI = new TrackControllerUI();
 		trackController.setTrackControllerUI(tcUI);
 		List<Line> lines = trackModel.getTrack();
+		for(Line line : lines) {
+			trackController.setTrackControllers(line);
+			ctc.importLine(line);
+		}
 
 		
-		CTCModuleUI ctcUI = new CTCModuleUI(ctc);
-		ctc.setUi(ctcUI);
-		
+
+		tcUI.setLines(lines);
 		Block.setTrainWrapper(new TrainWrapper());
 		CTCModuleUI ctcUI = new CTCModuleUI(ctc);
 		ctc.setUi(ctcUI);
+		
 		TrackModelUI tmUI = new TrackModelUI(trackModel);
-
+		tmUI.initDisplay(0);
 
 
 	}

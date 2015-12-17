@@ -5,8 +5,6 @@ import java.util.LinkedList;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
-import com.peanutbuttercookies.trainsystem.trackcontroller.PLCProgram_OLD;
-import com.peanutbuttercookies.trainsystem.trackcontroller.TrackController;
 
 public class TestTrackController implements TrackControllerInterface {
 

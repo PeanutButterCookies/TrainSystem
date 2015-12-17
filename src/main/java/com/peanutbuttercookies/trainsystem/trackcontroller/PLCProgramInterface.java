@@ -1,7 +1,5 @@
 package com.peanutbuttercookies.trainsystem.trackcontroller;
 
-import java.io.InputStream;
-
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
 
 public interface PLCProgramInterface {

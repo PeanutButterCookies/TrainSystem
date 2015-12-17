@@ -3,7 +3,6 @@ package com.peanutbuttercookies.trainsystem.commonresources;
 import java.util.LinkedList;
 
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
-import com.peanutbuttercookies.trainsystem.trackcontroller.TrackController;
 
 public class Line {
 	private final LinkedList<Block> blocks;

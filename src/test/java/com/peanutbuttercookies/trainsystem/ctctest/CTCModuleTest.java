@@ -1,6 +1,6 @@
 package com.peanutbuttercookies.trainsystem.ctctest;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.LinkedList;
 
