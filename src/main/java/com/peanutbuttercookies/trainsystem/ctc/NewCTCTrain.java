@@ -1,3 +1,7 @@
+/*
+ * Kevin Nash
+ * 10/26/15
+ */
 package com.peanutbuttercookies.trainsystem.ctc;
 
 public class NewCTCTrain extends CTCTrain {

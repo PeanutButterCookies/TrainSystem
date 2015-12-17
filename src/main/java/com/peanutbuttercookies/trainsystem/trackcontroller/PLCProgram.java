@@ -7,9 +7,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
-
 import org.apache.commons.jexl2.Expression;
 import org.apache.commons.jexl2.JexlContext;
 import org.apache.commons.jexl2.JexlEngine;
@@ -17,23 +14,18 @@ import org.apache.commons.jexl2.MapContext;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
 
-import de.odysseus.el.ExpressionFactoryImpl;
-import de.odysseus.el.util.SimpleContext;
-
 /**
  * @author chris
  *
  */
 public class PLCProgram implements PLCProgramInterface {
 	
-	private int loadType;
-	private JexlEngine jexl;
-	private ExpressionFactory juel;
-	private String stopExpression;
-	private String slowDownExpression;
-	private String switchExpression;
-	private String rrCrossingExpression;
-	private String maintenanceExpression;
+	private JexlEngine jexl					=new JexlEngine();
+	private String stopExpression			="(NB_1_occupied || NB_2_occupied)";
+	private String slowDownExpression		="(NB_3_occupied || NB_4_occupied)";
+	private String switchExpression			="(!CB_occupied)";
+	private String rrCrossingExpression		="(CB_rr || (NB_rr && !NB_1_occupied))";
+	private String maintenanceExpression	="(!PB_occupied && !CB_occupied)";
 
 	
 	@Override
@@ -64,10 +56,9 @@ public class PLCProgram implements PLCProgramInterface {
 	}
 	
 	@Override
-	public boolean loadPLCProgram(String fileLocation, int loadType) {
-		
-		if(fileLocation.contains(".plc")){
-			try(BufferedReader bufferReader = new BufferedReader(new FileReader(fileLocation))){
+	public boolean loadPLCProgram(String file) {
+		if(file.contains(".plc")){
+			try(BufferedReader bufferReader = new BufferedReader(new FileReader(file))){
 				String currentLine=bufferReader.readLine();
 				while(currentLine!=null){
 					String[] sections = currentLine.split(":");
@@ -101,34 +92,25 @@ public class PLCProgram implements PLCProgramInterface {
 				return false;
 			}
 			
-			this.loadType=loadType;
-			
-			switch(loadType){
-			case 0:{
-				jexl=new JexlEngine();
-				return true;
-			}
-			case 1:{
-				juel= new ExpressionFactoryImpl();			
-				return true;
-			}
-			default:{
-				System.err.println("ERROR: INVALID LOAD TYPE ID");
+			if(stopExpression==null || slowDownExpression==null ||switchExpression==null 
+					|| rrCrossingExpression==null || maintenanceExpression==null){
+				System.err.println("ERROR: INVALID PLC FILE");
 				return false;
 			}
-			}
 			
+			jexl=new JexlEngine();
+			return true;
 		}
 		else{
+			System.err.println("ERROR: INVALID PLC FILE");
 			return false;
 		}
+		
 	}
+		
 	
 	private boolean evaluateExpression(String expressionString, Block currBlock){
 		boolean result=true;
-		
-		switch(this.loadType){
-		case 0:{
 			Expression expression=jexl.createExpression(expressionString);
 			JexlContext context = new MapContext();
 			
@@ -150,6 +132,9 @@ public class PLCProgram implements PLCProgramInterface {
 			if(expressionString.contains("NB_4_occupied")){
 				context.set("NB_4_occupied", currBlock.getNext().getNext().getNext().getNext().isBlockOccupied());
 			}
+			if(expressionString.contains("CB_rr")){
+				context.set("CB_rr", currBlock.hasRRCrossing());
+			}
 			if(expressionString.contains("NB_rr")){
 				context.set("NB_rr", currBlock.getNext().hasRRCrossing());
 			}
@@ -158,45 +143,6 @@ public class PLCProgram implements PLCProgramInterface {
 			for(int i=0; i<3; i++){
 				result&=(boolean)expression.evaluate(context);
 			}
-		}break;
-		case 1:{
-			SimpleContext context= new SimpleContext();
-			//how to set context, fill in later
-			context.setVariable("plcVariableName", juel.createValueExpression(expressionString, String.class));
-			
-			if(expressionString.contains("CB_occupied")){
-				context.setVariable("CB_occupied", juel.createValueExpression(currBlock.isBlockOccupied(), Boolean.class));
-			}
-			if(expressionString.contains("PB_occupied")){
-				context.setVariable("PB_occupied",  juel.createValueExpression(currBlock.getPrevBlock().isBlockOccupied(), Boolean.class));
-			}
-			if(expressionString.contains("NB_1_occupied")){
-				context.setVariable("NB_1_occupied",  juel.createValueExpression(currBlock.getNext().isBlockOccupied(), Boolean.class));
-			}
-			if(expressionString.contains("NB_2_occupied")){
-				context.setVariable("NB_2_occupied", juel.createValueExpression(currBlock.getNext().getNext().isBlockOccupied(), Boolean.class));
-			}
-			if(expressionString.contains("NB_3_occupied")){
-				context.setVariable("NB_3_occupied", juel.createValueExpression(currBlock.getNext().getNext().getNext().isBlockOccupied(), Boolean.class));
-			}
-			if(expressionString.contains("NB_4_occupied")){
-				context.setVariable("NB_4_occupied", juel.createValueExpression(currBlock.getNext().getNext().getNext().getNext().isBlockOccupied(), Boolean.class));
-			}
-			if(expressionString.contains("NB_rr")){
-				context.setVariable("NB_rr", juel.createValueExpression(currBlock.getNext().hasRRCrossing(), Boolean.class));
-			}
-			
-			ValueExpression expression=juel.createValueExpression(context,expressionString, String.class);
-			for(int i=0; i<3; i++){
-				result&=(boolean)expression.getValue(context);
-			}
-
-		}break;
-		default:{
-			System.err.println("ERROR: INCORRECT LOADTYPE");
-			return false;
-		}
-		}
 		
 		return result;
 	}

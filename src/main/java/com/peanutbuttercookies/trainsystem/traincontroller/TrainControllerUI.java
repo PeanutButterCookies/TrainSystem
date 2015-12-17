@@ -39,7 +39,7 @@ public class TrainControllerUI extends JFrame {
 	TrainController trainController;
 	private JTextField currentBlock;
 	private JTextField enterSpeedText;
-	private JComboBox selectController;
+	private JComboBox<TrainController> selectController;
 
 
 	/**
@@ -68,8 +68,8 @@ public class TrainControllerUI extends JFrame {
 		contentPane.add(lblSelectTrain, gbc_lblSelectTrain);
 		
 		
-		JComboBox<Integer> selectController_1 = new JComboBox<Integer>();
-		selectController_1.addActionListener(new ActionListener() {
+		selectController = new JComboBox<TrainController>();
+		selectController.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JComboBox<TrainController> combo = (JComboBox<TrainController>) e.getSource();
 		        trainController.setCurrentlySelected(false);
@@ -78,15 +78,14 @@ public class TrainControllerUI extends JFrame {
 		       	updateUI();
 			}
 		});
-		GridBagConstraints gbc_selectController_1 = new GridBagConstraints();
-		gbc_selectController_1.anchor = GridBagConstraints.NORTHWEST;
-		gbc_selectController_1.insets = new Insets(0, 0, 5, 5);
-		gbc_selectController_1.gridx = 3;
-		gbc_selectController_1.gridy = 0;
-		contentPane.add(selectController_1, gbc_selectController_1);
-		selectController_1.addItem(1);
+		GridBagConstraints gbc_selectController = new GridBagConstraints();
+		gbc_selectController.anchor = GridBagConstraints.NORTHWEST;
+		gbc_selectController.insets = new Insets(0, 0, 5, 5);
+		gbc_selectController.gridx = 3;
+		gbc_selectController.gridy = 0;
+		contentPane.add(selectController, gbc_selectController);
 		if(trainController != null){
-			trainController = (TrainController) selectController_1.getSelectedItem();
+			trainController = (TrainController) selectController.getSelectedItem();
 		}
 		
 		JLabel lblSpeedLimit = new JLabel("Speed:");
@@ -148,7 +147,7 @@ public class TrainControllerUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try{
 					double speed = Double.parseDouble(enterSpeedText.getText());
-					trainController.setSpeed(speed*0.44704);
+					trainController.setCommandSpeed(speed*0.44704);
 				} catch(NumberFormatException n) {	
 					System.out.println("Not valid");
 				} catch(NullPointerException p) {

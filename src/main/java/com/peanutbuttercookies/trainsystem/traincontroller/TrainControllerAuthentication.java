@@ -125,6 +125,7 @@ public TrainControllerAuthentication(final String username, final String passwor
 					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 		);
 		contentPane.setLayout(gl_contentPane);
+		setVisible(true);
 	}
 }
 

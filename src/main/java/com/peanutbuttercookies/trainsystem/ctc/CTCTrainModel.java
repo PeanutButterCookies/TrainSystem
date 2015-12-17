@@ -1,3 +1,7 @@
+/*
+ * Kevin Nash
+ * 10/17/15
+ */
 package com.peanutbuttercookies.trainsystem.ctc;
 
 import java.util.Iterator;

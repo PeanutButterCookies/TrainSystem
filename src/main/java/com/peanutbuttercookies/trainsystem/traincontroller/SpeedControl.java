@@ -49,15 +49,16 @@ public class SpeedControl {
 	 */
 	public double calcPower(double speed){
 		//System.out.println(commandSpeed);
-		if(commandSpeed > speedLimit){
-			commandSpeed = speedLimit;
+		if(commandSpeed > MAX_SPEED){
+			commandSpeed = MAX_SPEED;
+			System.out.println("Max speed exceeded");
 		}
 		
 		if(commandSpeed < 0){
 			commandSpeed = 0;
 		}
 		
-		brakeCheck();
+		
 		ek = commandSpeed - speed;
 		uk = uk_prev + 1/2 * (ek + ek_prev);
 		power = KI*(ek) + KP*(uk);
@@ -67,6 +68,11 @@ public class SpeedControl {
 			//power = maxPower;
 		}
 		//System.out.println("ek: " + ek + " uk: " + uk);
+		if((brakes||emergencyBrakes) && speed == 0){
+			control.setBrakes(false);
+			control.setBrakes(true);
+		}
+		brakeCheck();
 		if(brakes || emergencyBrakes){
 			power = 0;
 		}
@@ -107,8 +113,8 @@ public class SpeedControl {
 	 * Checks if the train should be braking based on the braking distance and authority
 	 */
 	public void brakeCheck(){
-		double brakeDistance = Math.pow(speed,2)/(2.0*BRAKE_ACCEL);
-		double eBrakeDistance = Math.pow(speed,2)/(2.0*E_BRAKE_ACCEL);
+		double brakeDistance = -1*Math.pow(speed,2)/(2.0*BRAKE_ACCEL);
+		double eBrakeDistance =-1* Math.pow(speed,2)/(2.0*E_BRAKE_ACCEL);
 		if(auth-distance <= brakeDistance){
 			control.setBrakes(true);
 		}
@@ -271,8 +277,12 @@ public class SpeedControl {
 		this.control = control;
 	}
 
-	public void setRatio(double clockRatio) {
-		// TODO Auto-generated method stub
-		
+
+	public double getRatio() {
+		return ratio;
+	}
+
+	public void setRatio(double ratio) {
+		this.ratio = ratio;
 	}
 }

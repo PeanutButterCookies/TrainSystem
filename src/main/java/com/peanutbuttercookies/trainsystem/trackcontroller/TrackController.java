@@ -1,5 +1,6 @@
 package com.peanutbuttercookies.trainsystem.trackcontroller;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -90,8 +91,8 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 			while(switchBlockIterator.hasNext()){
 				Block currBlock=switchBlockIterator.next();
 				if(currBlock.getMasterSwitch()){
-					if(currBlock.isSwitchEngaged()!=engagement && plcProgramA.engageSwitch(currBlock) 
-							&& plcProgramB.engageSwitch(currBlock)){
+					if(currBlock.isSwitchEngaged()!=engagement && plcProgramA!=null && plcProgramB!=null
+							&& plcProgramA.engageSwitch(currBlock) && plcProgramB.engageSwitch(currBlock)){
 						currBlock.setSwitchEngagement();
 						this.ctc.switchChanged(switchName, currBlock.getBlockNumber(), engagement);
 						return true;
@@ -109,28 +110,30 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 	@Override
 	public boolean engageRRCrossing(int blockId, boolean engagement) {
 		if(blockId>=startBlock && blockId<=endBlock && section.get(blockId-this.startBlock).hasRRCrossing()
+				&& plcProgramA!=null && plcProgramB!=null
 				&& plcProgramA.engageRRCrossing(section.get(blockId-startBlock))
 				&& plcProgramB.engageRRCrossing(section.get(blockId-startBlock))){
 			section.get(blockId-startBlock).setRRCrossingEngagement(engagement);
 			return true;
 		}
 		else{
-			System.out.println("ERROR: "+this.line+" line TC#"+this.controllerId+"cannot engage crossing on block #"+blockId);
+			System.err.println("ERROR: "+this.line+" line TC#"+this.controllerId+"cannot engage crossing on block #"+blockId);
 			return false;
 		}
 	}
 	
 	@Override
-	public boolean setPLCProgram(String plcProgramFileLocation){
+	public boolean setPLCProgram(String file){
 		boolean success=true;
-		success&=this.plcProgramA.loadPLCProgram(plcProgramFileLocation, 0);
-		success&=this.plcProgramB.loadPLCProgram(plcProgramFileLocation, 1);
+		success&=this.plcProgramA.loadPLCProgram(file);
+		success&=this.plcProgramB.loadPLCProgram(file);
 		return success;
 	}
 	
 	@Override
 	public boolean markBlockForMaintanence(int blockId, boolean needsRepair) {
 		if(blockId>=this.startBlock && blockId<=this.endBlock && this.startBlock!=this.overlapBlock
+				&& plcProgramA!=null && plcProgramB!=null
 				&& plcProgramA.maintenance(section.get(blockId-this.startBlock))
 				&& plcProgramB.maintenance(section.get(blockId-this.startBlock))){
 			
@@ -148,33 +151,35 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 	
 	@Override
 	public void setSpeedAuthority(int blockId, int speed, int authority){
-		System.out.println("TrackController block Id: " + blockId);
-		System.out.println(section.get(blockId-startBlock).getBlockNumber());
-		section.get(blockId-startBlock).setSpeedAuthority(speed,authority);
-		if(blockId<=endBlock && blockId>=startBlock){
-			if(!(plcProgramA.stop(section.get(blockId-startBlock)) && plcProgramB.stop(section.get(blockId-startBlock)))){
-				section.get(blockId-startBlock).setSpeedAuthority(speed,authority);
-				if(section.get(blockId-startBlock).getMasterSwitch() || section.get(blockId-startBlock).hasRRCrossing()){
-					if(!(plcProgramA.slowDown(section.get(blockId-startBlock))
-							&& plcProgramB.slowDown(section.get(blockId-startBlock)))){
-						section.get(blockId-startBlock).setLight(1);
+		if(plcProgramA!=null && plcProgramB!=null){
+			if(blockId<=endBlock && blockId>=startBlock){
+				if(!(plcProgramA.stop(section.get(blockId-startBlock)) && plcProgramB.stop(section.get(blockId-startBlock)))){
+					section.get(blockId-startBlock).setSpeedAuthority(speed,authority);
+					if(section.get(blockId-startBlock).getMasterSwitch() || section.get(blockId-startBlock).hasRRCrossing()){
+						if(!(plcProgramA.slowDown(section.get(blockId-startBlock))
+								&& plcProgramB.slowDown(section.get(blockId-startBlock)))){
+							section.get(blockId-startBlock).setLight(1);
+						}
+						else{
+							section.get(blockId-startBlock).setLight(2);
+						}
 					}
-					else{
-						section.get(blockId-startBlock).setLight(2);
+				}
+				else{
+					System.out.println("SAFETY CRITICAL: TRAIN MUST STOP");
+					if(section.get(blockId-startBlock).getMasterSwitch() || section.get(blockId-startBlock).hasRRCrossing()){
+							section.get(blockId-startBlock).setLight(3);
+						
 					}
+					section.get(blockId-startBlock).setSpeedAuthority(0,0);
 				}
 			}
 			else{
-				System.out.println("SAFETY CRITICAL: TRAIN MUST STOP");
-				if(section.get(blockId-startBlock).getMasterSwitch() || section.get(blockId-startBlock).hasRRCrossing()){
-						section.get(blockId-startBlock).setLight(3);
-					
-				}
-				section.get(blockId-startBlock).setSpeedAuthority(0,0);
+				System.err.println("ERROR: BLOCKID NOT CONTAINED WITHIN THIS CONTROLLER");
 			}
 		}
 		else{
-			System.err.println("ERROR: BLOCKID NOT CONTAINED WITHIN THIS CONTROLLER");
+			System.err.println("ERROR: LOAD PLC PROGRAM");
 		}
 	}
 

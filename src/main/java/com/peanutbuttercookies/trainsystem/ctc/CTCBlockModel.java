@@ -44,10 +44,17 @@ public class CTCBlockModel extends AbstractTableModel {
 		update.start();
 		this.line = line;
 	}
+	
+	public CTCBlock getNextBlock(int blockId) {
+		return neo4j.getNextBlock(line, blockId);
+	}
+	
+	public CTCBlock getPrevBlock(int blockId) {
+		return neo4j.getPrevBlock(line, blockId);
+	}
 
 	public void addBlock(Block block, TrackControllerInterface tc) {
 		if (!sections.containsKey(block.getSection())) {
-			System.out.println("Section added: " + block.getSection());
 			CTCSection section = new CTCSection(block.getSection());
 			sections.put(block.getSection(), section);
 		}
@@ -84,7 +91,8 @@ public class CTCBlockModel extends AbstractTableModel {
 		}
 		fireTableDataChanged();
 		if (blockId == 0) {
-			CTCBlock outgoing = neo4j.getAdjacentNode(line, 0, Direction.OUTGOING);
+			CTCBlock outgoing = neo4j.getNextBlock(line, blockId);
+			System.out.println(outgoing.getBlockNumber() + " " + outgoing.isOccupied());
 			if (!outgoing.isOccupied()) {
 				return true;
 			}
