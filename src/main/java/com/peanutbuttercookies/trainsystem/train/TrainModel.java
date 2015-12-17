@@ -11,25 +11,37 @@ public class TrainModel implements TrainModelInterface, Runnable {
 	public double distanceTraveled;
 	private double currentSpeed = 0;
 	private double currentAccleration;
+	public boolean currentlySelected = false;
 	public Block currentBlock;
 	double power;
 	private Engine engine = new Engine(this);
-	public int auth;
+	public double auth;
 	private TrainSpecs specs = new TrainSpecs();
-	public TrainControllerInterface controller = new TrainController(this);
+	public TrainControllerInterface controller;
 	private Passengers passengers = new Passengers();
 	private boolean doors;
 	private double grade;
 	private double mass;
-	TrainUI gui = new TrainUI(this);
+	//TrainUI gui = new TrainUI(this);
 	//private double power;
 	
 	public TrainModel() {
 		// TODO Auto-generated constructor stub
+		//this.id = id;
+
 		setMass();
 		
 	}
+	
+	public TrainModel(int id){
+		this.id = id;
+		setMass();
+	}
 
+	public void setId(int id){
+		this.id = id;
+		controller.setId(id);
+	}
 	@Override
 	public void setAngle(double angle) {
 		// TODO Auto-generated method stub
@@ -39,9 +51,9 @@ public class TrainModel implements TrainModelInterface, Runnable {
 	}
 
 	@Override
-	public void brakes() {
+	public void setBrakes(boolean brakes) {
 		// TODO Auto-generated method stub
-		engine.brakes = true;
+		engine.brakes = brakes;
 		
 	}
 
@@ -69,22 +81,22 @@ public class TrainModel implements TrainModelInterface, Runnable {
 		// TODO Auto-generated method stub
 		this.power = power;
 		System.out.println("Current: " + currentBlock.getBlockNumber() + ", Auth: " + auth);
-		if(auth == currentBlock.getBlockNumber()){
-			System.out.println("what");
-			brakes();
-		} else
-			engine.brakes = false;
+		//if(auth == currentBlock.getBlockNumber()){
+		//	System.out.println("what");
+		//	brakes();
+		//} else
+			//engine.brakes = false;
 		engine.applyPower(power, grade, mass);
 	}
 
 	@Override
-	public void emergencyBrakes() {
+	public void setEmergencyBrakes(boolean eBrakes) {
 		// TODO Auto-generated method stub
-		engine.emergencyBrakes = true;
+		engine.emergencyBrakes = eBrakes;
 	}
 
 	@Override
-	public void setSpeedAndAuth(double speed, int auth) {
+	public void setSpeedAndAuth(double speed, double auth) {
 		// TODO Auto-generated method stub
 		this.auth = auth;
 		controller.setSpeedAndAuth(speed, auth);
@@ -154,6 +166,10 @@ public class TrainModel implements TrainModelInterface, Runnable {
 		// TODO Auto-generated method stub
 		return engine.currentAccel;
 	}
+	
+	public void setCurrentlySelected(boolean selected){
+		currentlySelected = selected;
+	}
 
 	@Override
 	public void run() {
@@ -161,8 +177,20 @@ public class TrainModel implements TrainModelInterface, Runnable {
 		controller.run();
 	}
 
-	
+	public TrainControllerInterface getController() {
+		return controller;
+	}
 
+	public void setController(TrainControllerInterface controller) {
+		this.controller = controller;
+	}
+
+	
+	public String toString(){
+		String out = "";
+		out += id;
+		return out;
+	}
 }
 
 class Passengers{
