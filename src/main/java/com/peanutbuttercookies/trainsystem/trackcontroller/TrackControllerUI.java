@@ -478,7 +478,7 @@ public class TrackControllerUI extends JFrame {
 						correctLine=currLine;
 					}
 					
-					TrackControllerInterface correctTC = findCorrectTC(correctLine,switchName);
+					TrackControllerInterface correctTC = findCorrectTCSwitch(correctLine,switchName);
 					correctTC.engageSwitch(switchName, engagement);
 					updateVariableTable();
 				}
@@ -500,8 +500,8 @@ public class TrackControllerUI extends JFrame {
 			public void actionPerformed(ActionEvent e){
 				JComboBox<String>  comboBox=(JComboBox<String>)e.getSource();
 				if(comboBox.getSelectedIndex()!=-1){
-					String selected = comboBox.getSelectedItem().toString();
-					if(selected.equals("None")){
+					String selectedItem = comboBox.getSelectedItem().toString();
+					if(selectedItem.equals("None")){
 						rdbtnEngageSwitch.setEnabled(false);
 						rdbtnDisengageSwitch.setEnabled(false);
 					}
@@ -509,7 +509,7 @@ public class TrackControllerUI extends JFrame {
 						rdbtnEngageSwitch.setEnabled(true);
 						rdbtnDisengageSwitch.setEnabled(true);
 						
-						String[] tokens=selected.split(" ");
+						String[] tokens=selectedItem.split(" ");
 						String switchName=tokens[1];
 						
 						Line correctLine=null;
@@ -518,7 +518,7 @@ public class TrackControllerUI extends JFrame {
 							Iterator<Line> lineIterator=lines.iterator();
 							Line currLine=lineIterator.next();
 							
-							while(!(selected.contains(currLine.getLine())) && lineIterator.hasNext()){
+							while(!(selectedItem.contains(currLine.getLine())) && lineIterator.hasNext()){
 								currLine=lineIterator.next();
 							}
 							correctLine=currLine;
@@ -532,7 +532,7 @@ public class TrackControllerUI extends JFrame {
 							correctLine=currLine;
 						}
 						
-						TrackControllerInterface correctTC =findCorrectTC(correctLine,switchName);
+						TrackControllerInterface correctTC =findCorrectTCSwitch(correctLine,switchName);
 						
 						Iterator<Block> switchBlockIterator = switchList.get(correctLine.getLine()).get(Integer.toString(correctTC.getControllerId())).iterator();
 						while(switchBlockIterator.hasNext()){
@@ -552,6 +552,12 @@ public class TrackControllerUI extends JFrame {
 			}
 		});
 		
+		/*
+		 ******************************************************************************
+		 * MANUAL RR CROSSING ENGAGEMENT
+		 ******************************************************************************
+		 */
+		
 		JLabel lblManuallyEngageRr_1 = new JLabel("Manually Engage");
 		lblManuallyEngageRr_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblManuallyEngageRr_1.setFont(new Font("Tahoma", Font.BOLD, 11));
@@ -560,7 +566,7 @@ public class TrackControllerUI extends JFrame {
 		lblManuallyEngageRr_2.setHorizontalAlignment(SwingConstants.CENTER);
 		lblManuallyEngageRr_2.setFont(new Font("Tahoma", Font.BOLD, 11));
 		
-		comboBoxRR = new JComboBox();
+		comboBoxRR = new JComboBox<String>();
 		comboBoxRR.setModel(new DefaultComboBoxModel(new String[] {"None"}));
 		
 		ButtonGroup rrGroup = new ButtonGroup();
@@ -573,10 +579,49 @@ public class TrackControllerUI extends JFrame {
 		
 		ActionListener rrEngageAction= new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				JRadioButton switchBtn=(JRadioButton)e.getSource();
-				String selectedSwitch=comboBoxRR.getSelectedItem().toString();
-				
-				//TO-DO
+				JRadioButton button = (JRadioButton) e.getSource();
+				String selectedItem=comboBoxRR.getSelectedItem().toString();
+				if(button.isSelected()){
+					boolean engagement=false;
+					
+					if(button.getText().equals("Engage")){
+						engagement=true;
+					}
+					else if(button.getText().equals("Disengage")){
+						engagement=false;
+					}
+					else{
+						System.err.println("ERROR: LABELS INCORRECTLY READ");
+					}
+					
+					Line correctLine=null;
+					String rrBlockId=null;
+					
+					if(displayedLine.equals("All")){		
+						String[] tokens=selectedItem.split(" ");
+						rrBlockId=tokens[0];
+						
+						Iterator<Line> lineIterator=lines.iterator();
+						Line currLine=lineIterator.next();
+						
+						while(!(selectedItem.contains(currLine.getLine())) && lineIterator.hasNext()){
+							currLine=lineIterator.next();
+						}
+						correctLine=currLine;
+					}
+					else{
+						Iterator<Line> lineIterator=lines.iterator();
+						Line currLine=lineIterator.next();
+						while(!currLine.getLine().equals(displayedLine) && lineIterator.hasNext()){
+							currLine=lineIterator.next();
+						}
+						correctLine=currLine;
+					}
+					
+					TrackControllerInterface correctTC = findCorrectTCRR(correctLine,rrBlockId);
+					correctTC.engageRRCrossing(Integer.decode(rrBlockId), engagement);
+					updateVariableTable();
+				}
 			}
 		};
 		rdbtnEngageRR.addActionListener(rrEngageAction);
@@ -585,15 +630,58 @@ public class TrackControllerUI extends JFrame {
 		comboBoxRR.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				JComboBox<String>  comboBox=(JComboBox<String>)e.getSource();
-				String selected = (String)comboBox.getSelectedItem();
-				if(selected.equals("None")){
-					rdbtnEngageRR.setEnabled(false);
-					rdbtnDisengageRR.setEnabled(false);
-				}
-				else{
-					rdbtnEngageRR.setEnabled(true);
-					rdbtnDisengageRR.setEnabled(true);
-				}
+				if(comboBox.getSelectedIndex()!=-1){
+					String selectedItem = comboBox.getSelectedItem().toString();
+					if(selectedItem.equals("None")){
+						rdbtnEngageRR.setEnabled(false);
+						rdbtnDisengageRR.setEnabled(false);
+					}
+					else{
+						rdbtnEngageRR.setEnabled(true);
+						rdbtnDisengageRR.setEnabled(true);
+						
+						String rrBlockId=null;
+						
+						Line correctLine=null;
+						
+						if(displayedLine.equals("All")){		
+							String[] tokens=selectedItem.split(" ");
+							rrBlockId=tokens[0];
+							
+							Iterator<Line> lineIterator=lines.iterator();
+							Line currLine=lineIterator.next();
+							
+							while(!(selectedItem.contains(currLine.getLine())) && lineIterator.hasNext()){
+								currLine=lineIterator.next();
+							}
+							correctLine=currLine;
+						}
+						else{
+							Iterator<Line> lineIterator=lines.iterator();
+							Line currLine=lineIterator.next();
+							while(!currLine.getLine().equals(displayedLine) && lineIterator.hasNext()){
+								currLine=lineIterator.next();
+							}
+							correctLine=currLine;
+						}
+						
+						TrackControllerInterface correctTC =findCorrectTCRR(correctLine,rrBlockId);
+						
+						Iterator<Block> rrBlockIterator = rrList.get(correctLine.getLine()).get(Integer.toString(correctTC.getControllerId())).values().iterator();
+						while(rrBlockIterator.hasNext()){
+							Block currRRBlock=rrBlockIterator.next();
+							if(currRRBlock.equals(rrBlockId)){
+								if(currRRBlock.isRRCrossingEngaged()){
+									rdbtnEngageSwitch.doClick();
+								}
+								else{
+									rdbtnDisengageSwitch.doClick();
+								}
+								break;
+							}
+						}
+					}
+				}		
 			}
 		});
 		
@@ -1114,9 +1202,9 @@ public class TrackControllerUI extends JFrame {
 				
 				while(tcIterator.hasNext()){
 					TrackControllerInterface currTC=tcIterator.next();
-					Iterator<Block> rrBlockIterator=rrList.get(currLine.getLine()).get(Integer.toString(currTC.getControllerId())).values().iterator();
-					while(rrBlockIterator.hasNext()){
-						displayedRR.add(Integer.toString(rrBlockIterator.next().getSwitchNum()) + " (" + currLine.getLine()+" Line)");
+					Iterator<String> rrIterator=rrList.get(currLine.getLine()).get(Integer.toString(currTC.getControllerId())).keySet().iterator();
+					while(rrIterator.hasNext()){
+						displayedRR.add(rrIterator.next() + " (" + currLine.getLine()+" Line)");
 					}
 				}
 			}
@@ -1134,9 +1222,9 @@ public class TrackControllerUI extends JFrame {
 				
 				while(tcIterator.hasNext()){
 					TrackControllerInterface currTC=tcIterator.next();
-					Iterator<Block> rrBlockIterator=rrList.get(currLine.getLine()).get(Integer.toString(currTC.getControllerId())).values().iterator();
-					while(rrBlockIterator.hasNext()){
-						displayedRR.add(Integer.toString(rrBlockIterator.next().getSwitchNum()) + " (" + currLine.getLine()+" Line)");
+					Iterator<String> rrIterator=rrList.get(currLine.getLine()).get(Integer.toString(currTC.getControllerId())).keySet().iterator();
+					while(rrIterator.hasNext()){
+						displayedRR.add(rrIterator.next());
 					}
 				}
 			}
@@ -1147,9 +1235,9 @@ public class TrackControllerUI extends JFrame {
 				while(!(Integer.toString(currTC.getControllerId()).equals(this.displayedController)) && tcIterator.hasNext()){
 					currTC=tcIterator.next();
 				}
-				Iterator<Block> rrBlockIterator=rrList.get(currLine.getLine()).get(Integer.toString(currTC.getControllerId())).values().iterator();
-				while(rrBlockIterator.hasNext()){
-					displayedRR.add(Integer.toString(rrBlockIterator.next().getSwitchNum()) + " (" + currLine.getLine()+" Line)");
+				Iterator<String> rrIterator=rrList.get(currLine.getLine()).get(Integer.toString(currTC.getControllerId())).keySet().iterator();
+				while(rrIterator.hasNext()){
+					displayedRR.add(rrIterator.next());
 				}
 				
 			}
@@ -1166,11 +1254,22 @@ public class TrackControllerUI extends JFrame {
 		}
 	}
 	
-	private TrackControllerInterface findCorrectTC(Line currLine,String switchName){
+	private TrackControllerInterface findCorrectTCSwitch(Line currLine,String switchName){
 		Iterator<TrackControllerInterface> tcIterator = currLine.getAllTrackControllers().iterator();;
 		while(tcIterator.hasNext()){
 			TrackControllerInterface currTC=tcIterator.next();
 			if(currTC.getSwitchList().containsKey(switchName)){
+				return currTC;
+			}
+		}
+		return null;
+	}
+	
+	private TrackControllerInterface findCorrectTCRR(Line currLine,String rrBlockId){
+		Iterator<TrackControllerInterface> tcIterator = currLine.getAllTrackControllers().iterator();;
+		while(tcIterator.hasNext()){
+			TrackControllerInterface currTC=tcIterator.next();
+			if(rrList.get(currLine.getLine()).get(Integer.toString(currTC.getControllerId())).containsKey(rrBlockId)){
 				return currTC;
 			}
 		}
