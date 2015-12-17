@@ -30,7 +30,7 @@ public class CTCUITest {
 			prev = curr;
 			blocks.add(curr);
 		}
-		curr.setNext(null);
+		curr.setNext(blocks.get(0));
 		
 
 		Line line = new Line(LINE, blocks);
@@ -52,7 +52,7 @@ public class CTCUITest {
 	}
 	
 	private static Block initBlock(int blockNum) {
-		return new Block(LINE, SECTION, blockNum, BLOCK_LENGTH, 0, SPEED_LIMIT, 0, 0, false, false, false, false, false, false, null, 0, 0, 0);
+		return new Block(LINE, SECTION, blockNum, BLOCK_LENGTH, 0, SPEED_LIMIT, 0, 0, false, false, false, false, false, false, null, 0, 0);
 
 	}
 }

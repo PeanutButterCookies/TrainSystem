@@ -47,8 +47,7 @@ public class Neo4JBlockGraph {
 			Schema schema = graph.schema();
 			Label label =  DynamicLabel.label(line);
 			schema.indexFor(label).on(ID).create();
-			Node yard = graph.createNode(label);
-			yard.setProperty(ID, 0);
+			schema.indexFor(label).on("station").create();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -56,7 +55,7 @@ public class Neo4JBlockGraph {
 		return true;
 	}
 
-	public synchronized boolean addBlock(String line, Block block) {
+	public synchronized boolean addBlock(String line, Block block, int tc) {
 
 		if (block == null) {
 			return false;
@@ -69,7 +68,7 @@ public class Neo4JBlockGraph {
 				node = graph.createNode(label);
 			}
 
-			setNodeProperties(node, block);
+			setNodeProperties(node, block, tc);
 
 			// Creates next nodes/relationships if they do not already
 			// exist
@@ -84,6 +83,7 @@ public class Neo4JBlockGraph {
 				rel.setProperty("enabled", true);
 				if(block.hasSwitch()) {
 					rel.setProperty("switch", true);
+					rel.setProperty("engaged", false);
 				}
 				if(block.getTwoWay()) {
 					Relationship rel2 = next.createRelationshipTo(node, RelTypes.CONNECTED_TO);
@@ -100,10 +100,11 @@ public class Neo4JBlockGraph {
 						if (possibleNext == null) {
 							possibleNext = makeTempNode(b.getBlockNumber(), label);
 						}
-
+						
 						Relationship rel = node.createRelationshipTo(possibleNext, RelTypes.CONNECTED_TO);
 						rel.setProperty("enabled", false);
 						rel.setProperty("switch", true);
+						rel.setProperty("engaged", true);
 						if(block.getTwoWay()) {
 							Relationship rel2 = possibleNext.createRelationshipTo(node, RelTypes.CONNECTED_TO);
 							rel2.setProperty("enabled", false);
@@ -112,15 +113,6 @@ public class Neo4JBlockGraph {
 				}
 			}
 			
-			//Create rel to yard if the block number is 1
-			if(block.getBlockNumber() == 1) {
-				Node yard = graph.findNode(label, ID, 0);
-				Relationship rel = yard.createRelationshipTo(node, RelTypes.CONNECTED_TO);
-				rel.setProperty("enabled", true);
-				rel = node.createRelationshipTo(yard, RelTypes.CONNECTED_TO);
-				rel.setProperty("enabled", true);
-			}
-
 			tx.success();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -129,14 +121,20 @@ public class Neo4JBlockGraph {
 		return true;
 	}
 
-	private void setNodeProperties(Node node, Block block) {
+	private void setNodeProperties(Node node, Block block, int tc) {
 		node.setProperty(ID, block.getBlockNumber());
-		node.setProperty("length", block.getBlockLength());
+		node.setProperty("length", (int)block.getBlockLength());
 		node.setProperty("aSwitch", block.hasSwitch());
 		node.setProperty("occupied", block.isBlockOccupied());
 		node.setProperty("section", block.getSection());
 		node.setProperty("numOccupied", 0);
-		node.setProperty("startTime", System.nanoTime());
+		node.setProperty("starttime", System.nanoTime());
+		node.setProperty("tc", tc);
+		if(!block.getIsYard()) {
+			node.setProperty("station", block.getStationName());
+		} else {
+			node.setProperty("station", "Yard");
+		}
 	}
 
 	private Node makeTempNode(Integer id, Label label) {
@@ -145,22 +143,35 @@ public class Neo4JBlockGraph {
 		return node;
 	}
 
-	public synchronized List<Command> getPath(String line, Integer start, Integer end) {
-
-		// TODO
-
-		return null;
-	}
-	
-	public boolean setBlockOccupied(String line, Integer blockId) {
-		//TODO
-		return false;
+	public boolean setBlockOccupied(String line, Integer blockId, boolean occupied) {
+		try(Transaction tx = graph.beginTx()) {
+			Node node = graph.findNode(DynamicLabel.label(line), ID, blockId);
+			node.setProperty("occupied", occupied);
+		} catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 	
 	public CTCBlock getBlock(String line, Integer blockId) {
 		CTCBlock block = null;
 		try(Transaction tx = graph.beginTx()) {
 			Node node = graph.findNode(DynamicLabel.label(line), ID, blockId);
+			block = new CTCBlock(node);
+			tx.success();
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		return block;
+	}
+	
+	public CTCBlock getBlock(String line, String station) {
+		CTCBlock block = null;
+		try(Transaction tx = graph.beginTx()) {
+			Node node = graph.findNode(DynamicLabel.label(line), "station", station);
 			block = new CTCBlock(node);
 			tx.success();
 		} catch(Exception e) {
@@ -218,6 +229,7 @@ public class Neo4JBlockGraph {
 			}
 			return length;
 		} catch(Exception e) {
+			e.printStackTrace();
 			return -1;
 		}
 	}

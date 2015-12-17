@@ -37,7 +37,7 @@ public class CTCModule implements CTCModuleInterface {
 		CTCBlockModel model = lineBlockMap.get(line);
 		boolean newTrain = model.setOccupied(blockId);
 		if (newTrain) {
-			lineTrainMap.get(line).addTrain(new NewCTCTrain());
+			lineTrainMap.get(line).addTrain();
 		} else {
 			//TODO
 //			lineTrainMap.get(line).moveHead(model.getPrevBlock(blockId), blockId);
@@ -101,6 +101,7 @@ public class CTCModule implements CTCModuleInterface {
 	public DefaultComboBoxModel<CTCTrain> newTrainCombo(String line) {
 		DefaultComboBoxModel<CTCTrain> model = new DefaultComboBoxModel<CTCTrain>();
 		model.addElement(new NewCTCTrain());
+		lineTrainMap.get(line).setComboModel(model);
 		return model;
 	}
 
@@ -139,7 +140,7 @@ public class CTCModule implements CTCModuleInterface {
 	}
 
 	@Override
-	public boolean dispatch(String line, String speed, CTCBlock block, CTCTrain train) {
+	public boolean dispatch(String line, String speed, CTCTrain train, Integer end) {
 
 		int speedInt = 0;
 		try {
@@ -149,7 +150,7 @@ public class CTCModule implements CTCModuleInterface {
 		}
 		speedInt = (int) (1609.34 * speedInt / 3600);
 		CTCBlockModel model = lineBlockMap.get(line);
-		int authority = model.getAuthority(train.getHead(), block.getBlockNumber());
+		int authority = model.getAuthority(train.getHead(), end);
 		CTCBlock start = model.getBlock(train.getHead());
 		TrackControllerInterface tc = lineBlockMap.get(line).getTC(start);
 		tc.setSpeedAuthority(train.getHead(), speedInt, authority);
@@ -177,12 +178,6 @@ public class CTCModule implements CTCModuleInterface {
 	@Override
 	public ScheduleModel newScheduleModel(String line) {
 		return new ScheduleModel();
-	}
-
-	@Override
-	public boolean setTrainComponent(ComponentContainer container) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override

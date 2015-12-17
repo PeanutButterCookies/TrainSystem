@@ -28,7 +28,7 @@ public interface CTCModuleInterface {
 	public void setUi(CTCModuleUI ui);
 
 	// for use by the CTCUI	
-	public boolean dispatch(String line, String speed, CTCBlock block, CTCTrain train);
+	public boolean dispatch(String line, String speed, CTCTrain train, Integer end);
 	public boolean repair(String line, CTCBlock block);
 	public boolean changeSwitch(String line, CTCBlock block);
 	public boolean setSchedule(String line, String filename, ScheduleModel model);
@@ -40,7 +40,6 @@ public interface CTCModuleInterface {
 	public DefaultComboBoxModel<Integer> newBlockCombo(String line, CTCSection section);
 	public DefaultComboBoxModel<Integer> newSwitchCombo(String line);
 	public DefaultComboBoxModel<Integer> newSwitchDestCombo(String line, int switchBlock);
-	public boolean setTrainComponent(ComponentContainer container);
 	public boolean engageRRCrossing(String line, int blockId);
 	
 	// for use by the track controller

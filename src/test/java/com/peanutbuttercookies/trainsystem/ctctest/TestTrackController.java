@@ -1,5 +1,6 @@
 package com.peanutbuttercookies.trainsystem.ctctest;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
@@ -58,12 +59,6 @@ public class TestTrackController implements TrackControllerInterface {
 
 
 	@Override
-	public void setPLCProgram(PLCProgram_OLD newPlcProgram) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void setSpeedAuthority(int blockId, int speed, int authority) {
 		System.out.println("Block Id: " + blockId + ", Speed: " + speed + ", Authority: " + authority);
 	}
@@ -72,6 +67,18 @@ public class TestTrackController implements TrackControllerInterface {
 	public void engageSwitch(String switchName, boolean engagement) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public boolean setPLCProgram(String plcProgramFileLocation) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public HashMap<String, LinkedList<Block>> getSwitchList() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -18,6 +18,7 @@ public class CTCBlock {
 		fields = Arrays.asList(new String[] {
 			"Block Number",
 			"Section",
+			"Station",
 			"Occupied",
 			"Switch",
 			"Throughput"
@@ -26,12 +27,13 @@ public class CTCBlock {
 	
 	private int blockNumber;
 	private int tc;
-	private double length;
+	private int length;
 	private String section;
 	private boolean aSwitch;
 	private boolean occupied;
 	private int numOccupied;
 	private long startTime;
+	private String station;
 	
 	public CTCBlock(Node node) {
 		setAll(node);
@@ -43,13 +45,14 @@ public class CTCBlock {
 	
 	public void setAll(Node node) {
 		setBlockNumber((int)node.getProperty("blockNumber"));
-		setLength((double)node.getProperty("length"));
+		setLength((int)node.getProperty("length"));
 		setASwitch((boolean)node.getProperty("aSwitch"));
 		setOccupied((boolean)node.getProperty("occupied"));
 		setSection((String)node.getProperty("section"));
 		setNumOccupied((int)node.getProperty("numOccupied"));
 		setTc((int)node.getProperty("tc"));
 		setStartTime((long)node.getProperty("starttime"));
+		setStation((String)node.getProperty("station"));
 	}
 	
 	
@@ -98,11 +101,11 @@ public class CTCBlock {
 		this.tc = tc;
 	}
 
-	public double getLength() {
+	public int getLength() {
 		return length;
 	}
 
-	public void setLength(double length) {
+	public void setLength(int length) {
 		this.length = length;
 	}
 
@@ -155,7 +158,15 @@ public class CTCBlock {
 		long time = current - startTime;
 		double dTime = time/ratio;
 		dTime = dTime/1000/1000/1000/60/60;
-		return dTime;
+		return numOccupied/dTime;
+	}
+
+	public String getStation() {
+		return station;
+	}
+
+	public void setStation(String station) {
+		this.station = station;
 	}
 
 }

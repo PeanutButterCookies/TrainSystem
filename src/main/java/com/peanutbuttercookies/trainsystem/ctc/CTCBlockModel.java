@@ -8,7 +8,6 @@ package com.peanutbuttercookies.trainsystem.ctc;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,11 +42,6 @@ public class CTCBlockModel extends AbstractTableModel {
 		this.line = line;
 	}
 	
-	public void addTc(TrackControllerInterface tc) {
-		if(!tcMap.containsKey(tc.getControllerId())) {
-			tcMap.put(tc.getControllerId(), tc);
-		}
-	}
 
 	public void addBlock(Block block, TrackControllerInterface tc) {
 		if(!sections.containsKey(block.getSection())) {
@@ -56,12 +50,16 @@ public class CTCBlockModel extends AbstractTableModel {
 			sections.put(block.getSection(), section);
 		}
 		
+		if(!tcMap.containsKey(tc.getControllerId())) {
+			tcMap.put(tc.getControllerId(), tc);
+		}
+		
 		sections.get(block.getSection()).addBlock(block.getBlockNumber());
 		if(block.hasSwitch()) {
 			switches.add(block.getBlockNumber());
 		}
 		
-		neo4j.addBlock(line, block);
+		neo4j.addBlock(line, block, tc.getControllerId());
 		fireTableDataChanged();
 	}
 	
@@ -78,7 +76,7 @@ public class CTCBlockModel extends AbstractTableModel {
 	}
 
 	public boolean setOccupied(int blockId) {
-		if(!neo4j.setBlockOccupied(line, blockId)) {
+		if(!neo4j.setBlockOccupied(line, blockId, true)) {
 			System.out.println("Block not initialized");
 			return false;
 		}
@@ -94,7 +92,7 @@ public class CTCBlockModel extends AbstractTableModel {
 	}
 
 	public boolean setUnoccupied(int blockId) {
-		if(!neo4j.setBlockOccupied(line, blockId)) {
+		if(!neo4j.setBlockOccupied(line, blockId, false)) {
 			System.out.println("Block not initialized");
 			return false;
 		}
@@ -132,10 +130,12 @@ public class CTCBlockModel extends AbstractTableModel {
 		case 1:
 			return block.getSection();
 		case 2:
-			return block.isOccupied();
+			return (block.getStation() == null)? "" : block.getStation();
 		case 3:
-			return block.isASwitch();
+			return block.isOccupied();
 		case 4:
+			return block.isASwitch();
+		case 5:
 			return block.getThroughput();
 		default:
 			return null;
@@ -164,5 +164,12 @@ public class CTCBlockModel extends AbstractTableModel {
 			switchList.add(i);
 		}
 		return switchList;
+	}
+	
+	public List<Command> getCommands(String start, String end, double time) {
+		CTCBlock one = neo4j.getBlock(line, start);
+		CTCBlock two = neo4j.getBlock(line, end);
+		int authority = getAuthority(one.getBlockNumber(), two.getBlockNumber());
+		return null;
 	}
 }
