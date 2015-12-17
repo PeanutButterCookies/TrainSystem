@@ -14,6 +14,7 @@ import com.peanutbuttercookies.trainsystem.commonresources.Line;
 import com.peanutbuttercookies.trainsystem.ctc.CTCModule;
 import com.peanutbuttercookies.trainsystem.ctc.CTCModuleUI;
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
+import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 import com.peanutbuttercookies.trainsystem.trackcontroller.TrackControllerStaticModule;
 import com.peanutbuttercookies.trainsystem.trackcontroller.TrackControllerUI;
@@ -29,9 +30,9 @@ public class MainApp {
 
 		//trackModel.fileRead("C:/Users/Fauzul/Documents/COE1186/trackTest.xlsx");
 
-		//trackModel.fileRead("C:/Users/Kevin/Downloads/ModifiedTrackLayout.xlsx");
+		trackModel.fileRead("C:/Users/Kevin/Downloads/Track Layout & Vehicle Data vF1.xlsx");
 		//trackModel.fileRead("C:/Users/Chris/Documents/University of Pittsburgh/Junior Year/Software Engineering/ModifiedTrackLayout.xlsx");
-		trackModel.fileRead("C:/Users/Chris/Documents/University of Pittsburgh/Junior Year/Software Engineering/Track Layout & Vehicle Data vF1.xlsx");
+//		trackModel.fileRead("C:/Users/Chris/Documents/University of Pittsburgh/Junior Year/Software Engineering/Track Layout & Vehicle Data vF1.xlsx");
 
 		
 		trackController.setCTC(ctc);
@@ -40,15 +41,22 @@ public class MainApp {
 		List<Line> lines = trackModel.getTrack();
 		for(Line line : lines) {
 			trackController.setTrackControllers(line);
-			//ctc.importLine(line);
+			ctc.importLine(line);
 		}
+		
+		for(TrackControllerInterface t : lines.get(0).getAllTrackControllers()) {
+			for(Block b : t.getSection()) {
+				System.out.println(b.getBlockNumber());
+			}
+		}
+		
+		System.exit(0);
 		
 
 		tcUI.setLines(lines);
-		//CTCModuleUI ctcUI = new CTCModuleUI(ctc);
-		//ctc.setUi(ctcUI);
-		//TrackModelUI tmUI = new TrackModelUI(trackModel);
-		//tmUI.display(0);
+		CTCModuleUI ctcUI = new CTCModuleUI(ctc);
+		ctc.setUi(ctcUI);
+		TrackModelUI tmUI = new TrackModelUI(trackModel);
 
 
 

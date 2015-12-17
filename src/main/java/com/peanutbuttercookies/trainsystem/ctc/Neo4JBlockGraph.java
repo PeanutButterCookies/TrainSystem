@@ -127,6 +127,7 @@ public class Neo4JBlockGraph {
 				if(block.getTwoWay()) {
 					Relationship rel2 = next.createRelationshipTo(node, RelTypes.CONNECTED_TO);
 					rel2.setProperty("enabled", true);
+					rel2.setProperty("switch", false);
 				}
 			}
 
@@ -147,6 +148,7 @@ public class Neo4JBlockGraph {
 						if(block.getTwoWay()) {
 							Relationship rel2 = possibleNext.createRelationshipTo(node, RelTypes.CONNECTED_TO);
 							rel2.setProperty("enabled", false);
+							rel2.setProperty("switch", false);
 						}
 					}
 				}
@@ -208,6 +210,7 @@ public class Neo4JBlockGraph {
 		CTCBlock block = null;
 		try(Transaction tx = graph.beginTx()) {
 			Node node = graph.findNode(DynamicLabel.label(line), ID, blockId);
+			System.out.println((int)node.getProperty(ID));
 			block = new CTCBlock(node);
 			tx.success();
 		} catch(Exception e) {
@@ -318,7 +321,7 @@ public class Neo4JBlockGraph {
 			Node node = graph.findNode(DynamicLabel.label(line), ID, blockId);
 			Vector<Integer> next = new Vector<Integer>();
 			for(Relationship r : node.getRelationships(Direction.OUTGOING)) {
-				if((Boolean)r.getProperty("aSwitch")) {
+				if((Boolean)r.getProperty("switch")) {
 					next.add((Integer)r.getEndNode().getProperty(ID));
 				}
 			}

@@ -55,7 +55,6 @@ public class CTCBlockModel extends AbstractTableModel {
 
 	public void addBlock(Block block, TrackControllerInterface tc) {
 		if (!sections.containsKey(block.getSection())) {
-			System.out.println("Section added: " + block.getSection());
 			CTCSection section = new CTCSection(block.getSection());
 			sections.put(block.getSection(), section);
 		}
