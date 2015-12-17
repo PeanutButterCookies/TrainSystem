@@ -1,10 +1,9 @@
 package com.peanutbuttercookies.trainsystem.interfaces;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
-import com.peanutbuttercookies.trainsystem.trackcontroller.PLCProgram;
-import com.peanutbuttercookies.trainsystem.trackcontroller.TrackControllerUI;
 
 /**
  * 
@@ -22,7 +21,8 @@ public interface TrackControllerInterface {
 	public int getOverlapBlock();
 	public LinkedList<Block> getSection();
 	public Block getBlock(int index);
-	public void engageSwitch(int switchNum);
-	public void setPLCProgram(PLCProgram newPlcProgram);
+	public void engageSwitch(String switchName, boolean engagement);
+	public void setPLCProgram(String plcProgramFileLocation);
 	public void setSpeedAuthority(int blockId, int speed, int authority);
+	public HashMap<String, LinkedList<Block>> getSwitchList();
 }

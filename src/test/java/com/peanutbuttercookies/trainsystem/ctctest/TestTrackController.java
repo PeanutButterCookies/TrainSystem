@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
-import com.peanutbuttercookies.trainsystem.trackcontroller.PLCProgram;
+import com.peanutbuttercookies.trainsystem.trackcontroller.PLCProgram_OLD;
 import com.peanutbuttercookies.trainsystem.trackcontroller.TrackController;
 
 public class TestTrackController extends TrackController implements TrackControllerInterface {
@@ -64,7 +64,7 @@ public class TestTrackController extends TrackController implements TrackControl
 	}
 
 	@Override
-	public void setPLCProgram(PLCProgram newPlcProgram) {
+	public void setPLCProgram(PLCProgram_OLD newPlcProgram) {
 		// TODO Auto-generated method stub
 
 	}
