@@ -16,12 +16,14 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 	private TrackControllerUI ui;
 	private CTCModuleInterface ctc;
 	private TrackModelInterface trackModel;
-	private LinkedList<Line> lines = new LinkedList<Line>();
-	private HashMap<String,HashMap<String,LinkedList<Block>>> switchList = new HashMap<String,HashMap<String,LinkedList<Block>>>();
+	private LinkedList<Line> lines;
+	private HashMap<String,HashMap<String,LinkedList<Block>>> switchList;
+	private HashMap<String,HashMap<String,HashMap<String,Block>>> rrList;
 	
 	public TrackControllerStaticModule() {
-		lines = new LinkedList<Line>();
-		
+		lines		= new LinkedList<Line>();
+		switchList 	= new HashMap<String,HashMap<String,LinkedList<Block>>>();
+		rrList		= new HashMap<String,HashMap<String,HashMap<String,Block>>>();
 	}
 
 	@Override
@@ -88,7 +90,9 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 			
 			lines.add(line);
 			this.setupSwitchMap(lines);
+			this.setupRRList(lines);
 			ui.setSwitchList(switchList);
+			ui.setRRList(rrList);
 			ui.setLines(lines);
 			ui.updateVariableTable();
 
@@ -147,6 +151,33 @@ public class TrackControllerStaticModule implements TrackControllerStaticInterfa
 			}
 		}
 		
+	}
+	
+	private void setupRRList(LinkedList<Line> lines){
+		Iterator<Line> lineIterator = lines.iterator();
+		while(lineIterator.hasNext()){
+			
+			Line currLine=lineIterator.next();
+			if(!rrList.containsKey(currLine.getLine())){
+				HashMap<String,HashMap<String,Block>> tcMap= new HashMap<String,HashMap<String,Block>>();
+				
+				Iterator<TrackControllerInterface> tcIterator=currLine.getAllTrackControllers().iterator();
+				while(tcIterator.hasNext()){
+					TrackControllerInterface currTC=tcIterator.next();
+					HashMap<String,Block> blockMap= new HashMap<String,Block>();
+					
+					Iterator<Block> blockIterator=currTC.getSection().iterator();
+					while(blockIterator.hasNext()){
+						Block currBlock = blockIterator.next();
+						if(currBlock.hasRRCrossing()){
+							blockMap.put(Integer.toString(currBlock.getBlockNumber()), currBlock);
+						}
+					}
+					tcMap.put(Integer.toString(currTC.getControllerId()), blockMap);
+				}
+				rrList.put(currLine.getLine(), tcMap);
+			}
+		}
 	}
 
 }

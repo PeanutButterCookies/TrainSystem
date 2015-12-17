@@ -31,7 +31,7 @@ public class MainApp {
 
 		//trackModel.fileRead("C:/Users/Kevin/Downloads/ModifiedTrackLayout.xlsx");
 		//trackModel.fileRead("C:/Users/Chris/Documents/University of Pittsburgh/Junior Year/Software Engineering/ModifiedTrackLayout.xlsx");
-		//trackModel.fileRead("C:/Users/Chris/Documents/University of Pittsburgh/Junior Year/Software Engineering/Track Layout & Vehicle Data vF1.xlsx");
+		trackModel.fileRead("C:/Users/Chris/Documents/University of Pittsburgh/Junior Year/Software Engineering/Track Layout & Vehicle Data vF1.xlsx");
 
 		
 		trackController.setCTC(ctc);
