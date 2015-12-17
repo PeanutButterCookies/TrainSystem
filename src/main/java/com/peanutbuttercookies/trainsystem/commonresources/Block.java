@@ -11,41 +11,55 @@ public class Block {
 	private final String line;
 	private final String section;
 	private final int blockNumber;
-	private final int blockLength;
-	private final float blockGrade;
-	private final int speedLimit;
-	private final float elevation;
-	private final float cumulativeElevation;
-	private final boolean switchToYard;
-	private final boolean switchFromYard;
+	private final double blockLength;
+	private final double blockGrade;
+	private final double speedLimit;
+	private final double elevation;
+	private final double cumulativeElevation;
+	private final boolean toYard;
+	private final boolean fromYard;
 	private final boolean infrastructureSwitch;
 	private final boolean infrastructureUnderground;
 	private final boolean infrastructureRRCrossing;
 	private final boolean infrastructureStation;
+	private boolean hasBeacon;
+	private boolean isYard;
 	private boolean masterSwitch;
 	private final String stationName;
-	private final int switchBlockId; // switchBlockId=-1 for block without
-										// switch
-	private final int arrowDirectionA; // head=1, none=0, tail=-1, both = 2
-	private final int arrowDirectionB; // head=1, none=0, tail=-1
+	private String beacon;
+	private final int switchNum; // switchNum=-1 for block without
+	private int temp;
+	// switch
+	private final int arrowDirection; // head=1, none=0, tail=-1, both = 2
 	private boolean twoWay;
+
+	private Block trainNext;
+	private Block trainPrev;
 
 	private List<Block> switchList;
 	private List<Block> nextPossible; // list of ALL next possible blocks
 	private Block next;
 	private Block prev; // previous block train was on
 
+	private boolean backwards;
 	private boolean blockOccupied;
 	private boolean switchEngaged;
 	private boolean rrCrossingEngaged;
 	private LinkedList<BlockOccupationListener> listeners;
 	private TrainModelInterface trainComm = null;
 
-	public Block(String initLine, String initSection, int initBlockNumber, int initBlockLength, float initBlockGrade,
-			int initSpeedLimit, float initElevation, float initCumulativeElevation, boolean initSwitchToYard,
-			boolean initSwitchFromYard, boolean initInfrastructureSwitch, boolean initInfrastructureUnderground,
-			boolean initInfrastructureRRCrossing, boolean initInfrastructureStation, String initStationName,
-			int initSwitchBlockId, int initArrowDirectionA, int initArrowDirectionB) {
+	public Block(String initLine, boolean isYard) {
+		this(initLine, "", 0, 0, 0, 0, 0, 0, false, false, true, false, false, false, null, -2, 0);
+		this.blockOccupied = true;
+		this.isYard = true;
+		this.setTwoWay(true);
+	}
+
+	public Block(String initLine, String initSection, int initBlockNumber, double initBlockLength,
+			double initBlockGrade, double initSpeedLimit, double initElevation, double initCumulativeElevation,
+			boolean initSwitchToYard, boolean initSwitchFromYard, boolean initInfrastructureSwitch,
+			boolean initInfrastructureUnderground, boolean initInfrastructureRRCrossing,
+			boolean initInfrastructureStation, String initStationName, int initswitchNum, int initArrowDirection) {
 
 		this.line = initLine;
 		this.section = initSection;
@@ -55,16 +69,15 @@ public class Block {
 		this.speedLimit = initSpeedLimit;
 		this.elevation = initElevation;
 		this.cumulativeElevation = initCumulativeElevation;
-		this.switchToYard = initSwitchToYard;
-		this.switchFromYard = initSwitchFromYard;
+		this.toYard = initSwitchToYard;
+		this.fromYard = initSwitchFromYard;
 		this.infrastructureSwitch = initInfrastructureSwitch;
 		this.infrastructureUnderground = initInfrastructureUnderground;
 		this.infrastructureRRCrossing = initInfrastructureRRCrossing;
 		this.infrastructureStation = initInfrastructureStation;
 		this.stationName = initStationName;
-		this.switchBlockId = initSwitchBlockId;
-		this.arrowDirectionA = initArrowDirectionA;
-		this.arrowDirectionB = initArrowDirectionB;
+		this.switchNum = initswitchNum;
+		this.arrowDirection = initArrowDirection;
 		this.blockOccupied = false;
 		this.switchEngaged = false;
 		this.rrCrossingEngaged = false;
@@ -72,9 +85,9 @@ public class Block {
 		this.listeners = new LinkedList<BlockOccupationListener>();
 		this.nextPossible = new LinkedList<Block>();
 		this.switchList = new LinkedList<Block>();
-		if(blockNumber == 0) {
-			System.out.println("BLOCK IS 0 THAT IS BAD");
-		}
+		this.backwards = false;
+		this.temp = 70;
+		this.hasBeacon = false;
 	}
 
 	public String getLine() {
@@ -89,32 +102,32 @@ public class Block {
 		return blockNumber;
 	}
 
-	public int getBlockLength() {
+	public double getBlockLength() {
 		return blockLength;
 	}
 
-	public float getBlockGrade() {
+	public double getBlockGrade() {
 		return blockGrade;
 	}
 
-	public int getSpeedLimit() {
+	public double getSpeedLimit() {
 		return speedLimit;
 	}
 
-	public float getElevation() {
+	public double getElevation() {
 		return elevation;
 	}
 
-	public float getCumulativeElevation() {
+	public double getCumulativeElevation() {
 		return cumulativeElevation;
 	}
 
-	public boolean isSwitchToYard() {
-		return switchToYard;
+	public boolean isToYard() {
+		return toYard;
 	}
 
-	public boolean isSwitchFromYard() {
-		return switchFromYard;
+	public boolean isFromYard() {
+		return fromYard;
 	}
 
 	public boolean hasSwitch() {
@@ -137,39 +150,16 @@ public class Block {
 		return stationName;
 	}
 
-	public int getSwitchBlockId() {
-		return switchBlockId;
+	public int getSwitchNum() {
+		return switchNum;
 	}
 
-	public int getArrowDirectionA() {
-		return arrowDirectionA;
+	public int getArrowDirection() {
+		return arrowDirection;
 	}
 
-	public String getArrowDirectionAString() {
-		switch (arrowDirectionA) {
-		case -1: {
-			return "Tail";
-		}
-
-		case 0: {
-			return "None";
-		}
-
-		case 1: {
-			return "Head";
-		}
-		default: {
-			return null;
-		}
-		}
-	}
-
-	public int getArrowDirectionB() {
-		return arrowDirectionB;
-	}
-
-	public String getArrowDirectionBString() {
-		switch (arrowDirectionB) {
+	public String getArrowDirectionString() {
+		switch (arrowDirection) {
 		case -1: {
 			return "Tail";
 		}
@@ -191,58 +181,48 @@ public class Block {
 		return blockOccupied;
 	}
 
-	public void setBlockOccupation(boolean occupied, Block prev, TrainModelInterface trainComm) {
-		if (occupied) {
-			this.trainComm = trainComm;
-			setPrev(prev);
-			setNext();
-		} else {
-			trainComm = null;
-		}
-		blockOccupied = occupied;
-		for (BlockOccupationListener i : listeners) {
-			System.out.println("Block occupation listener found");
-			i.blockOccupied(this.blockNumber);
-		}
+	public void setBlockOccupation(boolean occupied) {
+		this.blockOccupied = occupied;
 	}
 
 	public boolean isSwitchEngaged() {
 		return switchEngaged;
 	}
 
+	public void setSwitchEngaged(boolean engaged) {
+		this.switchEngaged = engaged;
+	}
+
 	public void setSwitchEngagement() {
 		if (masterSwitch) {
-			if (this.switchEngaged) {
-				switchEngaged = false;
-				for (int i = 0; i < nextPossible.size(); i++) {
-					if (nextPossible.get(i).getBlockNumber() == switchList.get(0).getBlockNumber()) {
-						nextPossible.remove(i);
-					}
+			if (this.getNext().hasSwitch()) {
+				if (switchEngaged) {
+					setNext(switchList.get(0));
+					switchList.get(0).setSwitchEngaged(true);
+					switchList.get(1).setSwitchEngaged(false);
+					setSwitchEngaged(false);
+				} else {
+					setNext(switchList.get(1));
+					switchList.get(1).setSwitchEngaged(true);
+					switchList.get(0).setSwitchEngaged(false);
+					setSwitchEngaged(true);
 				}
-				setNextPossible(switchList.get(1));
-				switchList.get(1).setNextPossible(this);
-				switchList.get(0).removeNextPossible(this);
-				switchList.get(0).setSwitchEngagement();
-				switchList.get(1).setSwitchEngagement();
-			} else {
-				switchEngaged = true;
-				for (int i = 0; i < nextPossible.size(); i++) {
-					if (nextPossible.get(i).getBlockNumber() == switchList.get(1).getBlockNumber()) {
-						nextPossible.remove(i);
-					}
+			}
+			if (this.getPrev().hasSwitch()) {
+				if (switchEngaged) {
+					setPrev(switchList.get(0));
+					switchList.get(0).setSwitchEngaged(true);
+					switchList.get(1).setSwitchEngaged(false);
+					setSwitchEngaged(false);
+				} else {
+					setPrev(switchList.get(1));
+					switchList.get(1).setSwitchEngaged(true);
+					switchList.get(0).setSwitchEngaged(false);
+					setSwitchEngaged(true);
 				}
-				setNextPossible(switchList.get(0));
-				switchList.get(0).setNextPossible(this);
-				switchList.get(1).removeNextPossible(this);
-				switchList.get(0).setSwitchEngagement();
-				switchList.get(1).setSwitchEngagement();
 			}
 		} else {
-			if (this.switchEngaged) {
-				switchEngaged = false;
-			} else {
-				switchEngaged = true;
-			}
+			switchList.get(0).setSwitchEngagement();
 		}
 	}
 
@@ -285,10 +265,6 @@ public class Block {
 		this.prev = newBlock;
 	}
 
-	public void unsetPrev() {
-		this.prev = null;
-	}
-
 	public void setTwoWay(boolean twoWayIn) {
 		this.twoWay = twoWayIn;
 	}
@@ -313,17 +289,18 @@ public class Block {
 		for (int i = 0; i < nextPossible.size(); i++) {
 			if (nextPossible.get(i) != prev) {
 				next = nextPossible.get(i);
-				System.out.println("Next Block: "+ next.getBlockNumber() + " ");
+				System.out.println("Next Block: " + next.getBlockNumber() + " ");
 			}
 		}
 	}
-	
+
 	public Block getNext() {
 		return next;
 	}
 
 	public void setNext(Block next) {
 		this.next = next;
+		next.setPrev(this);
 	}
 
 	public boolean isRRCrossingEngaged() {
@@ -342,20 +319,83 @@ public class Block {
 		listeners.add(newListener);
 	}
 
-	public void setSpeedAuthority(int speed, int authority) {
-		System.out.println("Block Number: " + blockNumber + ", Speed: " + speed +", Authority: " + authority);
-		if (blockNumber == 1) {
-			System.out.println("new train");
+	public void setSpeedAuthority(double speed, double authority) {
+		System.out.println("Block Number: " + blockNumber + ", Speed: " + speed + ", Authority: " + authority);
+		if (blockNumber == 0) {
 			trainComm = new TrainModel();
 			Thread thread = new Thread(trainComm);
 			thread.setDaemon(true);
 			trainComm.setBlock(this);
-			setBlockOccupation(true, null, trainComm);
+			setTrainOccupation(true, null, trainComm);
 			System.out.println(next.getBlockNumber());
 			trainComm.setSpeedAndAuth(speed, authority);
 			thread.start();
 		} else {
 			trainComm.setSpeedAndAuth(speed, authority);
 		}
+	}
+
+	public void setBackwards() {
+		this.backwards = true;
+	}
+
+	public boolean getBackwards() {
+		return backwards;
+	}
+
+	public Block getPrev() {
+		return prev;
+	}
+
+	public void setTemp(int temp) {
+		this.temp = temp;
+	}
+
+	public int getTemp() {
+		return this.temp;
+	}
+
+	public void setIsYard(boolean isYard) {
+		this.isYard = isYard;
+	}
+
+	public boolean getIsYard() {
+		return this.isYard;
+	}
+
+	public void setTrainPrev(Block trainPrev) {
+		this.trainPrev = trainPrev;
+	}
+
+	public void setTrainNext() {
+		if (next == trainPrev) {
+			trainNext = prev;
+		} else {
+			trainNext = next;
+		}
+	}
+
+	public void setTrainOccupation(boolean occupied, Block prev, TrainModelInterface trainComm) {
+		if (occupied) {
+			this.trainComm = trainComm;
+			setTrainPrev(prev);
+			setTrainNext();
+		} else {
+			trainComm = null;
+		}
+		blockOccupied = occupied;
+		for (BlockOccupationListener i : listeners) {
+			System.out.println("Block occupation listener found");
+			i.blockOccupied(this.blockNumber);
+		}
+	}
+
+	public void setBeacon(boolean hasBeacon, String beaconName) {
+		this.hasBeacon = hasBeacon;
+		this.beacon = beaconName;
+	}
+
+	public String getBeacon() {
+		return beacon;
 	}
 }

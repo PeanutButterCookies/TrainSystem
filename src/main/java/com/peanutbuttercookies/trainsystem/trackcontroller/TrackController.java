@@ -190,7 +190,7 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 			if(currBlock.getMasterSwitch()){
 				LinkedList<Block> blocks=(LinkedList<Block>)currBlock.getSwitchList();
 				blocks.addFirst(currBlock);
-				switchMap.put(Integer.toString(currBlock.getSwitchBlockId()), blocks);
+				switchMap.put(Integer.toString(currBlock.getSwitchNum()), blocks);
 			}
 		}
 		

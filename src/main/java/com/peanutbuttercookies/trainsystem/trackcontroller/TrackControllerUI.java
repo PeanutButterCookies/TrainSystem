@@ -535,7 +535,7 @@ public class TrackControllerUI extends JFrame {
 						Iterator<Block> switchBlockIterator = switchList.get(correctLine.getLine()).get(Integer.toString(correctTC.getControllerId())).iterator();
 						while(switchBlockIterator.hasNext()){
 							Block switchBlock=switchBlockIterator.next();
-							if(Integer.toString(switchBlock.getSwitchBlockId()).equals(switchName)){
+							if(Integer.toString(switchBlock.getSwitchNum()).equals(switchName)){
 								rdbtnEngageSwitch.setSelected(switchBlock.isSwitchEngaged());
 								break;
 							}
@@ -890,7 +890,7 @@ public class TrackControllerUI extends JFrame {
 			tableVariableDisplay.setValueAt(currBlock.getLine(), counter, 0);				//Line
 			tableVariableDisplay.setValueAt(currBlock.getBlockNumber(), counter, 1);		//Block ID
 			tableVariableDisplay.setValueAt(currTC.getControllerId(), counter, 2);			//Track Controller ID
-			tableVariableDisplay.setValueAt(currBlock.getSwitchBlockId(), counter, 3);		//Switch ID
+			tableVariableDisplay.setValueAt(currBlock.getSwitchNum(), counter, 3);		//Switch ID
 			tableVariableDisplay.setValueAt(currBlock.isBlockOccupied(), counter, 4);		//Block Occupied
 			tableVariableDisplay.setValueAt(currBlock.isSwitchEngaged(), counter, 5);		//Switch Engaged
 			tableVariableDisplay.setValueAt(currBlock.hasRRCrossing(), counter, 6);			//RR Crossing
@@ -959,7 +959,7 @@ public class TrackControllerUI extends JFrame {
 		Iterator<Block> blockIterator=currTC.getSection().iterator();
 		while(blockIterator.hasNext()){
 			Block currBlock=blockIterator.next();
-			if(currBlock.getBlockNumber()==currTC.getOverlapBlock() && currBlock.getBlockNumber()==currTC.getStartBlock() && counter+1>tableVariableDisplay.getRowCount()/2 || currBlock.getSwitchBlockId()==-1 || !currBlock.getMasterSwitch()){
+			if(currBlock.getBlockNumber()==currTC.getOverlapBlock() && currBlock.getBlockNumber()==currTC.getStartBlock() && counter+1>tableVariableDisplay.getRowCount()/2 || currBlock.getSwitchNum()==-1 || !currBlock.getMasterSwitch()){
 				continue;
 			}
 			
@@ -975,7 +975,7 @@ public class TrackControllerUI extends JFrame {
 			tableSwitches.setValueAt(currBlock.getLine(), counter, 0);								//Line
 			tableSwitches.setValueAt(currBlock.getBlockNumber(), counter, 1);						//Block ID
 			tableSwitches.setValueAt(currTC.getControllerId(), counter, 2);							//Track Controller ID
-			tableSwitches.setValueAt(currBlock.getSwitchBlockId(), counter, 3);						//Switch ID
+			tableSwitches.setValueAt(currBlock.getSwitchNum(), counter, 3);						//Switch ID
 			if(currBlock.getPrevBlock()!=null){
 				tableSwitches.setValueAt(currBlock.getPrevBlock().getBlockNumber(), counter, 4);		//Previous Block
 			}
@@ -1028,7 +1028,7 @@ public class TrackControllerUI extends JFrame {
 					TrackControllerInterface currTC=tcIterator.next();
 					Iterator<Block> tcSwitchIterator=switchList.get(currLine.getLine()).get(Integer.toString(currTC.getControllerId())).iterator();
 					while(tcSwitchIterator.hasNext()){
-						displayedSwitches.add("Switch " + Integer.toString(tcSwitchIterator.next().getSwitchBlockId()) + " (" + currLine.getLine()+" Line)");
+						displayedSwitches.add("Switch " + Integer.toString(tcSwitchIterator.next().getSwitchNum()) + " (" + currLine.getLine()+" Line)");
 					}
 				}
 			}
@@ -1048,7 +1048,7 @@ public class TrackControllerUI extends JFrame {
 					TrackControllerInterface currTC=tcIterator.next();
 					Iterator<Block> tcSwitchIterator=switchList.get(currLine.getLine()).get(Integer.toString(currTC.getControllerId())).iterator();
 					while(tcSwitchIterator.hasNext()){
-						displayedSwitches.add("Switch " + Integer.toString(tcSwitchIterator.next().getSwitchBlockId()));
+						displayedSwitches.add("Switch " + Integer.toString(tcSwitchIterator.next().getSwitchNum()));
 					}
 				}
 			}
@@ -1061,7 +1061,7 @@ public class TrackControllerUI extends JFrame {
 				}
 				Iterator<Block> tcSwitchIterator=switchList.get(currLine.getLine()).get(Integer.toString(currTC.getControllerId())).iterator();
 				while(tcSwitchIterator.hasNext()){
-					displayedSwitches.add("Switch " + Integer.toString(tcSwitchIterator.next().getSwitchBlockId()));
+					displayedSwitches.add("Switch " + Integer.toString(tcSwitchIterator.next().getSwitchNum()));
 				}
 				
 			}
