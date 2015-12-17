@@ -125,7 +125,7 @@ public class ComponentContainer extends JPanel implements ActionListener {
 		allBlocks = new HashMap<CTCSection, DefaultComboBoxModel<Integer>>();
 		allSections.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				blockCBox.setModel(allBlocks.get((allSections).getSelectedItem()));
+				blockCBox.setModel(allBlocks.get((allSections).getItemAt(0)));
 			}
 		});
 
@@ -134,7 +134,7 @@ public class ComponentContainer extends JPanel implements ActionListener {
 			allBlocks.put(section, module.newBlockCombo(line, section));
 		}
 		
-		blockCBox = new JComboBox<Integer>(allBlocks.get((CTCSection)allSections.getItemAt(1)));
+		blockCBox = new JComboBox<Integer>(allBlocks.get((CTCSection)allSections.getItemAt(0)));
 			
 		speed = new JTextField();
 		speed.setPreferredSize(COMBO_DIM);
@@ -155,7 +155,7 @@ public class ComponentContainer extends JPanel implements ActionListener {
 		switches = new JComboBox<Integer>(switchModel);
 		switches.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				switchDestCombo.setModel(switchDests.get((Integer) switches.getSelectedItem()));
+				switchDestCombo.setModel(switchDests.get((Integer) switches.getItemAt(0)));
 			}
 		});
 
@@ -164,7 +164,7 @@ public class ComponentContainer extends JPanel implements ActionListener {
 			switchDests.put(sw, module.newSwitchDestCombo(line, sw));
 		}
 
-		switchDestCombo = new JComboBox<Integer>(switchDests.get(switchModel.getSelectedItem()));
+		switchDestCombo = new JComboBox<Integer>(switchDests.get(switchModel.getElementAt(0)));
 
 		switchPanel.add(switches);
 		switchPanel.add(switchDestCombo);

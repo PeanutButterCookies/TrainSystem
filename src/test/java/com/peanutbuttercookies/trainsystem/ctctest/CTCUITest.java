@@ -32,11 +32,8 @@ public class CTCUITest {
 		}
 		curr.setNext(null);
 		
+
 		Line line = new Line(LINE, blocks);
-		System.out.println(blocks.size());
-		TestTrackController tc = new TestTrackController(blocks);
-		TrackControllerStaticModule trackController = new TrackControllerStaticModule();
-		trackController.setTrackControllers(line);
 		CTCModule ctc = new CTCModule();
 		CTCModuleUI ui = new CTCModuleUI(ctc);
 		ctc.setUi(ui);

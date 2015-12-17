@@ -13,6 +13,7 @@ import javax.swing.DefaultComboBoxModel;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.commonresources.Line;
+import com.peanutbuttercookies.trainsystem.ctctest.TestTrackController;
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 
@@ -69,11 +70,18 @@ public class CTCModule implements CTCModuleInterface {
 			lineTrainMap.put(line.getLine(), new CTCTrainModel());
 		}
 
-		for (TrackControllerInterface tc : line.getAllTrackControllers()) {
-			for (Block block : tc.getSection()) {
-				lineBlockMap.get(line.getLine()).addBlock(block, tc);
-			}
+//		for (TrackControllerInterface tc : line.getAllTrackControllers()) {
+//			for (Block block : tc.getSection()) {
+//				lineBlockMap.get(line.getLine()).addBlock(block, tc);
+//			}
+//		}
+		
+		//FOR TESTING
+		TestTrackController tc = new TestTrackController(line.getAllBlocks());
+		for(Block block : line.getAllBlocks()) {
+			lineBlockMap.get(line.getLine()).addBlock(block, tc);
 		}
+		
 		if (ui != null) {
 			ui.addLine(line.getLine());
 		}
