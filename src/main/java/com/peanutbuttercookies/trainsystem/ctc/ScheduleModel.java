@@ -24,6 +24,7 @@ public class ScheduleModel extends AbstractTableModel {
 		this.model = model;
 		this.ctc = ctc;
 		this.line = line;
+		commands = new ArrayList<Command>();
 	}
 	
 	public void importSchedule(String filename) throws IOException, NumberFormatException {
@@ -81,6 +82,6 @@ public class ScheduleModel extends AbstractTableModel {
 
 	@Override
 	public String getColumnName(int column) {
-		return "Action";
+		return "Schedule";
 	}
 }

@@ -40,12 +40,13 @@ public interface CTCModuleInterface {
 	public DefaultComboBoxModel<Integer> newBlockCombo(String line, CTCSection section);
 	public DefaultComboBoxModel<Integer> newSwitchCombo(String line);
 	public DefaultComboBoxModel<Integer> newSwitchDestCombo(String line, int switchBlock);
-	public boolean engageRRCrossing(String line, int blockId);
+	public boolean engageRRCrossing(String line, int blockId, boolean engaged);
 	
 	// for use by the track controller
 	public void setBlockOccupied(String line, int blockId);
 	public void setBlockUnoccupied(String line, int blockId);
 	public void importLine(Line line);
 	public void switchChanged(String line, int blockId, boolean engaged);
+	public void setRRCrossingEngaged(String line, int blockId, boolean engaged);
 
 }

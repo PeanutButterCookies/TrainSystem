@@ -21,7 +21,8 @@ public class CTCBlock {
 			"Station",
 			"Occupied",
 			"Current Switch Block",
-			"Throughput"
+			"Throughput",
+			"RailRoad"
 		});
 	}
 	
@@ -35,6 +36,8 @@ public class CTCBlock {
 	private long startTime;
 	private String station;
 	private int switchNum;
+	private Boolean rr = null;
+	private boolean hasRR;
 	
 	public CTCBlock(Node node) {
 		setAll(node);
@@ -55,6 +58,10 @@ public class CTCBlock {
 		setStartTime((long)node.getProperty("starttime"));
 		setStation((String)node.getProperty("station"));
 		setSwitchNum((int)node.getProperty("switchNum"));
+		setHasRR((boolean)node.getProperty("hasRR"));
+		if(hasRR) {
+			setRR((boolean)node.getProperty("rr"));
+		}
 	}
 	
 	
@@ -177,6 +184,22 @@ public class CTCBlock {
 
 	public void setSwitchNum(int switchNum) {
 		this.switchNum = switchNum;
+	}
+
+	public Boolean getRR() {
+		return rr;
+	}
+
+	public void setRR(Boolean rr) {
+		this.rr = rr;
+	}
+
+	public boolean isHasRR() {
+		return hasRR;
+	}
+
+	public void setHasRR(boolean hasRR) {
+		this.hasRR = hasRR;
 	}
 
 }

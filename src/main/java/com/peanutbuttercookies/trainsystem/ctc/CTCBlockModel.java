@@ -155,6 +155,8 @@ public class CTCBlockModel extends AbstractTableModel {
 			}
 		case 5:
 			return block.getThroughput();
+		case 6:
+			return (block.getRR() == null)? "" : block.getRR();
 		default:
 			return null;
 		}

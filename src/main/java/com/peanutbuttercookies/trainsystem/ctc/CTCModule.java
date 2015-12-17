@@ -186,8 +186,11 @@ public class CTCModule implements CTCModuleInterface {
 	}
 
 	@Override
-	public boolean engageRRCrossing(String line, int blockId) {
-		// TODO Auto-generated method stub
+	public boolean engageRRCrossing(String line, int blockId, boolean engaged) {
+		CTCBlockModel model = lineBlockMap.get(line);
+		CTCBlock block = model.getBlock(blockId);
+		TrackControllerInterface tc = model.getTC(block);
+		//TODO
 		return false;
 	}
 
@@ -206,6 +209,12 @@ public class CTCModule implements CTCModuleInterface {
 	public DefaultComboBoxModel<Integer> newSwitchDestCombo(String line, int switchBlock) {
 		Vector<Integer> possible = neo4j.getSwitchNext(line, switchBlock);
 		return new DefaultComboBoxModel<Integer>(possible);
+	}
+
+	@Override
+	public void setRRCrossingEngaged(String line, int blockId, boolean engaged) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

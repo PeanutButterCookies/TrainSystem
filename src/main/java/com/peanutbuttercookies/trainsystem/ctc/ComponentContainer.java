@@ -51,8 +51,11 @@ public class ComponentContainer extends JPanel implements ActionListener {
 	private JComboBox<CTCTrain> trainCBox;
 	private JComboBox<Integer> blockCBox;
 
-	// Repair panel (reuses section and blocks from dispatch)
+	// Repair panel 
 	private JPanel repairPanel;
+	private JComboBox<CTCSection> allSections2;
+	private Map<CTCSection, DefaultComboBoxModel<Integer>> allBlocks2;
+	private JComboBox<Integer> blockCBox2;
 
 	// Switch panel and components
 	private JPanel switchPanel;
@@ -109,6 +112,9 @@ public class ComponentContainer extends JPanel implements ActionListener {
 				case "Change Switch":
 					add(switchPanel, 1);
 					break;
+				case "Mark for Repair":
+					add(repairPanel, 1);
+					break;
 				default:
 					add(dispatchPanel, 1);
 				}
@@ -134,7 +140,7 @@ public class ComponentContainer extends JPanel implements ActionListener {
 		DefaultComboBoxModel<CTCTrain> trainComboModel = module.newTrainCombo(line);
 		trainCBox = new JComboBox<CTCTrain>(trainComboModel);
 		DefaultComboBoxModel<CTCSection> sectionModel = module.newSectionCombo(line);
-		allSections = new JComboBox<CTCSection>(module.newSectionCombo(line));
+		allSections = new JComboBox<CTCSection>(sectionModel);
 		allBlocks = new HashMap<CTCSection, DefaultComboBoxModel<Integer>>();
 		allSections.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
@@ -209,12 +215,27 @@ public class ComponentContainer extends JPanel implements ActionListener {
 			}
 		});
 
-		fileDisplay = new JTextField(30);
+		fileDisplay = new JTextField(20);
 		fileDisplay.setEditable(false);
 		schedulePanel.add(fileDisplay);
 		schedulePanel.add(browse);
 
-		// TODO: RR Crossing and mark for repair panels
+		// Mark for repair panel and component init
+		repairPanel = new JPanel();
+		repairPanel.setPreferredSize(SECONDARY_DIM);
+		sectionModel = module.newSectionCombo(line);
+		allSections2 = new JComboBox<CTCSection>(sectionModel);
+		allBlocks2 = new HashMap<CTCSection, DefaultComboBoxModel<Integer>>();
+		allSections2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				blockCBox2.setModel(allBlocks.get((allSections).getItemAt(0)));
+			}
+		});
+		blockCBox2 = new JComboBox<Integer>();
+		repairPanel.add(allSections2);
+		repairPanel.add(blockCBox2);
+		
+		// RR Crossing panel and components TODO
 
 		// Add all to panel
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

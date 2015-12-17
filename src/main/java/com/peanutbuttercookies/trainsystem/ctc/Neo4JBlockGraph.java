@@ -132,10 +132,15 @@ public class Neo4JBlockGraph {
 		node.setProperty("starttime", System.nanoTime());
 		node.setProperty("tc", tc);
 		node.setProperty("switchNum", block.getSwitchNum());
-		if(!block.getIsYard()) {
+		if(!block.getIsYard() && block.getStationName() != null) {
 			node.setProperty("station", block.getStationName());
 		} else {
 			node.setProperty("station", "Yard");
+		}
+		
+		node.setProperty("hasRR", block.hasRRCrossing());
+		if(block.hasRRCrossing()) {
+			node.setProperty("rr", block.isRRCrossingEngaged());
 		}
 	}
 
@@ -148,6 +153,10 @@ public class Neo4JBlockGraph {
 	public boolean setBlockOccupied(String line, Integer blockId, boolean occupied) {
 		try(Transaction tx = graph.beginTx()) {
 			Node node = graph.findNode(DynamicLabel.label(line), ID, blockId);
+			if(node == null) {
+				tx.success();
+				return false;
+			}
 			node.setProperty("occupied", occupied);
 			tx.success();
 		} catch(Exception e) {
