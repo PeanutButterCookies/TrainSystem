@@ -52,6 +52,10 @@ public class SpeedControl {
 			commandSpeed = speedLimit;
 		}
 		
+		if(commandSpeed < 0){
+			commandSpeed = 0;
+		}
+		
 		brakeCheck();
 		ek = commandSpeed - speed;
 		uk = uk_prev + 1/2 * (ek + ek_prev);

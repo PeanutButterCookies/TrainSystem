@@ -50,6 +50,10 @@ public class TrainController implements TrainControllerInterface {
 	public void setSpeedAndAuth(double speed, double auth) {
 		// TODO Auto-generated method stub
 		commandSpeed = speed;
+		if(commandSpeed < 0){
+			commandSpeed = 0;
+		}
+		
 		this.auth = auth;
 		System.out.println(auth);
 		control.setCommandSpeed(speed);

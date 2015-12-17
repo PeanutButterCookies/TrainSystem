@@ -353,7 +353,7 @@ public class TrainUI extends JFrame {
 	/**
 	 * Is called every run iteration to update the UI with new values
 	 */
-	public void updateUI(){
+	public synchronized void updateUI(){
 		height.setText(""+train.getHeight()*3.28084);
 		power.setText(""+train.getPower()*3.28084);
 		acceleration.setText(""+train.getAcceleration()* 8052.9706513958);

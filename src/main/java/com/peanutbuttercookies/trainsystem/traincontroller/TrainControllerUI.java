@@ -337,7 +337,7 @@ public class TrainControllerUI extends JFrame {
 		selectController.removeItem(control);
 	}
 	
-	public void updateUI(){
+	public synchronized void updateUI(){
 		speedText.setText(new String(""+trainController.getSpeedLimit()*2.23694));
 		authText.setText(new String(""+trainController.getAuth()*0.000621371));
 		powerText.setText(new String(""+trainController.getPower()));
