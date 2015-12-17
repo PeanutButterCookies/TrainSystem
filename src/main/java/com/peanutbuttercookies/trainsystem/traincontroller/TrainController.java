@@ -1,30 +1,35 @@
 package com.peanutbuttercookies.trainsystem.traincontroller;
 
 import com.peanutbuttercookies.trainsystem.train.TrainModelInterface;
+import com.peanutbuttercookies.trainsystem.traincontroller.SpeedControl;
+import com.peanutbuttercookies.trainsystem.traincontroller.TrainControllerInterface;
+import com.peanutbuttercookies.trainsystem.traincontroller.TrainControllerUI;
 
 public class TrainController implements TrainControllerInterface {
 
-	String station;
-	SpeedControl control = new SpeedControl(this);
-	TrainModelInterface train;
+	private String station;
+	private SpeedControl control = new SpeedControl(this);
+	private TrainModelInterface train;
 	//loginInfo login;
-	int id;
-	double speed;
-	double commandSpeed;
-	double auth;
-	String beacon="";
-	int blockId;
-	double mass;
-	double speedLimit;
-	boolean doorsOpen;
-	boolean currentlySelected = false;
-	double power;
-	double distance;
-	String lights="";
-	boolean brakes = false;
-	boolean approachingStation = false;
-	boolean emergencyBrakes = false;
-	TrainControllerUI gui = new TrainControllerUI();
+	private int id;
+	private double speed;
+	private double commandSpeed;
+	private double auth;
+	private String beacon="";
+	private int blockId;
+	private double mass;
+	private double speedLimit;
+	private boolean doorsOpen;
+	private boolean currentlySelected = false;
+	private double power;
+	private double distance;
+	private String lights="";
+	private boolean brakes = false;
+	private boolean approachingStation = false;
+	private boolean emergencyBrakes = false;
+	private boolean alive = true;
+	private TrainControllerUI gui = null;
+	
 	public TrainController(TrainModelInterface train) {
 		// TODO Auto-generated constructor stub
 		this.train = train;
@@ -37,7 +42,7 @@ public class TrainController implements TrainControllerInterface {
 		commandSpeed = speed;
 		this.auth = auth;
 		System.out.println(auth);
-		control.commandSpeed = speed;
+		control.setCommandSpeed(speed);
 		//power = control.calcPower(speed);
 
 	}
@@ -149,7 +154,7 @@ public class TrainController implements TrainControllerInterface {
 	public void setSpeed(double speed) {
 		// TODO Auto-generated method stub
 		commandSpeed = speed;
-		control.commandSpeed = speed;
+		control.setCommandSpeed(speed);
 	}
 
 	@Override
@@ -170,14 +175,13 @@ public class TrainController implements TrainControllerInterface {
 	public void setCurrentVelocity(double speed) {
 		// TODO Auto-generated method stub
 		this.speed = speed;
-		control.speed = speed;
+		control.setSpeed(speed);
 	}
 
 	@Override
 	public void setMass(double mass) {
 		// TODO Auto-generated method stub
 		this.mass = mass;
-		control.mass = mass;
 	}
 
 	@Override
@@ -190,6 +194,7 @@ public class TrainController implements TrainControllerInterface {
 	public void beaconInfo(String info) {
 		// TODO Auto-generated method stub
 		beacon = info;
+		setStation(beacon);
 		setApproachingStation(true);
 	}
 
@@ -197,7 +202,7 @@ public class TrainController implements TrainControllerInterface {
 	public void setSpeedLimit(double limit) {
 		// TODO Auto-generated method stub
 		speedLimit = limit;
-		control.speedLimit = limit;
+		control.setSpeedLimit(limit);
 	}
 
 	@Override
@@ -218,7 +223,7 @@ public class TrainController implements TrainControllerInterface {
 
 	public void setBrakes(boolean brakes) {
 		this.brakes = brakes;
-		control.brakes = brakes;
+		control.setBrakes(brakes);
 		train.setBrakes(brakes);
 	}
 
@@ -228,7 +233,7 @@ public class TrainController implements TrainControllerInterface {
 
 	public void setEmergencyBrakes(boolean emergencyBrakes) {
 		this.emergencyBrakes = emergencyBrakes;
-		control.emergencyBrakes = emergencyBrakes;
+		control.setEmergencyBrakes(emergencyBrakes);
 		train.setBrakes(emergencyBrakes);
 	}
 	
@@ -248,6 +253,7 @@ public class TrainController implements TrainControllerInterface {
 	
 	public void departSequence(){
 		closeDoors();
+		setStation("");
 		setBrakes(false);
 		setApproachingStation(false);
 		
@@ -259,9 +265,25 @@ public class TrainController implements TrainControllerInterface {
 	
 	public void setApproachingStation(boolean approaching){
 		approachingStation = approaching;
-		control.approachingStation = approaching;
+		control.setApproachingStation(approaching);
 	}
 	
+	public void setAlive(boolean alive){
+		this.alive = alive;
+	}
+	
+	public boolean isCurrentlySelected() {
+		return currentlySelected;
+	}
+
+	public boolean isApproachingStation() {
+		return approachingStation;
+	}
+
+	public boolean isAlive() {
+		return alive;
+	}
+
 	public String toString(){
 		String out = "";
 		out += id;
@@ -269,7 +291,7 @@ public class TrainController implements TrainControllerInterface {
 	}
 
 	public void run(){
-		while(true){
+		while(alive){
 			power = control.calcPower(speed);
 			System.out.println("Power: "+power);
 			train.setPower(power);
@@ -283,4 +305,3 @@ public class TrainController implements TrainControllerInterface {
 	}
 	
 }
-
