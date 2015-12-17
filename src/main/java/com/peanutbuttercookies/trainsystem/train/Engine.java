@@ -17,14 +17,14 @@ public class Engine {
 	TrainModel train;
 	public boolean brakes = false;
 	public boolean emergencyBrakes = false;
-	private final double WHEELRADIUS = 270; // mm
-	private final double MAXPOWER = 120000; // W
-	private final double BRAKEACC = -1.2; // m/s^2
-	private final double EBRAKEACC = -2.73; // m/s^2
+	private final double WHEEL_RADIUS = 270; // mm
+	private final double MAX_POWER = 120000; // W
+	private final double BRAKE_ACC = -1.2; // m/s^2
+	private final double E_BRAKE_ACC = -2.73; // m/s^2
 	private final double GRAVITY = -9.81; // m/s^2
-	private final double ROLLINGCOEFFICIENT = .001;
-	private final double KINETICCOEFFICIENT = 0.58; // Sliding
-	private final double MAXACCELERATION = 2.73;
+	private final double ROLLING_COEFFICIENT = .001;
+	private final double KINETIC_COEFFICIENT = 0.58; // Sliding
+	private final double MAX_ACCELERATION = 2.73;
 	public Engine(TrainModel train) {
 		// TODO Auto-generated constructor stub
 		this.train = train;
@@ -64,19 +64,19 @@ public class Engine {
 				lastUpdate = current;*/
 
 				// Limit power
-				if (power > MAXPOWER)
+				if (power > MAX_POWER)
 				{
-					power = MAXPOWER;
+					power = MAX_POWER;
 				}
 				
 				
 				if (emergencyBrakes)
 				{
-					currentAccel = EBRAKEACC;
+					currentAccel = E_BRAKE_ACC;
 				}
 				else if (brakes)
 				{
-					currentAccel = BRAKEACC;
+					currentAccel = BRAKE_ACC;
 				}
 
 				double oldSpeed = currentSpeed;
@@ -95,7 +95,7 @@ public class Engine {
 				else if(!emergencyBrakes && !brakes)
 				{
 					//frictionForce = curBlock.getFrictionCoefficient() * mass * GRAVITY * Math.cos(theta);
-					frictionForce = ROLLINGCOEFFICIENT * mass * GRAVITY * Math.cos(theta);
+					frictionForce = ROLLING_COEFFICIENT * mass * GRAVITY * Math.cos(theta);
 					gravityForce = mass * GRAVITY * Math.sin(theta);
 
 					engineForce = power / (currentSpeed + 0.00001);
@@ -124,7 +124,7 @@ public class Engine {
 				}
 				
 				
-				currentAccel = Math.min(currentAccel, MAXACCELERATION);
+				currentAccel = Math.min(currentAccel, MAX_ACCELERATION);
 				System.out.println("Current Accel: " + currentAccel);
 				distance += (currentSpeed) + ( (1.0/2.0)*(currentAccel) );
 
@@ -148,6 +148,9 @@ public class Engine {
 					train.setSpeedLimits(train.currentBlock.getSpeedLimit());
 					train.setAngle(train.currentBlock.getBlockGrade());
 					train.controller.setBlockId(train.currentBlock.getBlockNumber());
+					if(train.currentBlock.hasBeacon()){//to set a beacon
+						train.controller.beaconInfo(train.currentBlock.beacon);
+					}
 				}
 				train.controller.setCurrentVelocity(currentSpeed);
 				train.gui.updateUI();
