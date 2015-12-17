@@ -12,7 +12,7 @@ public interface TrainModelInterface extends Runnable {
 	void setDoors(boolean doors);
 	void setPower(double power);
 	void emergencyBrakes();
-	void setSpeedAndAuth(double speed, int auth);
+	void setSpeedAndAuth(double speed, double auth);
 	double getLength();
 	double getWidth();
 	double getHeight();
@@ -22,6 +22,8 @@ public interface TrainModelInterface extends Runnable {
 	double getNumCars();
 	double getCurrentSpeed();
 	double getAcceleration();
+	Object getSpeed();
+	Object getAuth();
 
 }
 

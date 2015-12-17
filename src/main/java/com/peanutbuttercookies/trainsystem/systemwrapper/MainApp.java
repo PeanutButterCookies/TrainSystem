@@ -27,7 +27,7 @@ public class MainApp {
 		TrackModelInterface trackModel = new TrackModel();
 		//TODO
 
-		//trackModel.fileRead("C:/Users/Fauzul/Documents/COE1186/trackTest.xlsx");
+		//trackModel.fileRead("C:/Users/Fauzul/Documents/COE1186/TrackLayout.xlsx");
 
 		//trackModel.fileRead("C:/Users/Kevin/Downloads/ModifiedTrackLayout.xlsx");
 		//trackModel.fileRead("C:/Users/Chris/Documents/University of Pittsburgh/Junior Year/Software Engineering/ModifiedTrackLayout.xlsx");
@@ -47,7 +47,7 @@ public class MainApp {
 		CTCModuleUI ctcUI = new CTCModuleUI(ctc);
 		ctc.setUi(ctcUI); */
 		TrackModelUI tmUI = new TrackModelUI(trackModel);
-		tmUI.initDisplay(0);
+		//tmUI.initDisplay(0);
 
 	}
 }

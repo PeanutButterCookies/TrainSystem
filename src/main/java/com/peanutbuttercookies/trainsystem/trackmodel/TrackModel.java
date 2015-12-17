@@ -245,7 +245,6 @@ public class TrackModel implements TrackModelInterface {
 					}
 				}
 			}
-			System.out.println();
 		}
 	}
 

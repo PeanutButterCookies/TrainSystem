@@ -143,8 +143,8 @@ public class Engine {
 					distance = distance - train.currentBlock.getBlockLength();
 					Block old = train.currentBlock;
 					train.setBlock(train.currentBlock.getNext());
-					train.currentBlock.setBlockOccupation(true,old,train);
-					old.setBlockOccupation(false,null, null);
+					train.currentBlock.setTrainOccupation(true,old,train);
+					old.setTrainOccupation(false,null, null);
 					train.setSpeedLimits(train.currentBlock.getSpeedLimit());
 					train.setAngle(train.currentBlock.getBlockGrade());
 					train.controller.setBlockId(train.currentBlock.getBlockNumber());

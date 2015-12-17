@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.peanutbuttercookies.trainsystem.interfaces.BlockOccupationListener;
-import com.peanutbuttercookies.trainsystem.train.TrainModel;
+import com.peanutbuttercookies.trainsystem.trackmodeltest.TestTrainModel;
 import com.peanutbuttercookies.trainsystem.train.TrainModelInterface;
 
 public class Block {
@@ -29,6 +29,7 @@ public class Block {
 	private String beacon;
 	private final int switchNum; // switchNum=-1 for block without
 	private int temp;
+	private int light;	//green = 1; yellow = 2; red = 3;
 	// switch
 	private final int arrowDirection; // head=1, none=0, tail=-1, both = 2
 	private boolean twoWay;
@@ -88,6 +89,10 @@ public class Block {
 		this.backwards = false;
 		this.temp = 70;
 		this.hasBeacon = false;
+		
+		if(infrastructureSwitch || infrastructureRRCrossing)	{
+			this.setLight(1);
+		}
 	}
 
 	public String getLine() {
@@ -322,7 +327,7 @@ public class Block {
 	public void setSpeedAuthority(double speed, double authority) {
 		System.out.println("Block Number: " + blockNumber + ", Speed: " + speed + ", Authority: " + authority);
 		if (blockNumber == 0) {
-			trainComm = new TrainModel();
+			trainComm = new TestTrainModel();
 			Thread thread = new Thread(trainComm);
 			thread.setDaemon(true);
 			trainComm.setBlock(this);
@@ -381,7 +386,7 @@ public class Block {
 			setTrainPrev(prev);
 			setTrainNext();
 		} else {
-			trainComm = null;
+			this.trainComm = null;
 		}
 		blockOccupied = occupied;
 		for (BlockOccupationListener i : listeners) {
@@ -398,4 +403,18 @@ public class Block {
 	public String getBeacon() {
 		return beacon;
 	}
+	
+	public TrainModelInterface getTrainComm()	{
+		return this.trainComm;
+	}
+	
+	public void setLight(int signal){
+		this.light = signal;
+	}
+	
+	public int getLight(){
+		return light;
+	}
+	
+	
 }
