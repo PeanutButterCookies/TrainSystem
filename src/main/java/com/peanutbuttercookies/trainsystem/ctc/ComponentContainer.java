@@ -1,3 +1,8 @@
+/*
+ * Kevin Nash
+ * 11/21/15
+ */
+
 package com.peanutbuttercookies.trainsystem.ctc;
 
 import java.awt.Dimension;
@@ -153,7 +158,11 @@ public class ComponentContainer extends JPanel implements ActionListener {
 			allBlocks.put(section, module.newBlockCombo(line, section));
 		}
 
-		blockCBox = new JComboBox<Integer>(allBlocks.get((CTCSection) allSections.getItemAt(0)));
+		if(sectionModel.getSize() > 0) {
+			blockCBox = new JComboBox<Integer>(allBlocks.get((CTCSection) allSections.getItemAt(0)));
+		} else {
+			blockCBox = new JComboBox<Integer>();
+		}
 
 		speed = new JTextField();
 		speed.setPreferredSize(COMBO_DIM);

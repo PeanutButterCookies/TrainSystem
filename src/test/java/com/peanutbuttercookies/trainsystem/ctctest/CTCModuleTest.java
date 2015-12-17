@@ -1,5 +1,7 @@
 package com.peanutbuttercookies.trainsystem.ctctest;
 
+import static org.junit.Assert.*;
+
 import java.util.LinkedList;
 
 import org.junit.Test;
@@ -7,7 +9,6 @@ import org.junit.Test;
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.commonresources.Line;
 import com.peanutbuttercookies.trainsystem.ctc.CTCModule;
-import com.peanutbuttercookies.trainsystem.trackcontroller.TrackControllerStaticModule;
 
 public class CTCModuleTest {
 
@@ -17,8 +18,7 @@ public class CTCModuleTest {
 	private static final int BLOCK_LENGTH = 10;
 	private static final int SPEED_LIMIT = 40;
 
-	@Test
-	public void runTest() {
+	public void setUp(CTCModule ctc, TestTrackController test) {
 		LinkedList<Block> blocks = new LinkedList<Block>();
 		Block prev = null;
 		Block next = new Block(LINE, true);
@@ -50,11 +50,25 @@ public class CTCModuleTest {
 		blocks.add(station);
 
 		Line line = new Line(LINE, blocks);
-		TrackControllerStaticModule stc = new TrackControllerStaticModule();
-		stc.setTrackControllers(line);
-		TestTrackController test = new TestTrackController(blocks);
-		CTCModule ctc = new CTCModule();
+		test = new TestTrackController(blocks);
+		line.setTrackControllers(test, new TestTrackController(new LinkedList<Block>()));
+		ctc = new CTCModule();
 		ctc.importLine(line);
+	}
+	
+	@Test
+	public void dispatchTest() {
+		CTCModule ctc = null;
+		TestTrackController test = null;
+		setUp(ctc, test);
+	}
+	
+	@Test
+	public void nullTest() {
+		
+		CTCModule ctc = new CTCModule();
+		boolean success = ctc.importLine(null);
+		assertEquals(success, false);
 	}
 
 	private static Block initBlock(int blockNum) {

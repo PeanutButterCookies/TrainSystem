@@ -11,6 +11,9 @@ import com.peanutbuttercookies.trainsystem.trackcontroller.TrackController;
 public class TestTrackController implements TrackControllerInterface {
 
 	private LinkedList<Block> section;
+	private int rec;
+	private int speed;
+	private int authority;
 
 	public TestTrackController(LinkedList<Block> section) {
 		this.section = section;
@@ -18,13 +21,11 @@ public class TestTrackController implements TrackControllerInterface {
 
 	@Override
 	public String getLine() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public int getControllerId() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -60,7 +61,9 @@ public class TestTrackController implements TrackControllerInterface {
 
 	@Override
 	public void setSpeedAuthority(int blockId, int speed, int authority) {
-		System.out.println("Block Id: " + blockId + ", Speed: " + speed + ", Authority: " + authority);
+		rec = blockId;
+		this.speed = speed;
+		this.authority = authority;
 	}
 
 
@@ -78,12 +81,17 @@ public class TestTrackController implements TrackControllerInterface {
 
 	@Override
 	public boolean engageSwitch(String switchName, boolean engagement) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean engageRRCrossing(int blockId, boolean engagement) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean markBlockForMaintanence(int blockId, boolean needsRepair) {
 		// TODO Auto-generated method stub
 		return false;
 	}

@@ -1,3 +1,7 @@
+/*
+ * Kevin Nash
+ * 12/5/15
+ */
 package com.peanutbuttercookies.trainsystem.ctc;
 
 import java.io.File;
@@ -55,6 +59,40 @@ public class Neo4JBlockGraph {
 		}
 		return true;
 	}
+	
+	public synchronized CTCBlock getNextBlock(String line, int blockId) {
+		try(Transaction tx = graph.beginTx()) {
+			Node node = graph.findNode(DynamicLabel.label(line), ID, blockId);
+			for(Relationship rel : node.getRelationships(Direction.OUTGOING)) {
+				if((boolean)rel.getEndNode().getProperty("occupied")) {
+					return new CTCBlock(rel.getEndNode());
+				}
+			}
+			tx.success();
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		return null;
+	}
+	
+	public synchronized CTCBlock getPrevBlock(String line, int blockId) {
+		try(Transaction tx = graph.beginTx()) {
+			Node node = graph.findNode(DynamicLabel.label(line), ID, blockId);
+			for(Relationship rel : node.getRelationships(Direction.INCOMING)) {
+				if((boolean)rel.getStartNode().getProperty("occupied")) {
+					return new CTCBlock(rel.getStartNode());
+				}
+			}
+			tx.success();
+		} catch(Exception e) {
+			return null;
+		}
+		
+		return null;
+	}
+
 
 	public synchronized boolean addBlock(String line, Block block, int tc) {
 

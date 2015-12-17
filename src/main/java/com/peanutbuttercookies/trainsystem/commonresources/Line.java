@@ -28,7 +28,7 @@ public class Line {
 		return blocks.get(index);
 	}
 
-	public void setTrackControllers(TrackController tc_1, TrackController tc_2) {
+	public void setTrackControllers(TrackControllerInterface tc_1, TrackControllerInterface tc_2) {
 		controllers.add(tc_1);
 		controllers.add(tc_2);
 	}

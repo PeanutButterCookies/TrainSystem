@@ -1,3 +1,8 @@
+/*
+ * Kevin Nash
+ * 11/5/15
+ */
+
 package com.peanutbuttercookies.trainsystem.ctc;
 
 import java.util.ArrayList;

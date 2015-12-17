@@ -1,3 +1,7 @@
+/*
+ * Kevin Nash
+ * 12/10/15
+ */
 package com.peanutbuttercookies.trainsystem.ctc;
 
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;

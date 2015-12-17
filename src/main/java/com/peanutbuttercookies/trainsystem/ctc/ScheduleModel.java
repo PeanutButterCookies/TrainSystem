@@ -1,3 +1,7 @@
+/*
+ * Kevin Nash
+ * 11/24/15
+ */
 package com.peanutbuttercookies.trainsystem.ctc;
 
 import java.io.BufferedReader;

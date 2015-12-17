@@ -26,7 +26,6 @@ public class CTCModule implements CTCModuleInterface {
 	private Map<String, CTCBlockModel> lineBlockMap;
 	private Map<String, CTCTrainModel> lineTrainMap;
 	private Map<String, ScheduleModel> lineScheduleMap;
-	private int maxTrain = 0;
 
 	public CTCModule() {
 		lineBlockMap = new HashMap<String, CTCBlockModel>();
@@ -37,13 +36,16 @@ public class CTCModule implements CTCModuleInterface {
 
 	@Override
 	public void setBlockOccupied(String line, int blockId) {
+		System.out.println("Setting block occupied: " + blockId);
 		CTCBlockModel model = lineBlockMap.get(line);
 		boolean newTrain = model.setOccupied(blockId);
 		if (newTrain) {
 			lineTrainMap.get(line).addTrain();
 		} else {
-			//TODO
-//			lineTrainMap.get(line).moveHead(model.getPrevBlock(blockId), blockId);
+			System.out.println("Block ID: " + blockId);
+			lineTrainMap.get(line).moveHead(model.getBlock(blockId).getBlockNumber(),
+					model.getPrevBlock(blockId).getBlockNumber());
+
 		}
 	}
 
@@ -52,19 +54,19 @@ public class CTCModule implements CTCModuleInterface {
 		CTCBlockModel model = lineBlockMap.get(line);
 		boolean removeTrain = model.setUnoccupied(blockId);
 		if (!removeTrain) {
-			//TODO
-//			lineTrainMap.get(line).moveTail(model.getPrevBlock(blockId), blockId);
+			lineTrainMap.get(line).moveTail(model.getBlock(blockId).getBlockNumber(),
+					model.getNextBlock(blockId).getBlockNumber());
 		} else {
 			lineTrainMap.get(line).removeTrain();
 		}
 	}
 
-	public Integer getMaxTrain() {
-		return maxTrain;
-	}
-
 	@Override
-	public void importLine(Line line) {
+	public boolean importLine(Line line) {
+
+		if (line == null) {
+			return false;
+		}
 
 		if (!lineBlockMap.containsKey(line.getLine())) {
 			lineBlockMap.put(line.getLine(), new CTCBlockModel(line.getLine(), neo4j));
@@ -75,13 +77,18 @@ public class CTCModule implements CTCModuleInterface {
 
 		for (TrackControllerInterface tc : line.getAllTrackControllers()) {
 			for (Block block : tc.getSection()) {
+				if (block == null) {
+					return false;
+				}
 				lineBlockMap.get(line.getLine()).addBlock(block, tc);
 			}
 		}
-		
+
 		if (ui != null) {
 			ui.addLine(line.getLine());
 		}
+
+		return true;
 	}
 
 	@Override
@@ -123,6 +130,7 @@ public class CTCModule implements CTCModuleInterface {
 			return null;
 		}
 		DefaultComboBoxModel<CTCSection> model = new DefaultComboBoxModel<CTCSection>();
+		System.out.println("Size: " + lineBlockMap.get(line).getSections().size());
 		for (CTCSection section : lineBlockMap.get(line).getSections()) {
 			model.addElement(section);
 		}
@@ -184,7 +192,7 @@ public class CTCModule implements CTCModuleInterface {
 		CTCBlockModel model = lineBlockMap.get(line);
 		CTCBlock block = model.getBlock(blockId);
 		TrackControllerInterface tc = model.getTC(block);
-		//TODO
+		// TODO
 		return false;
 	}
 
@@ -195,7 +203,7 @@ public class CTCModule implements CTCModuleInterface {
 
 	@Override
 	public DefaultComboBoxModel<Integer> newSwitchCombo(String line) {
-		Vector<Integer> switches =  lineBlockMap.get(line).getSwitches();
+		Vector<Integer> switches = lineBlockMap.get(line).getSwitches();
 		return new DefaultComboBoxModel<Integer>(switches);
 	}
 
@@ -208,7 +216,7 @@ public class CTCModule implements CTCModuleInterface {
 	@Override
 	public void setRRCrossingEngaged(String line, int blockId, boolean engaged) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

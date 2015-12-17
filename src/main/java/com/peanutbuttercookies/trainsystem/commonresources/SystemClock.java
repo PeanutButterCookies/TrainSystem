@@ -1,3 +1,7 @@
+/*
+ * Kevin Nash
+ * 11/28/15
+ */
 package com.peanutbuttercookies.trainsystem.commonresources;
 
 public class SystemClock {
