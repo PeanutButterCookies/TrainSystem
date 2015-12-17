@@ -325,6 +325,8 @@ public class TrainControllerUI extends JFrame {
 		selectController.addItem(controller);
 		if(selectController.getItemCount() == 1){
 			selectController.setSelectedItem(controller);
+			controller.setCurrentlySelected(true);
+			this.trainController = (TrainController)selectController.getSelectedItem();
 			updateUI();
 		}
 	}
@@ -337,7 +339,7 @@ public class TrainControllerUI extends JFrame {
 		selectController.removeItem(control);
 	}
 	
-	public void updateUI(){
+	public synchronized void updateUI(){
 		speedText.setText(new String(""+trainController.getSpeedLimit()*2.23694));
 		authText.setText(new String(""+trainController.getAuth()*0.000621371));
 		powerText.setText(new String(""+trainController.getPower()));

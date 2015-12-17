@@ -47,7 +47,7 @@ public class TrackControllerAuthentication extends JFrame {
 		TrackControllerAuthentication self = this;
 		
 		setTitle("Track Controller Login");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 375, 175);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -85,7 +85,7 @@ public class TrackControllerAuthentication extends JFrame {
 				
 				if(textField.getText().equals(username) && Arrays.equals(passwordField.getPassword(), password.toCharArray())){
 					ui.setVisible(true);
-					self.setVisible(false);
+					self.dispose();
 				}
 				else{
 					lblInvalid.setVisible(true);

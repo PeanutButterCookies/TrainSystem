@@ -14,6 +14,7 @@ import com.peanutbuttercookies.trainsystem.traincontroller.TrainControllerUI;
 
 public class TrainController implements TrainControllerInterface {
 
+	private static double clockRatio;
 	private String station;
 	private SpeedControl control = new SpeedControl(this);
 	private TrainModelInterface train;
@@ -50,6 +51,10 @@ public class TrainController implements TrainControllerInterface {
 	public void setSpeedAndAuth(double speed, double auth) {
 		// TODO Auto-generated method stub
 		commandSpeed = speed;
+		if(commandSpeed < 0){
+			commandSpeed = 0;
+		}
+		
 		this.auth = auth;
 		System.out.println(auth);
 		control.setCommandSpeed(speed);
@@ -65,7 +70,7 @@ public class TrainController implements TrainControllerInterface {
 			System.out.println("Power: "+power);
 			train.setPower(power);
 			try {
-				Thread.sleep(1000*Clock.getRatio());
+				Thread.sleep((long)(1000*clockRatio));
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -323,6 +328,9 @@ public class TrainController implements TrainControllerInterface {
 		return out;
 	}
 
-	
+	public void setRatio(double ratio){
+		clockRatio = ratio;
+		control.setRatio(clockRatio);
+	}
 	
 }

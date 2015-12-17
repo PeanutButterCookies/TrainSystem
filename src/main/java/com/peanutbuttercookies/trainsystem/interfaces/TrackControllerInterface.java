@@ -24,6 +24,7 @@ public interface TrackControllerInterface {
 	public boolean engageSwitch(String switchName, boolean engagement);
 	public boolean engageRRCrossing(int blockId, boolean engagement);
 	public boolean setPLCProgram(String plcProgramFileLocation);
+	public boolean markBlockForMaintanence(int blockId, boolean needsRepair);
 	public void setSpeedAuthority(int blockId, int speed, int authority);
 	public HashMap<String, LinkedList<Block>> getSwitchList();
 }
