@@ -1,4 +1,10 @@
-
+/*
+* TrainWrapper
+*
+* 1.1, 12/17/15
+*
+* Autumn Good
+*/
 package com.peanutbuttercookies.trainsystem.train;
 
 import java.util.ArrayList;
@@ -20,6 +26,13 @@ public class TrainWrapper {
 		// TODO Auto-generated constructor stub
 	}
 	
+	/**
+	 * Creates each train as a thread and initializes UI's, sends first speed, authority, and yard block
+	 * @param speed Commanded speed
+	 * @param auth  Command authority
+	 * @param block Yard Block
+	 * @return
+	 */
 	public TrainModelInterface createTrain(double speed, double auth, Block block){
 		TrainModel train = new TrainModel();
 		TrainController trainControl = new TrainController(train);
@@ -38,6 +51,10 @@ public class TrainWrapper {
 		return train;
 	}
 
+	/**
+	 * Stops a train thread when it goes back into the yard
+	 * @param trainComm
+	 */
 	public void destroyTrain(TrainModelInterface trainComm){
 		TrainModel train = (TrainModel)trainComm;
 		trainUi.removeTrainFromList(train);

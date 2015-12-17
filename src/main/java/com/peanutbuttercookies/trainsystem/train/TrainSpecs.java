@@ -1,3 +1,10 @@
+/*
+* TrainSpecs
+*
+* 1.1, 12/17/15
+*
+* Autumn Good
+*/
 package com.peanutbuttercookies.trainsystem.train;
 
 public class TrainSpecs {

@@ -1,3 +1,10 @@
+/*
+* TrainControllerUI
+*
+* 2.2, 12/17/15
+*
+* Autumn Good
+*/
 package com.peanutbuttercookies.trainsystem.traincontroller;
 
 import java.awt.BorderLayout;
@@ -46,15 +53,15 @@ public class TrainControllerUI extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.columnWidths = new int[]{10, 86, 60, 60, 86, 60, 60, 0, 0, 0, 0, 0, 0};
+		gbl_contentPane.columnWidths = new int[]{10, 86, 60, 60, 0, 86, 60, 60, 0, 0, 0, 0, 0, 0};
 		gbl_contentPane.rowHeights = new int[]{20, 20, 33, 23, 20, 0, 0, 0};
-		gbl_contentPane.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_contentPane.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 		
 		JLabel lblSelectTrain = new JLabel("Select Train:");
 		GridBagConstraints gbc_lblSelectTrain = new GridBagConstraints();
-		gbc_lblSelectTrain.anchor = GridBagConstraints.SOUTHWEST;
+		gbc_lblSelectTrain.anchor = GridBagConstraints.SOUTHEAST;
 		gbc_lblSelectTrain.insets = new Insets(0, 0, 5, 5);
 		gbc_lblSelectTrain.gridx = 2;
 		gbc_lblSelectTrain.gridy = 0;
@@ -78,10 +85,11 @@ public class TrainControllerUI extends JFrame {
 		gbc_selectController_1.gridy = 0;
 		contentPane.add(selectController_1, gbc_selectController_1);
 		selectController_1.addItem(1);
+		if(trainController != null){
+			trainController = (TrainController) selectController_1.getSelectedItem();
+		}
 		
-		trainController = (TrainController) selectController_1.getSelectedItem();
-		
-		JLabel lblSpeedLimit = new JLabel("Speed setpoint:");
+		JLabel lblSpeedLimit = new JLabel("Speed:");
 		GridBagConstraints gbc_lblSpeedLimit = new GridBagConstraints();
 		gbc_lblSpeedLimit.anchor = GridBagConstraints.SOUTHEAST;
 		gbc_lblSpeedLimit.insets = new Insets(0, 0, 5, 5);
@@ -99,13 +107,22 @@ public class TrainControllerUI extends JFrame {
 		gbc_speedText.gridy = 1;
 		contentPane.add(speedText, gbc_speedText);
 		speedText.setColumns(10);
-		speedText.setText(new String(""+trainController.getCommandSpeed()));
+		if(trainController != null){
+			speedText.setText(new String(""+trainController.getCommandSpeed()));
+		}
+		
+		JLabel lblMph = new JLabel("mph");
+		GridBagConstraints gbc_lblMph = new GridBagConstraints();
+		gbc_lblMph.insets = new Insets(0, 0, 5, 5);
+		gbc_lblMph.gridx = 4;
+		gbc_lblMph.gridy = 1;
+		contentPane.add(lblMph, gbc_lblMph);
 		
 		JLabel lblDoors = new JLabel("Doors: ");
 		GridBagConstraints gbc_lblDoors = new GridBagConstraints();
 		gbc_lblDoors.anchor = GridBagConstraints.SOUTHEAST;
 		gbc_lblDoors.insets = new Insets(0, 0, 5, 5);
-		gbc_lblDoors.gridx = 5;
+		gbc_lblDoors.gridx = 6;
 		gbc_lblDoors.gridy = 1;
 		contentPane.add(lblDoors, gbc_lblDoors);
 		
@@ -114,15 +131,17 @@ public class TrainControllerUI extends JFrame {
 		GridBagConstraints gbc_doorsText = new GridBagConstraints();
 		gbc_doorsText.anchor = GridBagConstraints.NORTHWEST;
 		gbc_doorsText.fill = GridBagConstraints.HORIZONTAL;
-		gbc_doorsText.insets = new Insets(0, 0, 5, 0);
-		gbc_doorsText.gridx = 6;
+		gbc_doorsText.insets = new Insets(0, 0, 5, 5);
+		gbc_doorsText.gridx = 7;
 		gbc_doorsText.gridy = 1;
 		contentPane.add(doorsText, gbc_doorsText);
 		doorsText.setColumns(10);
-		if(trainController.isDoorsOpen() == false)
-			doorsText.setText("Closed");
-		else
-			doorsText.setText("Open");
+		if(trainController != null){
+			if(trainController.isDoorsOpen() == false)
+				doorsText.setText("Closed");
+			else
+				doorsText.setText("Open");
+		}
 		
 		JButton btnEnter = new JButton("Enter");
 		btnEnter.addActionListener(new ActionListener() {
@@ -130,13 +149,15 @@ public class TrainControllerUI extends JFrame {
 				try{
 					double speed = Double.parseDouble(enterSpeedText.getText());
 					trainController.setSpeed(speed);
-				}catch(NumberFormatException n){	
+				} catch(NumberFormatException n) {	
 					System.out.println("Not valid");
+				} catch(NullPointerException p) {
+					System.out.println("controller null");
 				}
 			}
 		});
 		
-		JLabel lblNewSpeed = new JLabel("New Speed");
+		JLabel lblNewSpeed = new JLabel("New Speed:");
 		GridBagConstraints gbc_lblNewSpeed = new GridBagConstraints();
 		gbc_lblNewSpeed.anchor = GridBagConstraints.EAST;
 		gbc_lblNewSpeed.insets = new Insets(0, 0, 5, 5);
@@ -152,9 +173,16 @@ public class TrainControllerUI extends JFrame {
 		gbc_enterSpeedText.gridy = 2;
 		contentPane.add(enterSpeedText, gbc_enterSpeedText);
 		enterSpeedText.setColumns(10);
+		
+		JLabel lblMph_1 = new JLabel("mph");
+		GridBagConstraints gbc_lblMph_1 = new GridBagConstraints();
+		gbc_lblMph_1.insets = new Insets(0, 0, 5, 5);
+		gbc_lblMph_1.gridx = 4;
+		gbc_lblMph_1.gridy = 2;
+		contentPane.add(lblMph_1, gbc_lblMph_1);
 		GridBagConstraints gbc_btnEnter = new GridBagConstraints();
 		gbc_btnEnter.insets = new Insets(0, 0, 5, 5);
-		gbc_btnEnter.gridx = 4;
+		gbc_btnEnter.gridx = 5;
 		gbc_btnEnter.gridy = 2;
 		contentPane.add(btnEnter, gbc_btnEnter);
 		
@@ -176,13 +204,22 @@ public class TrainControllerUI extends JFrame {
 		gbc_authText.gridy = 3;
 		contentPane.add(authText, gbc_authText);
 		authText.setColumns(10);
-		authText.setText(new String(""+trainController.getAuth()));
+		if(trainController != null){
+			authText.setText(new String(""+trainController.getAuth()));
+		}
+		
+		JLabel lblMiles = new JLabel("miles");
+		GridBagConstraints gbc_lblMiles = new GridBagConstraints();
+		gbc_lblMiles.insets = new Insets(0, 0, 5, 5);
+		gbc_lblMiles.gridx = 4;
+		gbc_lblMiles.gridy = 3;
+		contentPane.add(lblMiles, gbc_lblMiles);
 		
 		JLabel lblNextStation = new JLabel("Station: ");
 		GridBagConstraints gbc_lblNextStation = new GridBagConstraints();
 		gbc_lblNextStation.anchor = GridBagConstraints.EAST;
 		gbc_lblNextStation.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNextStation.gridx = 5;
+		gbc_lblNextStation.gridx = 6;
 		gbc_lblNextStation.gridy = 3;
 		contentPane.add(lblNextStation, gbc_lblNextStation);
 		
@@ -191,12 +228,14 @@ public class TrainControllerUI extends JFrame {
 		GridBagConstraints gbc_stationText = new GridBagConstraints();
 		gbc_stationText.anchor = GridBagConstraints.NORTHWEST;
 		gbc_stationText.fill = GridBagConstraints.HORIZONTAL;
-		gbc_stationText.insets = new Insets(0, 0, 5, 0);
-		gbc_stationText.gridx = 6;
+		gbc_stationText.insets = new Insets(0, 0, 5, 5);
+		gbc_stationText.gridx = 7;
 		gbc_stationText.gridy = 3;
 		contentPane.add(stationText, gbc_stationText);
 		stationText.setColumns(10);
-		stationText.setText(trainController.getStation());
+		if(trainController != null){
+			stationText.setText(trainController.getStation());
+		}
 		
 		JLabel lblPower = new JLabel("Power:");
 		GridBagConstraints gbc_lblPower = new GridBagConstraints();
@@ -216,32 +255,45 @@ public class TrainControllerUI extends JFrame {
 		gbc_powerText.gridy = 4;
 		contentPane.add(powerText, gbc_powerText);
 		powerText.setColumns(10);
-		powerText.setText(new String(""+trainController.getPower()));
+		if(trainController!= null){
+			powerText.setText(new String(""+trainController.getPower()));
+		}
+		
+		JLabel lblWatts = new JLabel("watts");
+		GridBagConstraints gbc_lblWatts = new GridBagConstraints();
+		gbc_lblWatts.insets = new Insets(0, 0, 5, 5);
+		gbc_lblWatts.gridx = 4;
+		gbc_lblWatts.gridy = 4;
+		contentPane.add(lblWatts, gbc_lblWatts);
 		
 		JLabel lblCurrentBlock = new JLabel("Current Block: ");
 		GridBagConstraints gbc_lblCurrentBlock = new GridBagConstraints();
 		gbc_lblCurrentBlock.anchor = GridBagConstraints.SOUTHWEST;
 		gbc_lblCurrentBlock.insets = new Insets(0, 0, 5, 5);
-		gbc_lblCurrentBlock.gridx = 5;
+		gbc_lblCurrentBlock.gridx = 6;
 		gbc_lblCurrentBlock.gridy = 4;
 		contentPane.add(lblCurrentBlock, gbc_lblCurrentBlock);
 		
 		currentBlock = new JTextField();
 		currentBlock.setEditable(false);
 		GridBagConstraints gbc_currentBlock = new GridBagConstraints();
-		gbc_currentBlock.insets = new Insets(0, 0, 5, 0);
+		gbc_currentBlock.insets = new Insets(0, 0, 5, 5);
 		gbc_currentBlock.anchor = GridBagConstraints.NORTHWEST;
 		gbc_currentBlock.fill = GridBagConstraints.HORIZONTAL;
-		gbc_currentBlock.gridx = 6;
+		gbc_currentBlock.gridx = 7;
 		gbc_currentBlock.gridy = 4;
 		contentPane.add(currentBlock, gbc_currentBlock);
 		currentBlock.setColumns(10);
-		currentBlock.setText(""+trainController.getBlockId());
+		if(trainController != null){
+			currentBlock.setText(""+trainController.getBlockId());
+		}
 		
 		JButton brakesButton = new JButton("Brakes");
 		brakesButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				trainController.setBrakes(true);
+				if(trainController != null){
+					trainController.setBrakes(true);
+				}
 			}
 		});
 		GridBagConstraints gbc_brakesButton = new GridBagConstraints();
@@ -253,18 +305,22 @@ public class TrainControllerUI extends JFrame {
 		JButton eBrakesButton = new JButton("E Brakes");
 		eBrakesButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				trainController.setEmergencyBrakes(true);
+				if(trainController != null){
+					trainController.setEmergencyBrakes(true);
+				}
 			}
 		});
 		GridBagConstraints gbc_eBrakesButton = new GridBagConstraints();
 		gbc_eBrakesButton.insets = new Insets(0, 0, 0, 5);
-		gbc_eBrakesButton.gridx = 5;
+		gbc_eBrakesButton.gridx = 6;
 		gbc_eBrakesButton.gridy = 6;
 		contentPane.add(eBrakesButton, gbc_eBrakesButton);
-		
-		
 	}
 	
+	/**
+	 * Adds a new train controller to the UI
+	 * @param controller The new controller
+	 */
 	public void addControllerToList(TrainController controller){
 		selectController.addItem(controller);
 		if(selectController.getItemCount() == 1){
@@ -273,13 +329,17 @@ public class TrainControllerUI extends JFrame {
 		}
 	}
 	
+	/**
+	 * Removes a train controller from the UI
+	 * @param control The controller to be removed
+	 */
 	public void removeControllerFromList(TrainController control){
 		selectController.removeItem(control);
 	}
 	
 	public void updateUI(){
-		speedText.setText(new String(""+trainController.getSpeedLimit()));
-		authText.setText(new String(""+trainController.getAuth()));
+		speedText.setText(new String(""+trainController.getSpeedLimit()*2.23694));
+		authText.setText(new String(""+trainController.getAuth()*0.000621371));
 		powerText.setText(new String(""+trainController.getPower()));
 		if(trainController.isDoorsOpen() == false)
 			doorsText.setText("Closed");

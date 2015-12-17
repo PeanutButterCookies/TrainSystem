@@ -1,3 +1,10 @@
+/*
+* TrainModel
+*
+* 2.2, 12/17/15
+*
+* Autumn Good
+*/
 package com.peanutbuttercookies.trainsystem.train;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
@@ -22,27 +29,90 @@ public class TrainModel implements TrainModelInterface, Runnable {
 	private double grade = 0;
 	private double mass = 0;
 	private TrainUI gui = null;
-	//private double power;
 	
-	
+	/**
+	 * Initializes a mass so the train is not 0 mass
+	 */
 	public TrainModel() {
 		// TODO Auto-generated constructor stub
-		//this.id = id;
 
-		setMass();
+		mass = specs.getEmptyMass();
 		
 	}
 	
+	@Override
+	public void setSpeedLimits(double limit) {
+		// TODO Auto-generated method stub
+		limit = limit*.27777778;
+		controller.setSpeedLimit(limit);
+	}
+	
+	/**
+	 * Sets the power from the controller and passes it to engine
+	 * @param   power  power command from controller
+	 */
+	public void setPower(double power) {
+		// TODO Auto-generated method stub
+		this.power = power;
+		System.out.println("Current: " + currentBlock.getBlockNumber() + ", Auth: " + auth);
+		engine.applyPower(power, grade, mass);
+	}
+	
+	/**
+	 * Passes emergency brake command to the engine
+	 * @param  eBrakes  boolean giving the brake state
+	 */
+	public void setEmergencyBrakes(boolean eBrakes) {
+		// TODO Auto-generated method stub
+		engine.setEmergencyBrakes(eBrakes);
+	}
+
+	/**
+	 * Sets the authority in this class and passes the commanded speed and auth to the controller, resets the distance traveled
+	 * @param speed The commanded speed
+	 * @param auth The authority in meters
+	 */
+	public void setSpeedAndAuth(double speed, double auth) {
+		// TODO Auto-generated method stub
+		this.auth = auth;
+		controller.setSpeedAndAuth(speed, auth);
+		setDistanceTraveled(0);
+	}
+	
+	/**
+	 * Adds empty mass from specs and randomly generated mass from passengers and passes to engine
+	 */
+	public void setMass(){
+		mass = specs.getEmptyMass() + passengers.getPassMass(specs.getMaxCapac());
+		engine.setMass(mass);
+	}
+	
+	/**
+	 * Sets the id from the trainWrapper and passes the same id to the controller
+	 * @param id id from TrainWrapper
+	 */
 	public void setId(int id){
 		this.id = id;
 		controller.setId(id);
 	}
-	@Override
+	
+	/**
+	 * Sets the angle of the track and passes it to the engine
+	 * @param angle Angle of the track
+	 */
 	public void setAngle(double angle) {
 		// TODO Auto-generated method stub
 		
 		grade = angle;
 		engine.setGrade(angle);
+	}
+	
+	/**
+	 * Calls the controller run method in order to start thread
+	 */
+	public void run() {
+		// TODO Auto-generated method stub
+		boolean value = controller.run();
 	}
 
 	@Override
@@ -53,55 +123,46 @@ public class TrainModel implements TrainModelInterface, Runnable {
 	}
 
 	@Override
-	public void setSpeedLimits(double limit) {
-		// TODO Auto-generated method stub
-		limit = limit*.27777778;
-		controller.setSpeedLimit(limit);
-	}
-
-	@Override
 	public void setLights(String lights) {
 		// TODO Auto-generated method stub
 		controller.setLights(lights);
 	}
+	
+	@Override
+	public double getNumPassengers() {
+		// TODO Auto-generated method stub
+		return passengers.count;
+	}
 
+	@Override
+	public double getNumCars() {
+		// TODO Auto-generated method stub
+		return specs.getNumCars();
+	}
+
+	@Override
+	public double getCurrentSpeed() {
+		// TODO Auto-generated method stub
+		return engine.getCurrentSpeed();
+	}
+
+	@Override
+	public double getAcceleration() {
+		// TODO Auto-generated method stub
+		return engine.getCurrentAccel();
+	}
+	
+	public String toString(){
+		String out = "";
+		out += id;
+		return out;
+	}
+	
 	@Override
 	public void setDoors(boolean doors) {
 		// TODO Auto-generated method stub
 		this.doors = doors;
 	}
-
-	@Override
-	public void setPower(double power) {
-		// TODO Auto-generated method stub
-		this.power = power;
-		System.out.println("Current: " + currentBlock.getBlockNumber() + ", Auth: " + auth);
-		//if(auth == currentBlock.getBlockNumber()){
-		//	System.out.println("what");
-		//	brakes();
-		//} else
-			//engine.brakes = false;
-		engine.applyPower(power, grade, mass);
-	}
-
-	@Override
-	public void setEmergencyBrakes(boolean eBrakes) {
-		// TODO Auto-generated method stub
-		engine.setEmergencyBrakes(eBrakes);
-	}
-
-	@Override
-	public void setSpeedAndAuth(double speed, double auth) {
-		// TODO Auto-generated method stub
-		this.auth = auth;
-		controller.setSpeedAndAuth(speed, auth);
-	}
-	
-	public void setMass(){
-		mass = specs.getEmptyMass() + passengers.getPassMass(specs.getMaxCapac());
-		engine.setMass(mass);
-	}
-
 	
 	public void setBlock(Block block) {
 		// TODO Auto-generated method stub
@@ -138,38 +199,8 @@ public class TrainModel implements TrainModelInterface, Runnable {
 		return power;
 	}
 
-	@Override
-	public double getNumPassengers() {
-		// TODO Auto-generated method stub
-		return passengers.count;
-	}
-
-	@Override
-	public double getNumCars() {
-		// TODO Auto-generated method stub
-		return specs.getNumCars();
-	}
-
-	@Override
-	public double getCurrentSpeed() {
-		// TODO Auto-generated method stub
-		return engine.getCurrentSpeed();
-	}
-
-	@Override
-	public double getAcceleration() {
-		// TODO Auto-generated method stub
-		return engine.getCurrentAccel();
-	}
-	
 	public void setCurrentlySelected(boolean selected){
 		currentlySelected = selected;
-	}
-
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		controller.run();
 	}
 
 	public TrainControllerInterface getController() {
@@ -179,13 +210,6 @@ public class TrainModel implements TrainModelInterface, Runnable {
 	public void setController(TrainControllerInterface controller) {
 		this.controller = controller;
 	}
-
-	
-	public String toString(){
-		String out = "";
-		out += id;
-		return out;
-	}
 	
 	public double getDistanceTraveled() {
 		return distanceTraveled;
@@ -193,6 +217,7 @@ public class TrainModel implements TrainModelInterface, Runnable {
 
 	public void setDistanceTraveled(double distanceTraveled) {
 		this.distanceTraveled = distanceTraveled;
+		controller.setDistance(distanceTraveled);
 	}
 
 	public double getCurrentAccleration() {
@@ -275,10 +300,6 @@ public class TrainModel implements TrainModelInterface, Runnable {
 		this.currentSpeed = currentSpeed;
 	}
 
-	public void setMass(double mass) {
-		this.mass = mass;
-	}
-
 }
 
 class Passengers{
@@ -289,146 +310,23 @@ class Passengers{
 		
 	}
 	
+	/**
+	 * This function generates a random number of passengers based on the max capacity of the train
+	 * @param maxCapac The maximum number of passengers the train can hold
+	 */
 	public void generatePassengers(int maxCapac){
 		count = (int) (Math.random()*maxCapac);
 	}
 	
+	/**
+	 * Calls generate passengers, calculates the mass of the new number of passengers based on average
+	 * body mass
+	 * @param maxCapac The maximum number of passengers the train can hold
+	 * @return The total mass of the passengers
+	 */
 	public double getPassMass(int maxCapac){
 		generatePassengers(maxCapac);
 		passMass = count*80.7;
 		return passMass;
 	}
 }
-=======
-		System.out.println("Current: " + currentBlock.getBlockNumber() + ", Auth: " + auth);
-		//if(auth == currentBlock.getBlockNumber()){
-		//	System.out.println("what");
-		//	brakes();
-		//} else
-			//engine.brakes = false;
-		engine.applyPower(power, grade, mass);
-	}
-
-	@Override
-	public void setEmergencyBrakes(boolean eBrakes) {
-		// TODO Auto-generated method stub
-		engine.emergencyBrakes = eBrakes;
-	}
-
-	@Override
-	public void setSpeedAndAuth(double speed, double auth) {
-		// TODO Auto-generated method stub
-		this.auth = auth;
-		controller.setSpeedAndAuth(speed, auth);
-	}
-	
-	public void setMass(){
-		mass = specs.getEmptyMass() + passengers.getPassMass(specs.getMaxCapac());
-		engine.mass = mass;
-	}
-
-	
-	public void setBlock(Block block) {
-		// TODO Auto-generated method stub
-		currentBlock = block;
-	}
-
-	@Override
-	public double getLength() {
-		// TODO Auto-generated method stub
-		return specs.getLength();
-	}
-
-	@Override
-	public double getWidth() {
-		// TODO Auto-generated method stub
-		return specs.getWidth();
-	}
-
-	@Override
-	public double getHeight() {
-		// TODO Auto-generated method stub
-		return specs.getHeight();
-	}
-
-	@Override
-	public double getMass() {
-		// TODO Auto-generated method stub
-		return mass;
-	}
-
-	@Override
-	public double getPower() {
-		// TODO Auto-generated method stub
-		return power;
-	}
-
-	@Override
-	public double getNumPassengers() {
-		// TODO Auto-generated method stub
-		return passengers.count;
-	}
-
-	@Override
-	public double getNumCars() {
-		// TODO Auto-generated method stub
-		return specs.getNumCars();
-	}
-
-	@Override
-	public double getCurrentSpeed() {
-		// TODO Auto-generated method stub
-		return engine.currentSpeed;
-	}
-
-	@Override
-	public double getAcceleration() {
-		// TODO Auto-generated method stub
-		return engine.currentAccel;
-	}
-	
-	public void setCurrentlySelected(boolean selected){
-		currentlySelected = selected;
-	}
-
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		controller.run();
-	}
-
-	public TrainControllerInterface getController() {
-		return controller;
-	}
-
-	public void setController(TrainControllerInterface controller) {
-		this.controller = controller;
-	}
-
-	
-	public String toString(){
-		String out = "";
-		out += id;
-		return out;
-	}
-}
-
-class Passengers{
-	public int count;
-	public double passMass;
-	
-	public Passengers(){
-		
-	}
-	
-	public void generatePassengers(int maxCapac){
-		count = (int) (Math.random()*maxCapac);
-	}
-	
-	public double getPassMass(int maxCapac){
-		generatePassengers(maxCapac);
-		passMass = count*80.7;
-		return passMass;
-	}
-}
-

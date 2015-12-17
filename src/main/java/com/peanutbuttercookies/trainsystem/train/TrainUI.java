@@ -1,4 +1,10 @@
-
+/*
+* TrainUI
+*
+* 2.2, 12/17/15
+*
+* Autumn Good
+*/
 package com.peanutbuttercookies.trainsystem.train;
 
 import java.awt.BorderLayout;
@@ -33,6 +39,13 @@ public class TrainUI extends JFrame {
 	private JTextField power;
 	private JComboBox<TrainModel> selectTrain;
 	private TrainModel train;
+	private JLabel lblFeet;
+	private JLabel lblFeet_1;
+	private JLabel lblFeet_2;
+	private JLabel lblMph;
+	private JLabel lblMph_1;
+	private JLabel lblWatts;
+	private JLabel lblTons;
 
 	/**
 	 * Create the frame.
@@ -46,9 +59,9 @@ public class TrainUI extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.columnWidths = new int[]{66, 86, 89, 86, 0};
+		gbl_contentPane.columnWidths = new int[]{66, 86, 0, 89, 86, 0, 0};
 		gbl_contentPane.rowHeights = new int[]{20, 20, 20, 20, 20, 25, 20, 0};
-		gbl_contentPane.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_contentPane.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 		
@@ -96,13 +109,22 @@ public class TrainUI extends JFrame {
 		gbc_length.gridy = 1;
 		contentPane.add(length, gbc_length);
 		length.setColumns(10);
-		length.setText(new String(""+train.getLength()));
+		if(train != null){
+			length.setText(new String(""+train.getLength()));
+		}
+		
+		lblFeet = new JLabel("Feet");
+		GridBagConstraints gbc_lblFeet = new GridBagConstraints();
+		gbc_lblFeet.insets = new Insets(0, 0, 5, 5);
+		gbc_lblFeet.gridx = 2;
+		gbc_lblFeet.gridy = 1;
+		contentPane.add(lblFeet, gbc_lblFeet);
 		
 		JLabel lblPassengerCount = new JLabel("Passenger Count: ");
 		GridBagConstraints gbc_lblPassengerCount = new GridBagConstraints();
 		gbc_lblPassengerCount.anchor = GridBagConstraints.SOUTHWEST;
 		gbc_lblPassengerCount.insets = new Insets(0, 0, 5, 5);
-		gbc_lblPassengerCount.gridx = 2;
+		gbc_lblPassengerCount.gridx = 3;
 		gbc_lblPassengerCount.gridy = 1;
 		contentPane.add(lblPassengerCount, gbc_lblPassengerCount);
 		
@@ -110,12 +132,14 @@ public class TrainUI extends JFrame {
 		passengerCount.setEditable(false);
 		GridBagConstraints gbc_passengerCount = new GridBagConstraints();
 		gbc_passengerCount.anchor = GridBagConstraints.NORTHWEST;
-		gbc_passengerCount.insets = new Insets(0, 0, 5, 0);
-		gbc_passengerCount.gridx = 3;
+		gbc_passengerCount.insets = new Insets(0, 0, 5, 5);
+		gbc_passengerCount.gridx = 4;
 		gbc_passengerCount.gridy = 1;
 		contentPane.add(passengerCount, gbc_passengerCount);
 		passengerCount.setColumns(10);
-		passengerCount.setText(""+train.getNumPassengers());
+		if(train != null){
+			passengerCount.setText(""+train.getNumPassengers());
+		}
 		
 		JLabel lblWidth = new JLabel("Width: ");
 		GridBagConstraints gbc_lblWidth = new GridBagConstraints();
@@ -134,13 +158,22 @@ public class TrainUI extends JFrame {
 		gbc_width.gridy = 2;
 		contentPane.add(width, gbc_width);
 		width.setColumns(10);
-		width.setText(""+train.getWidth());
+		if(train != null){
+			width.setText(""+train.getWidth());
+		}
+		
+		lblFeet_1 = new JLabel("Feet");
+		GridBagConstraints gbc_lblFeet_1 = new GridBagConstraints();
+		gbc_lblFeet_1.insets = new Insets(0, 0, 5, 5);
+		gbc_lblFeet_1.gridx = 2;
+		gbc_lblFeet_1.gridy = 2;
+		contentPane.add(lblFeet_1, gbc_lblFeet_1);
 		
 		JLabel lblMass = new JLabel("Mass:");
 		GridBagConstraints gbc_lblMass = new GridBagConstraints();
 		gbc_lblMass.anchor = GridBagConstraints.SOUTHEAST;
 		gbc_lblMass.insets = new Insets(0, 0, 5, 5);
-		gbc_lblMass.gridx = 2;
+		gbc_lblMass.gridx = 3;
 		gbc_lblMass.gridy = 2;
 		contentPane.add(lblMass, gbc_lblMass);
 		
@@ -148,12 +181,21 @@ public class TrainUI extends JFrame {
 		mass.setEditable(false);
 		GridBagConstraints gbc_mass = new GridBagConstraints();
 		gbc_mass.anchor = GridBagConstraints.NORTHWEST;
-		gbc_mass.insets = new Insets(0, 0, 5, 0);
-		gbc_mass.gridx = 3;
+		gbc_mass.insets = new Insets(0, 0, 5, 5);
+		gbc_mass.gridx = 4;
 		gbc_mass.gridy = 2;
 		contentPane.add(mass, gbc_mass);
 		mass.setColumns(10);
-		mass.setText(""+train.getMass());
+		if(train != null){
+			mass.setText(""+train.getMass());
+		}
+		
+		lblTons = new JLabel("Tons");
+		GridBagConstraints gbc_lblTons = new GridBagConstraints();
+		gbc_lblTons.insets = new Insets(0, 0, 5, 0);
+		gbc_lblTons.gridx = 5;
+		gbc_lblTons.gridy = 2;
+		contentPane.add(lblTons, gbc_lblTons);
 		
 		JLabel lblHeight = new JLabel("Height: ");
 		GridBagConstraints gbc_lblHeight = new GridBagConstraints();
@@ -172,7 +214,16 @@ public class TrainUI extends JFrame {
 		gbc_height.gridy = 3;
 		contentPane.add(height, gbc_height);
 		height.setColumns(10);
-		height.setText(""+train.getHeight());
+		if(train != null){
+			height.setText(""+train.getHeight());
+		}
+		
+		lblFeet_2 = new JLabel("Feet");
+		GridBagConstraints gbc_lblFeet_2 = new GridBagConstraints();
+		gbc_lblFeet_2.insets = new Insets(0, 0, 5, 5);
+		gbc_lblFeet_2.gridx = 2;
+		gbc_lblFeet_2.gridy = 3;
+		contentPane.add(lblFeet_2, gbc_lblFeet_2);
 		
 		JLabel lblSpeed = new JLabel("Speed: ");
 		GridBagConstraints gbc_lblSpeed = new GridBagConstraints();
@@ -191,7 +242,16 @@ public class TrainUI extends JFrame {
 		gbc_speed.gridy = 4;
 		contentPane.add(speed, gbc_speed);
 		speed.setColumns(10);
-		speed.setText(""+train.getCurrentSpeed()*2.23694); //convert to mph
+		if(train != null){
+			speed.setText(""+train.getCurrentSpeed()*2.23694); //convert to mph
+		}
+		
+		lblMph = new JLabel("mph");
+		GridBagConstraints gbc_lblMph = new GridBagConstraints();
+		gbc_lblMph.insets = new Insets(0, 0, 5, 5);
+		gbc_lblMph.gridx = 2;
+		gbc_lblMph.gridy = 4;
+		contentPane.add(lblMph, gbc_lblMph);
 		
 		JLabel lblAcceleration = new JLabel("Acceleration: ");
 		GridBagConstraints gbc_lblAcceleration = new GridBagConstraints();
@@ -210,19 +270,31 @@ public class TrainUI extends JFrame {
 		gbc_acceleration.gridy = 5;
 		contentPane.add(acceleration, gbc_acceleration);
 		acceleration.setColumns(10);
-		acceleration.setText(""+train.getAcceleration());
+		if(train!= null){
+			acceleration.setText(""+train.getAcceleration());
+		}
+		
 		
 		JButton btnEmergencyBrake = new JButton("Emergency Brake");
 		btnEmergencyBrake.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				train.controller.setEmergencyBrakes(true);
+				if(train != null){
+					train.controller.setEmergencyBrakes(true);
+				}
 			}
 		});
+		
+		lblMph_1 = new JLabel("mph^2");
+		GridBagConstraints gbc_lblMph_1 = new GridBagConstraints();
+		gbc_lblMph_1.insets = new Insets(0, 0, 5, 5);
+		gbc_lblMph_1.gridx = 2;
+		gbc_lblMph_1.gridy = 5;
+		contentPane.add(lblMph_1, gbc_lblMph_1);
 		GridBagConstraints gbc_btnEmergencyBrake = new GridBagConstraints();
 		gbc_btnEmergencyBrake.anchor = GridBagConstraints.SOUTHEAST;
-		gbc_btnEmergencyBrake.insets = new Insets(0, 0, 5, 0);
+		gbc_btnEmergencyBrake.insets = new Insets(0, 0, 5, 5);
 		gbc_btnEmergencyBrake.gridwidth = 2;
-		gbc_btnEmergencyBrake.gridx = 2;
+		gbc_btnEmergencyBrake.gridx = 3;
 		gbc_btnEmergencyBrake.gridy = 5;
 		contentPane.add(btnEmergencyBrake, gbc_btnEmergencyBrake);
 		
@@ -243,12 +315,25 @@ public class TrainUI extends JFrame {
 		gbc_power.gridy = 6;
 		contentPane.add(power, gbc_power);
 		power.setColumns(10);
-		power.setText(""+train.getPower());
+		if(train != null){
+			power.setText(""+train.getPower());
+		}
+		
+		
+		lblWatts = new JLabel("Watts");
+		GridBagConstraints gbc_lblWatts = new GridBagConstraints();
+		gbc_lblWatts.insets = new Insets(0, 0, 0, 5);
+		gbc_lblWatts.gridx = 2;
+		gbc_lblWatts.gridy = 6;
+		contentPane.add(lblWatts, gbc_lblWatts);
 		//selectTrain.addItem(1);
 		//add(contentPane);
 		setVisible(true);
 	}
-	
+	/**
+	 * Adds a new train model to the UI from the TrainWrapper
+	 * @param train New train model from TrainWrapper
+	 */
 	public void addTrainToList(TrainModel train){
 		selectTrain.addItem(train);
 		if(selectTrain.getItemCount() == 1){
@@ -257,18 +342,25 @@ public class TrainUI extends JFrame {
 		}
 	}
 	
+	/**
+	 * Removes a train from the UI
+	 * @param train Train to be removed
+	 */
 	public void removeTrainFromList(TrainModel train){
 		selectTrain.removeItem(train);
 	}
 	
+	/**
+	 * Is called every run iteration to update the UI with new values
+	 */
 	public void updateUI(){
-		height.setText(""+train.getHeight());
-		power.setText(""+train.getPower());
-		acceleration.setText(""+train.getAcceleration());
+		height.setText(""+train.getHeight()*3.28084);
+		power.setText(""+train.getPower()*3.28084);
+		acceleration.setText(""+train.getAcceleration()* 8052.9706513958);
 		speed.setText(""+train.getCurrentSpeed()*2.23694);
-		mass.setText(""+train.getMass());
+		mass.setText(""+train.getMass()*0.00110231);
 		passengerCount.setText(""+train.getNumPassengers());
-		width.setText(""+train.getWidth());
-		length.setText(new String(""+train.getLength()));
+		width.setText(""+train.getWidth()*3.28084);
+		length.setText(new String(""+train.getLength()*3.28084));
 	}
 }

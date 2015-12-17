@@ -1,5 +1,11 @@
+/*
+* SpeedControl
+*
+* 1.2, 12/17/15
+*
+* Autumn Good
+*/
 package com.peanutbuttercookies.trainsystem.traincontroller;
-
 
 
 public class SpeedControl {
@@ -35,6 +41,11 @@ public class SpeedControl {
 		control = con;
 	}
 	
+	/**
+	 * Calculates the necessary power based on the commanded velocity and brake commands
+	 * @param speed The current speed
+	 * @return power returns the final power calculation
+	 */
 	public double calcPower(double speed){
 		//System.out.println(commandSpeed);
 		if(commandSpeed > speedLimit){
@@ -75,16 +86,21 @@ public class SpeedControl {
 
 		maxAllowedPower = verifyPower(speed);
 		if(maxAllowedPower>power){
-			control.getGui().updateUI();
-			//control.train.setPower(power);
+			if(control.isCurrentlySelected()){
+				control.getGui().updateUI();
+			}
 			return power;
 		}
 		else
-			control.getGui().updateUI();
-			//control.train.setPower(0);
+			if(control.isCurrentlySelected()){
+				control.getGui().updateUI();
+			}
 			return maxAllowedPower;
 	}
 	
+	/**
+	 * Checks if the train should be braking based on the braking distance and authority
+	 */
 	public void brakeCheck(){
 		double brakeDistance = Math.pow(speed,2)/(2.0*BRAKE_ACCEL);
 		double eBrakeDistance = Math.pow(speed,2)/(2.0*E_BRAKE_ACCEL);
@@ -96,6 +112,12 @@ public class SpeedControl {
 		}
 	}
 	
+	/**
+	 * double checks power command by comparing the power command for the commanded velocity and
+	 * a power command for the maximum velocity of the train
+	 * @param speed current speed
+	 * @return power the maximum power it can safely give
+	 */
 	public double verifyPower(double speed){
 		ek = MAX_SPEED - speed;
 		uk = uk_prev + .01/2 * (ek + ek_prev);
