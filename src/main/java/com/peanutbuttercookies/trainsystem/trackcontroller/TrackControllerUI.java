@@ -828,8 +828,12 @@ public class TrackControllerUI extends JFrame {
 					while(!(Integer.toString(currTC.getControllerId()).equals(comboBoxTrackController_1.getSelectedItem().toString())) && tcIterator.hasNext()){
 						currTC=tcIterator.next();
 					}
-					
-					new LoadPLCSuccessFrame(currTC.setPLCProgram(textFieldFileLocation.getText())).setVisible(true);;
+					if(textFieldFileLocation.getText().contains(".plc")){
+						new LoadPLCSuccessFrame(currTC.setPLCProgram(textFieldFileLocation.getText())).setVisible(true);
+					}
+					else{
+						new LoadPLCSuccessFrame(false);
+					}
 				}
 			}
 		});
@@ -1011,12 +1015,7 @@ public class TrackControllerUI extends JFrame {
 			
 			String lights="";
 			if(currBlock.hasRRCrossing() || currBlock.getMasterSwitch()){
-				switch(currBlock.getLight()){
-				case 1:{lights="GREEN";}break;
-				case 2:{lights="YELLOW";}break;
-				case 3:{lights="RED";}break;
-				default:{lights="";}
-				}
+				lights=currBlock.getLight();
 			}
 			tableVariableDisplay.setValueAt(lights, counter, 8);									//Lights
 			counter++;
