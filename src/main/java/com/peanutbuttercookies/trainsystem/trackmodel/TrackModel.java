@@ -215,10 +215,12 @@ public class TrackModel implements TrackModelInterface {
 	private TrainModelInterface trainComm;
 	private TrackModelUI tmUI;
 	private ExcelFileDownloaderInterface excelDownloader;
-    private LinkedList<Block> track;
-    private LinkedList<Line> lines;
-    private Map<Integer, LinkedList<Block>> switchMap;
+	private LinkedList<Block> line;
+	private LinkedList<Line> track;
+	private Map<String, LinkedList<Block>> yardMap;
+	private Map<Integer, LinkedList<Block>> switchMap;
 
+<<<<<<< HEAD
 =======
 	private TrainInterface trainComm;
 <<<<<<< HEAD
@@ -240,356 +242,438 @@ public class TrackModel implements TrackModelInterface {
 >>>>>>> refs/remotes/origin/master
 	
 	public TrackModel()throws IOException {
+=======
+	public TrackModel() throws IOException {
+>>>>>>> branch 'master' of https://github.com/PeanutButterCookies/TrainSystem.git
 	}
-	
-	public void fileRead(String filename) throws IOException
-	{
-		lines = new LinkedList<Line>();
-		track = new LinkedList<Block>();
+
+	public void fileRead(String filename) throws IOException {
+		track = new LinkedList<Line>();
+		line = new LinkedList<Block>();
+		yardMap = new HashMap<String, LinkedList<Block>>();
 		switchMap = new HashMap<Integer, LinkedList<Block>>();
 		filename = filename.replace("\\", "/");
 		excelReader(filename);
+		findDirection();
+		organizeSwitch();
+		setNextPossible();
+		makeYard();
+		organizeYard();
+		initSwitchDirection();
 	}
+
 	
+
 	public void excelReader(String filePath) throws IOException {
 		FileInputStream inputStream = new FileInputStream(new File(filePath));
-		
+
 		Workbook workbook = new XSSFWorkbook(inputStream);
-		int sheetNum		= workbook.getNumberOfSheets();
-		for(int i = 0; i < sheetNum; i++)
-		{
+		int sheetNum = workbook.getNumberOfSheets();
+		for (int i = 0; i < sheetNum; i++) {
 			Sheet firstSheet = workbook.getSheetAt(i);
 			Iterator<Row> iterator = firstSheet.iterator();
-			String lineName=firstSheet.getSheetName();
-			if(lineName.contains("Line"))	{
-				int sectionStart = 0;
-	            int sectionEnd = 0;
-	            String curSection = "";
+			String lineName = firstSheet.getSheetName();
+			if (lineName.contains("Line")) {
 				while (iterator.hasNext()) {
-		            Row nextRow = iterator.next();
-		            Iterator<Cell> cellIterator = nextRow.cellIterator();
-		            int index = 0;
-		            boolean hasInfra = false;
-		            boolean hasSwitch = false;
-		            boolean hasInfraSwitch = false;
-		            boolean hasArrow = false;
-		            boolean hasStation = false;
-		            boolean hasCrossing = false;
-		            boolean hasUnderground = false;
-		            boolean hasToYard = false;
-		            boolean hasFromYard = false;
-		            boolean masterSwitch = false;
-		            String station = "";
-		            int arrowA = 0;
-		            int arrowB = 0;
-		            String switchId = "-1";
-		            String[] info = new String[11];
-		            while (cellIterator.hasNext()) {
-		            	Cell cell = cellIterator.next();
-		            	if(cell.getCellType() == Cell.CELL_TYPE_STRING)
-		            	{
-		                	if(cell.getStringCellValue().contains("CROSSING"))	{
-		                		hasCrossing = true;
-		                	}
-		                	if(cell.getStringCellValue().contains("SWITCH"))	{
-		                		hasSwitch = true;
-		                		masterSwitch = true;
-		                	}
-		            		if(cell.getStringCellValue().contains("TO YARD"))	{
-		                    	hasToYard = true;
-		                    }
-		            		if(cell.getStringCellValue().contains("FROM YARD"))	{
-		                    	hasFromYard = true;
-		                    }
-		            		if(cell.getStringCellValue().contains("TO YARD"))	{
-		                    	hasToYard = true;
-		                    	hasFromYard = true;
-		                    }
-		                	if(cell.getStringCellValue().contains("STATION"))	{
-		                		hasStation = true;
-		                		String delims = "[;]+";
-		                		String tokens[] = cell.getStringCellValue().split(delims);
-		                		for(int j = 0; j<tokens.length; j++)	{
-		        					if(j>0 && tokens[j-1].contains("STATION"))	{
-		        						if(tokens[j].length() > 0)
-		        							station = tokens[j].replace(";", "");
-		        					}
-		        				}
-		                	}
-		                	if(cell.getStringCellValue().contains("UNDERGROUND"))	{
-		                		hasUnderground = true;
-		                	}
-		                    if(cell.getStringCellValue().contains("Switch"))	{
-		                    	hasSwitch = true;
-		                    	String cellInfo = cell.getStringCellValue();
-		                    	cellInfo = cellInfo.replaceFirst(".*?(\\d+).*", "$1");
-                            	switchId = cellInfo;
-		                    }
-		                    if(cell.getStringCellValue().contains("TO YARD"))	{
-		                    	hasToYard = true;
-		                    }
-		            		if(cell.getStringCellValue().contains("FROM YARD"))	{
-		                    	hasFromYard = true;
-		                    }
-		            		if(cell.getStringCellValue().contains("TO YARD"))	{
-		                    	hasToYard = true;
-		                    	hasFromYard = true;
-		                    }
-		                    if(cell.getStringCellValue().contains("Head"))	{
-		                    	hasArrow = true;
-		                    	arrowA = 1;
-		                    }
-		                    if(cell.getStringCellValue().contains("Tail"))	{
-		                    	hasArrow = true;
-		                    	arrowA = -1;
-		                    }
-		                    if(cell.getStringCellValue().contains("Tail/Head"))	{
-		                    	hasArrow = true;
-		                    	arrowA = 2;
-		                    	arrowB = 0;
-		                    }
-		                    if(cell.getStringCellValue().contains("Head/Tail"))	{
-                            	hasArrow = true;
-                            	arrowA = 2;
-                            	arrowB = 0;
-                            }
-		                    if(cell.getStringCellValue().contains("Head/Head"))	{
-                            	hasArrow = true;
-                            	arrowA = 3;
-                            	arrowB = 0;
-                            }
-		        		}
-		            	if(cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
-		                    switch(cell.getCachedFormulaResultType()) {
-		                        case Cell.CELL_TYPE_NUMERIC:
-		                            info[index++] = "" + cell.getNumericCellValue();
-		                            break;
-		                        case Cell.CELL_TYPE_STRING:
-		                            String cellInfo = "" + cell.getRichStringCellValue();
-		                            if(cellInfo.contains("STATION"))	{
-		                            	hasStation = true;
-		                            	String delims = "[ ]+";
-		                				String[] tokens = cellInfo.split(delims);
-		                				for(int j = 0; j<tokens.length; j++)	{
-		                					if(tokens[j].contains("STATION"))	{
-		                						station = tokens[j+1].replace(";", "");
-		                					}
-		                				}
-		                            }
-		                            if(cellInfo.contains("CROSSING"))	{
-		                            	hasCrossing = true;
-		                            }
-		                            if(cellInfo.contains("SWITCH"))	{
-		                            	hasSwitch = true;
-		                            	masterSwitch = true;
-		                            }
-		                            if(cellInfo.contains("UNDERGROUND"))	{
-		                                hasUnderground = true;
-		                        	}
-		                            if(cellInfo.contains("Switch"))	{
-		                            	cellInfo = cellInfo.replaceFirst(".*?(\\d+).*", "$1");
-		                            	switchId = cellInfo;
-		                            }
-		                            if(cellInfo.contains("Head"))	{ 
-		                            	hasArrow = true;
-		                            	arrowA = 1;
-		                            	arrowB = 0;
-		                            }
-		                            if(cellInfo.contains("Tail"))	{
-		                            	hasArrow = true;
-		                            	arrowA = -1;
-		                            	arrowB = 0;
-		                            }
-		                            if(cellInfo.contains("Tail/Head"))	{
-		                            	hasArrow = true;
-		                            	arrowA = 2;
-		                            	arrowB = 0;
-		                            }
-		                            if(cellInfo.contains("Head/Tail"))	{
-		                            	hasArrow = true;
-		                            	arrowA = 2;
-		                            	arrowB = 0;
-		                            }
-		                            if(cellInfo.contains("Head/Head"))	{
-		                            	hasArrow = true;
-		                            	arrowA = 3;
-		                            	arrowB = 0;
-		                            }
-		                            if(!(hasSwitch || hasUnderground || hasStation || hasCrossing ||hasArrow))
-		                            	info[index++] = cellInfo;
-		                            }
-		                 }
-		            	else	{
-		            		String newWord = "" + cell;
-		            		if(newWord.length()>0 && !(hasSwitch || hasUnderground || hasStation || hasCrossing ||hasArrow))
-		            			info[index++] = newWord; 
-		            	}
-		            } 
-		            if(info[0] != null && !info[0].equals("Line") && info[0].length()>0)	{
-		            	Double blockNum = Double.parseDouble(info[2]);
-		            	int blockNumI = blockNum.intValue();
-		            	Double blockLen = Double.parseDouble(info[3]);
-		            	int blockLenI = blockLen.intValue();
-		            	Double speedLim = Double.parseDouble(info[5]);
-		            	int speedLimI = blockLen.intValue();
-		            	
-		            	if(curSection.equals(""))
-		            	{
-		            		curSection = info[1];
-		            		sectionStart = 0;
-		            	}
-		            	else if (!info[1].equals(curSection))
-		            	{
-		            		if(track.get(sectionStart).getArrowDirectionA() == 1 && ((track.get(sectionEnd-1).getArrowDirectionA() == 1) || (arrowA==3)))
-		            			for(int j = sectionStart; j<sectionEnd; j++)
-		            				track.get(j).setTwoWay(true);
-		            		curSection = info[1];
-		            		sectionStart = sectionEnd;
-		            	}
-		            	sectionEnd++;
-		            	
-		            	Block newBlock = new Block(info[0], info[1], blockNumI, blockLenI, Float.parseFloat(info[4]), 
-		            			speedLimI, Float.parseFloat(info[6]), Float.parseFloat(info[7]), hasToYard, 
-		            			hasFromYard, hasSwitch, hasUnderground, hasCrossing, hasStation, station,
-		            			Integer.parseInt(switchId), arrowA, arrowB);
-		            	if(hasSwitch)	{
-		            		
-		            		if(switchMap.get(Integer.parseInt(switchId)) == null)	{
-		            			LinkedList<Block> newList = new LinkedList<Block>();
-		            			newList.add(newBlock);
-		            			switchMap.put(Integer.parseInt(switchId), newList);
-		            		}
-		            		else	{
-		            			LinkedList<Block> newList = switchMap.get(Integer.parseInt(switchId));
-		            			newList.add(newBlock);
-		            			switchMap.put(Integer.parseInt(switchId), newList);
-		            		}
-		            	}
-		            	if(masterSwitch)	{
-		            		newBlock.setMasterSwitch(true);
-		            	}
-		            	track.add(newBlock);
-		            }
+					Row nextRow = iterator.next();
+					Iterator<Cell> cellIterator = nextRow.cellIterator();
+					if (nextRow.getCell(0) != null && !nextRow.getCell(0).getStringCellValue().equals("Line")) {
+						iterateRow(nextRow);
+					}
 				}
-				LinkedList<Block> newTrack = new LinkedList<Block>(track);
-				Line newLine = new Line(track.get(0).getLine(), newTrack);
-		        lines.add(newLine);
-		        track.clear();
+				LinkedList<Block> newLine = new LinkedList<Block>(line);
+				Line newTrack = new Line(line.get(0).getLine(), newLine);
+				track.add(newTrack);
+				line.clear();
+			}
+
+		}
+
+	}
+
+	public void iterateRow(Row row) {
+		String lineStr = row.getCell(0).getStringCellValue();
+		String section = row.getCell(1).getStringCellValue();
+		int blockNum = (int) row.getCell(2).getNumericCellValue();
+		double blockLen = row.getCell(3).getNumericCellValue();
+		double blockGrade = row.getCell(4).getNumericCellValue();
+		double speedLim = row.getCell(5).getNumericCellValue();
+		String infra = "";
+		boolean toYard = false;
+		boolean fromYard = false;
+		boolean hasUnderground = false;
+		boolean hasCrossing = false;
+		boolean hasStation = false;
+		boolean masterSwitch = false;
+		String station = "";
+		if (row.getCell(6) != null) {
+			infra = row.getCell(6).getStringCellValue();
+			if (infra.contains("SWITCH")) {
+				masterSwitch = true;
+			}
+			if (infra.contains("TO YARD")) {
+				toYard = true;
+			}
+			if (infra.contains("FROM YARD")) {
+				fromYard = true;
+			}
+			if (infra.contains("TO/FROM YARD")) {
+				toYard = true;
+				fromYard = true;
+			}
+			if (infra.contains("UNDERGROUND")) {
+				hasUnderground = true;
+			}
+			if (infra.contains("CROSSING")) {
+				hasCrossing = true;
+			}
+			if (infra.contains("STATION")) {
+				hasStation = true;
+				String delims = "[ ;]+";
+				String[] tokens = infra.split(delims);
+				for (int i = 0; i < tokens.length; i++) {
+					if (!tokens[i].equals("UNDERGROUND") && !tokens[i].contains("STATION")
+							&& !tokens[i].equals("CROSSING") && !tokens[i].equals("RAILWAY")
+							&& !tokens[i].equals("SWITCH"))
+						if (station.length() > 1) {
+							station = station + " " + tokens[i];
+						} else {
+							station = station + tokens[i];
+						}
+				}
 			}
 		}
-		
-		for(int i = 0; i < lines.size(); i++)	{
-			track = lines.get(i).getAllBlocks();
-			for(int j = 0; j<track.size(); j++)
-			{
-				Block curBlock = track.get(j);
-				Block nextBlock = track.get(j);
-				Block prevBlock = track.get(j);
-				boolean switchEqualNext = true;
-				boolean switchEqualPrev = true;
+		double elev = row.getCell(8).getNumericCellValue();
+		double cumElev = row.getCell(9).getNumericCellValue();
+		int switchBlock = -1;
+		boolean hasSwitch = false;
+		if (row.getCell(10) != null) {
+			String cellInfo = row.getCell(10).getStringCellValue();
+			cellInfo = cellInfo.replaceFirst(".*?(\\d+).*", "$1");
+			switchBlock = Integer.parseInt(cellInfo);
+			hasSwitch = true;
+		}
+		String arrow = "";
+		int arrowInt = 0;
+		if (row.getCell(11) != null) {
+			arrow = row.getCell(11).getStringCellValue();
+			if (arrow.contains("Head")) {
+				arrowInt = 1;
+			}
+			if (arrow.contains("Tail")) {
+				arrowInt = -1;
+			}
+			if (arrow.contains("Tail/Head")) {
+				arrowInt = 2;
+			}
+			if (arrow.contains("Head/Tail")) {
+				arrowInt = 3;
+			}
+			if (arrow.contains("Head/Head")) {
+				arrowInt = 4;
+			}
+		}
+		Block newBlock = new Block(lineStr, section, blockNum, blockLen, blockGrade, speedLim, elev, cumElev, toYard,
+				fromYard, hasSwitch, hasUnderground, hasCrossing, hasStation, station, switchBlock, arrowInt);
+		if (toYard || fromYard) {
+			if (yardMap.get(lineStr) == null) {
+				LinkedList<Block> newList = new LinkedList<Block>();
+				newList.add(newBlock);
+				yardMap.put(lineStr, newList);
+			} else {
+				LinkedList<Block> newList = yardMap.get(lineStr);
+				newList.add(newBlock);
+				yardMap.put(lineStr, newList);
+			}
+		}
+		if (hasSwitch) {
 
-				if(j<track.size()-1){
-					nextBlock = track.get(j+1);
+			if (switchMap.get(switchBlock) == null) {
+				LinkedList<Block> newList = new LinkedList<Block>();
+				newList.add(newBlock);
+				switchMap.put(switchBlock, newList);
+			} else {
+				LinkedList<Block> newList = switchMap.get(switchBlock);
+				newList.add(newBlock);
+				switchMap.put(switchBlock, newList);
+			}
+		}
+		newBlock.setMasterSwitch(masterSwitch);
+		line.add(newBlock);
+	}
+
+	public void findDirection() {
+		for (int i = 0; i < track.size(); i++) {
+			line = track.get(i).getAllBlocks();
+			for (int j = 0; j < line.size(); j++) {
+				String section = line.get(j).getSection();
+				int secStartDir = line.get(j).getArrowDirection();
+				int secEndDir = 0;
+				int count = j + 1;
+				while (count < line.size() && line.get(j).getSection().equals(line.get(count).getSection())) {
+					secEndDir = line.get(count).getArrowDirection();
+					count++;
 				}
-				else	{
-					nextBlock = track.get(0);
+				if (secStartDir == 3) {
+					line.get(j).setBackwards();
 				}
-				if(j == 0){
-					prevBlock = track.get(track.size()-1);
+				if (secStartDir == 4) {
+					line.get(j).setTwoWay(true);
 				}
-				else	{
-					prevBlock = track.get(j-1);
+				if (secStartDir == 1 && secEndDir == -1) {
+					for (int k = j; k < count; k++) {
+						line.get(k).setBackwards();
+					}
 				}
-				
-				if(curBlock.hasSwitch())	{
-					LinkedList<Block> switches = switchMap.get(curBlock.getSwitchBlockId());
-					for(int k = 0; k < switches.size(); k++)	{
-						Block switchBlock = switches.get(k);
-						if(switchBlock.getBlockNumber() != curBlock.getBlockNumber())	{
-								curBlock.setSwitchList(switchBlock);
+				if (secStartDir == 1 && secEndDir == 1) {
+					for (int k = j; k < count; k++) {
+						line.get(k).setTwoWay(true);
+					}
+				}
+				j = count - 1;
+			}
+		}
+	}
+
+	public void organizeYard() {
+		for (String key : yardMap.keySet()) {
+			LinkedList<Block> yardPos = yardMap.get(key);
+			for (int i = 0; i < yardPos.size(); i++) {
+				String lineStr = yardPos.get(i).getLine();
+				Block curBlock = yardPos.get(i);
+				for (int j = 0; j < track.size(); j++) {
+					if (track.get(i).getLine().equals(lineStr))
+						;
+					{
+						LinkedList<Block> curLine = track.get(i).getAllBlocks();
+						Block yardBlock = curLine.get(curLine.size() - 1);
+						if (curBlock.isToYard()) {
+							curBlock.setNext(yardBlock);
+							curBlock.setNextPossible(yardBlock);
+						}
+						if (curBlock.isFromYard()) {
+							yardBlock.setNext(curBlock);
+							yardBlock.setNextPossible(curBlock);
 						}
 					}
 				}
-				if(curBlock.hasSwitch() && nextBlock.hasSwitch())	{
-					switchEqualNext = false;
+			}
+			System.out.println();
+		}
+	}
+
+	public void organizeSwitch() {
+		for (int key : switchMap.keySet()) {
+			LinkedList<Block> newList = switchMap.get(key);
+			Block master = newList.get(0);
+			for (int j = 0; j < newList.size(); j++) {
+				if (newList.get(j).getMasterSwitch())
+					master = newList.get(j);
+			}
+			for (int j = 0; j < newList.size(); j++) {
+				Block slave = newList.get(j);
+				if (slave != master) {
+					master.setSwitchList(slave);
+					slave.setSwitchList(master);
+					if (master.getTwoWay()) {
+						if (slave.getTwoWay()) {
+							master.setNext(slave);
+							master.setNextPossible(slave);
+							slave.setNext(master);
+							slave.setNextPossible(master);
+						} else if (slave.getArrowDirection() == -1 || slave.getArrowDirection() == 2) {
+							master.setNext(slave);
+							master.setNextPossible(slave);
+						} else if (slave.getArrowDirection() == 1) {
+							slave.setNext(master);
+							slave.setNextPossible(master);
+						}
+					} else if (master.getArrowDirection() == 1) {
+						if (slave.getTwoWay()) {
+							master.setNext(slave);
+							master.setNextPossible(slave);
+						} else if (slave.getArrowDirection() == -1) {
+							master.setNext(slave);
+							master.setNextPossible(slave);
+						} else if (slave.getArrowDirection() == 2) {
+							master.setNext(slave);
+							master.setNextPossible(slave);
+						}
+					} else if (master.getArrowDirection() == -1) {
+						if (slave.getTwoWay()) {
+							slave.setNext(master);
+							slave.setNextPossible(master);
+						} else if (slave.getArrowDirection() == 1 || slave.getArrowDirection() == 2) {
+							slave.setNext(master);
+							slave.setNextPossible(master);
+						}
+					} else {
+						if (slave.getArrowDirection() == 1 && !slave.getTwoWay()) {
+							slave.setNext(master);
+							slave.setNextPossible(master);
+						}
+						if (slave.getArrowDirection() == -1 && !slave.getTwoWay()) {
+							master.setNext(slave);
+							master.setNextPossible(slave);
+						}
+					}
+					if (slave.getNext() == null) {
+						slave.setNext(master);
+						slave.setNextPossible(master);
+					}
 				}
-				if(curBlock.hasSwitch() && prevBlock.hasSwitch())	{
-					switchEqualPrev = false;
+			}
+		}
+	}
+
+	public void setNextPossible() {
+		for (int i = 0; i < track.size(); i++) {
+			line = track.get(i).getAllBlocks();
+			for (int j = 0; j < line.size(); j++) {
+				Block curBlock = line.get(j);
+				Block nextBlock = line.get(j);
+				Block prevBlock = line.get(j);
+				if (j == line.size() - 1) {
+					nextBlock = line.get(0);
+				} else {
+					nextBlock = line.get(j + 1);
+				}
+				if (j == 0) {
+					prevBlock = line.get(line.size() - 1);
+				} else {
+					prevBlock = line.get(j - 1);
+				}
+				boolean nextSwitch = false;
+				boolean prevSwitch = false;
+				if ((curBlock.getSwitchNum() == nextBlock.getSwitchNum() || curBlock.getSwitchNum() < 0
+						|| nextBlock.getSwitchNum() < 0) && !nextBlock.getIsYard()) {
+					nextSwitch = true;
+				}
+				if ((curBlock.getSwitchNum() == prevBlock.getSwitchNum() || curBlock.getSwitchNum() < 0
+						|| prevBlock.getSwitchNum() < 0) && !prevBlock.getIsYard()) {
+					prevSwitch = true;
 				}
 				
-				if(curBlock.getTwoWay())
-				{
-					if((nextBlock.getTwoWay() || nextBlock.getArrowDirectionA() == -1) && switchEqualNext)	{
-						curBlock.setNextPossible(nextBlock);
+				
+				if (curBlock.getBackwards()) {
+					if (prevSwitch) {
+						curBlock.setNext(prevBlock);
+						curBlock.setNextPossible(prevBlock);
+						if(prevBlock.hasStation()){
+							curBlock.setBeacon(true, prevBlock.getStationName());
+						}
 					}
-					else if(nextBlock.getArrowDirectionA() == 1 && switchEqualNext)	{
+				} else {
+					if (nextSwitch) {
+						curBlock.setNext(nextBlock);
+						curBlock.setNextPossible(nextBlock);
+						if(nextBlock.hasStation()){
+							curBlock.setBeacon(true, nextBlock.getStationName());
+						}
+					}
+				}
+				if (curBlock.getTwoWay()) {
+					if (nextBlock.getTwoWay() && nextSwitch) {
+						curBlock.setNextPossible(nextBlock);
+						nextBlock.setNextPossible(curBlock);
+						if(nextBlock.hasStation()){
+							curBlock.setBeacon(true, nextBlock.getStationName());
+						}
+					}
+					if (nextSwitch & (nextBlock.getArrowDirection() == -1 || nextBlock.getArrowDirection() == 2)) {
+						curBlock.setNextPossible(nextBlock);
+						if(nextBlock.hasStation()){
+							curBlock.setBeacon(true, nextBlock.getStationName());
+						}
+					}
+					if (nextSwitch & (nextBlock.getArrowDirection() == 1 || nextBlock.getArrowDirection() == 3)) {
 						nextBlock.setNextPossible(curBlock);
 					}
-					if((prevBlock.getTwoWay() || prevBlock.getArrowDirectionA() == -1) && switchEqualPrev)	{
+					if (prevBlock.getTwoWay() && prevSwitch) {
 						curBlock.setNextPossible(prevBlock);
+						prevBlock.setNextPossible(curBlock);
+						if(prevBlock.hasStation()){
+							curBlock.setBeacon(true, prevBlock.getStationName());
+						}
 					}
-					else if(prevBlock.getArrowDirectionA() == 1 && switchEqualPrev)	{
+					if (prevSwitch & (prevBlock.getArrowDirection() == -1 || prevBlock.getArrowDirection() == 2)) {
 						prevBlock.setNextPossible(curBlock);
 					}
-				}
-				else	{
-					if(curBlock.getArrowDirectionA() == 1)	{
-						int count = 2;
-						Block tempCurBlock = curBlock;
-						Block tempNextBlock = nextBlock;
-						while(tempNextBlock.getSection().equals(tempCurBlock.getSection()) && j+count < track.size())	{
-							tempNextBlock.setNextPossible(tempCurBlock);
-							tempCurBlock = tempNextBlock;
-							tempNextBlock = track.get(j + count);
-							count++;
-						}
-						if(nextBlock.getArrowDirectionA() == -1)	{
-							curBlock.setNextPossible(nextBlock);
-						}
-						if(prevBlock.getArrowDirectionA() == -1)	{
-							curBlock.setNextPossible(prevBlock);
+					if (prevSwitch & (prevBlock.getArrowDirection() == 1 || prevBlock.getArrowDirection() == 3)) {
+						curBlock.setNextPossible(prevBlock);
+						if(prevBlock.hasStation()){
+							curBlock.setBeacon(true, prevBlock.getStationName());
 						}
 					}
-					if(curBlock.getArrowDirectionA() == -1)	{
-						int count = 2;
-						Block tempCurBlock = curBlock;
-						Block tempNextBlock = nextBlock;
-						while(tempNextBlock.getSection().equals(tempCurBlock.getSection()) && j+count < track.size())	{
-							tempCurBlock.setNextPossible(tempNextBlock);
-							tempCurBlock = tempNextBlock;
-							tempNextBlock = track.get(j + count);
-							count++;
+				} else {
+					if (curBlock.getArrowDirection() == 1) {
+						if (nextSwitch && nextBlock.getTwoWay()) {
+							curBlock.setNextPossible(nextBlock);
+							if(nextBlock.hasStation()){
+								curBlock.setBeacon(true, nextBlock.getStationName());
+							}
+						} 
+						else if (nextSwitch && nextBlock.getArrowDirection() == -1
+								|| nextBlock.getArrowDirection() == 2) {
+							curBlock.setNextPossible(nextBlock);
+							if(nextBlock.hasStation()){
+								curBlock.setBeacon(true, nextBlock.getStationName());
+							}
 						}
-						if(nextBlock.getArrowDirectionA() == 1)	{
+						if (prevSwitch && prevBlock.getTwoWay()) {
+							curBlock.setNextPossible(prevBlock);
+						} else if (prevSwitch && prevBlock.getArrowDirection() == -1) {
+							curBlock.setNextPossible(prevBlock);
+							if(prevBlock.hasStation()){
+								curBlock.setBeacon(true, prevBlock.getStationName());
+							}
+						}
+					} else if (curBlock.getArrowDirection() == -1) {
+						if (nextSwitch && nextBlock.getTwoWay()) {
 							nextBlock.setNextPossible(curBlock);
 						}
-						if(prevBlock.getArrowDirectionA() == 1)	{
+						if (nextSwitch && nextBlock.getArrowDirection() == 1) {
+							nextBlock.setNextPossible(curBlock);
+						}
+						if (prevSwitch && prevBlock.getTwoWay()) {
+							prevBlock.setNextPossible(curBlock);
+						}
+						if (prevSwitch && prevBlock.getArrowDirection() == 1) {
 							prevBlock.setNextPossible(curBlock);
 						}
 					}
 				}
 			}
 		}
-		for(int i = 0; i < lines.size(); i++)	{
-			track = lines.get(i).getAllBlocks();
-			for(int j = 0; j<track.size(); j++)
-			{
-				Block curBlock = track.get(j);
-				if(curBlock.hasSwitch())	{
-					curBlock.setSwitchEngagement();
-				}
+	}
+
+	public void makeYard() {
+		for (int i = 0; i < track.size(); i++) {
+			LinkedList<Block> newLine = track.get(i).getAllBlocks();
+			Block yardBlock = new Block(newLine.get(0).getLine(), true);
+			newLine.add(yardBlock);
+		}
+	}
+
+	public void initSwitchDirection() {
+		for (int i = 0; i < switchMap.size(); i++) {
+			LinkedList<Block> newList = switchMap.get(i);
+			Block master = newList.get(0);
+			for (int j = 0; j < newList.size(); j++) {
+				if (newList.get(j).getMasterSwitch())
+					master = newList.get(j);
+			}
+			if (master.getNext().hasSwitch()) {
+				master.setSwitchEngaged(false);
+				master.setNext(master.getSwitchList().get(0));
+			}
+			if (master.getPrev().hasSwitch()) {
+				master.setSwitchEngaged(false);
+				master.setPrev(master.getSwitchList().get(0));
 			}
 		}
-    }
-		
-	
-		
-	@Override
-	public int getSpeed(int trainId) {
-		// TODO Auto-generated method stub
-		return 0;
-		
 	}
+<<<<<<< HEAD
 
 	@Override
 	public int getAuthority(int trainId) {
@@ -761,19 +845,20 @@ public class TrackModel implements TrackModelInterface {
 	}
 
 
+=======
+>>>>>>> branch 'master' of https://github.com/PeanutButterCookies/TrainSystem.git
 
 	@Override
 	public void setTC(TrackControllerInterface trackComm) {
 		this.trackComm = trackComm;
-		
+
 	}
-
-
 
 	@Override
-	public void setTI(TrainInterface trainComm) {
+	public void setTI(TrainModelInterface trainComm) {
 		this.trainComm = trainComm;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	@Override
 	public ArrayList<Block> getTrack() {
@@ -786,6 +871,8 @@ public class TrackModel implements TrackModelInterface {
 	
 >>>>>>> refs/remotes/origin/master
 
+=======
+>>>>>>> branch 'master' of https://github.com/PeanutButterCookies/TrainSystem.git
 
 	@Override
 	public void setUI(TrackModelUI tmUI) {
@@ -793,10 +880,11 @@ public class TrackModel implements TrackModelInterface {
 	}
 
 	@Override
-	public LinkedList<Block> getTrack() {
+	public LinkedList<Line> getTrack() {
 		// TODO Auto-generated method stub
 		return track;
 	}
+<<<<<<< HEAD
 	
 <<<<<<< HEAD
 	@Override
@@ -838,3 +926,6 @@ public class TrackModel implements TrackModelInterface {
 =======
 >>>>>>> refs/remotes/origin/master
 >>>>>>> refs/remotes/origin/autumn_workspace
+=======
+}
+>>>>>>> branch 'master' of https://github.com/PeanutButterCookies/TrainSystem.git
