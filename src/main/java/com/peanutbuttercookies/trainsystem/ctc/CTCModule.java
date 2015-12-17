@@ -5,27 +5,34 @@
 
 package com.peanutbuttercookies.trainsystem.ctc;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
 
 import com.peanutbuttercookies.trainsystem.commonresources.Block;
 import com.peanutbuttercookies.trainsystem.commonresources.Line;
+import com.peanutbuttercookies.trainsystem.ctctest.TestTrackController;
 import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 
 public class CTCModule implements CTCModuleInterface {
 
 	private CTCModuleUI ui;
+	private Neo4JBlockGraph neo4j;
 
 	private Map<String, CTCBlockModel> lineBlockMap;
 	private Map<String, CTCTrainModel> lineTrainMap;
+	private Map<String, ScheduleModel> lineScheduleMap;
 	private int maxTrain = 0;
 
 	public CTCModule() {
 		lineBlockMap = new HashMap<String, CTCBlockModel>();
 		lineTrainMap = new HashMap<String, CTCTrainModel>();
+		lineScheduleMap = new HashMap<String, ScheduleModel>();
+		neo4j = new Neo4JBlockGraph();
 	}
 
 	@Override
@@ -33,9 +40,10 @@ public class CTCModule implements CTCModuleInterface {
 		CTCBlockModel model = lineBlockMap.get(line);
 		boolean newTrain = model.setOccupied(blockId);
 		if (newTrain) {
-			lineTrainMap.get(line).addTrain(new NewCTCTrain());
+			lineTrainMap.get(line).addTrain();
 		} else {
-			lineTrainMap.get(line).moveHead(model.getPrevBlock(blockId), blockId);
+			//TODO
+//			lineTrainMap.get(line).moveHead(model.getPrevBlock(blockId), blockId);
 		}
 	}
 
@@ -44,7 +52,8 @@ public class CTCModule implements CTCModuleInterface {
 		CTCBlockModel model = lineBlockMap.get(line);
 		boolean removeTrain = model.setUnoccupied(blockId);
 		if (!removeTrain) {
-			lineTrainMap.get(line).moveTail(model.getPrevBlock(blockId), blockId);
+			//TODO
+//			lineTrainMap.get(line).moveTail(model.getPrevBlock(blockId), blockId);
 		} else {
 			lineTrainMap.get(line).removeTrain();
 		}
@@ -58,17 +67,24 @@ public class CTCModule implements CTCModuleInterface {
 	public void importLine(Line line) {
 
 		if (!lineBlockMap.containsKey(line.getLine())) {
-			lineBlockMap.put(line.getLine(), new CTCBlockModel());
+			lineBlockMap.put(line.getLine(), new CTCBlockModel(line.getLine(), neo4j));
 		}
 		if (!lineTrainMap.containsKey(line.getLine())) {
 			lineTrainMap.put(line.getLine(), new CTCTrainModel());
 		}
 
-		for (TrackControllerInterface tc : line.getAllTrackControllers()) {
-			for (Block block : tc.getSection()) {
-				lineBlockMap.get(line.getLine()).addBlock(block, tc);
-			}
+//		for (TrackControllerInterface tc : line.getAllTrackControllers()) {
+//			for (Block block : tc.getSection()) {
+//				lineBlockMap.get(line.getLine()).addBlock(block, tc);
+//			}
+//		}
+		
+		//FOR TESTING
+		TestTrackController tc = new TestTrackController(line.getAllBlocks());
+		for(Block block : line.getAllBlocks()) {
+			lineBlockMap.get(line.getLine()).addBlock(block, tc);
 		}
+		
 		if (ui != null) {
 			ui.addLine(line.getLine());
 		}
@@ -88,18 +104,19 @@ public class CTCModule implements CTCModuleInterface {
 	public DefaultComboBoxModel<CTCTrain> newTrainCombo(String line) {
 		DefaultComboBoxModel<CTCTrain> model = new DefaultComboBoxModel<CTCTrain>();
 		model.addElement(new NewCTCTrain());
+		lineTrainMap.get(line).setComboModel(model);
 		return model;
 	}
 
 	@Override
-	public DefaultComboBoxModel<CTCBlock> newBlockCombo(String line, CTCSection section) {
+	public DefaultComboBoxModel<Integer> newBlockCombo(String line, CTCSection section) {
 		if (!lineBlockMap.containsKey(line)) {
 			System.out.println("Line : " + line + ", not initialized");
 			return null;
 		}
-		DefaultComboBoxModel<CTCBlock> model = new DefaultComboBoxModel<CTCBlock>();
+		DefaultComboBoxModel<Integer> model = new DefaultComboBoxModel<Integer>();
 		CTCBlockModel blockModel = lineBlockMap.get(line);
-		for (CTCBlock block : blockModel.getBlocks(section)) {
+		for (Integer block : blockModel.getBlocks(section)) {
 			model.addElement(block);
 		}
 		return model;
@@ -126,17 +143,13 @@ public class CTCModule implements CTCModuleInterface {
 	}
 
 	@Override
-	public boolean dispatch(String line, String speed, CTCBlock block, CTCTrain train) {
+	public boolean dispatch(String line, int speed, int train, int end) {
 
-		int speedInt = 0;
-		try {
-			speedInt = Integer.parseInt(speed.replaceAll("[^\\d]", ""));
-		} catch (Exception e) {
-			return false;
-		}
-		speedInt = (int) (1609.34 * speedInt / 3600);
-		lineBlockMap.get(line).getBlock(train.getHead()).getTc().setSpeedAuthority(train.getHead(), speedInt,
-				block.getBlockNumber());
+		CTCBlockModel model = lineBlockMap.get(line);
+		int authority = model.getAuthority(train, end);
+		CTCBlock start = model.getBlock(train);
+		TrackControllerInterface tc = lineBlockMap.get(line).getTC(start);
+		tc.setSpeedAuthority(train, speed, authority);
 		return true;
 	}
 
@@ -147,54 +160,61 @@ public class CTCModule implements CTCModuleInterface {
 	}
 
 	@Override
-	public boolean changeSwitch(String line, CTCBlock block) {
-		// TODO Auto-generated method stub
+	public boolean changeSwitch(String line, int blockId, boolean engaged) {
+		CTCBlock block = neo4j.getBlock(line, blockId);
+		TrackControllerInterface tc = lineBlockMap.get(line).getTC(block);
+		tc.engageSwitch(Integer.toString(block.getSwitchNum()), engaged);
 		return false;
 	}
 
 	@Override
-	public boolean setSchedule(String line, String filename, ScheduleModel model) {
-		// TODO
-		return false;
+	public boolean setSchedule(String line, String filename) {
+		try {
+			lineScheduleMap.get(line).importSchedule(filename);
+		} catch (NumberFormatException | IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 
 	@Override
 	public ScheduleModel newScheduleModel(String line) {
-		return new ScheduleModel();
+		ScheduleModel model = new ScheduleModel(lineBlockMap.get(line), this, line);
+		lineScheduleMap.put(line, model);
+		return model;
 	}
 
 	@Override
-	public boolean setTrainComponent(ComponentContainer container) {
-		// TODO Auto-generated method stub
+	public boolean engageRRCrossing(String line, int blockId, boolean engaged) {
+		CTCBlockModel model = lineBlockMap.get(line);
+		CTCBlock block = model.getBlock(blockId);
+		TrackControllerInterface tc = model.getTC(block);
+		//TODO
 		return false;
 	}
 
 	@Override
-	public void setClockSpeed(double clockSpeed) {
-		// TODO Auto-generated method stub
-
+	public void switchChanged(String line, int blockId, boolean engaged) {
+		neo4j.engageSwitch(line, blockId, engaged);
 	}
 
 	@Override
-	public boolean engageRRCrossing(String line, int blockId) {
-		// TODO Auto-generated method stub
-		return false;
+	public DefaultComboBoxModel<Integer> newSwitchCombo(String line) {
+		Vector<Integer> switches =  lineBlockMap.get(line).getSwitches();
+		return new DefaultComboBoxModel<Integer>(switches);
 	}
 
 	@Override
-	public void switchChanged(String line, int switchId, int blockId) {
+	public DefaultComboBoxModel<Integer> newSwitchDestCombo(String line, int switchBlock) {
+		Vector<Integer> possible = neo4j.getSwitchNext(line, switchBlock);
+		return new DefaultComboBoxModel<Integer>(possible);
+	}
+
+	@Override
+	public void setRRCrossingEngaged(String line, int blockId, boolean engaged) {
 		// TODO Auto-generated method stub
-
-	}
-
-	// FOR TESTING ONLY
-
-	public CTCTrainModel getTrainModel(String line) {
-		return lineTrainMap.get(line);
-	}
-
-	public CTCBlockModel getBlockModel(String line) {
-		return lineBlockMap.get(line);
+		
 	}
 
 }

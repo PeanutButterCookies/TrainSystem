@@ -21,8 +21,10 @@ public interface TrackControllerInterface {
 	public int getOverlapBlock();
 	public LinkedList<Block> getSection();
 	public Block getBlock(int index);
-	public void engageSwitch(String switchName, boolean engagement);
+	public boolean engageSwitch(String switchName, boolean engagement);
+	public boolean engageRRCrossing(int blockId, boolean engagement);
 	public boolean setPLCProgram(String plcProgramFileLocation);
+	public boolean markBlockForMaintanence(int blockId, boolean needsRepair);
 	public void setSpeedAuthority(int blockId, int speed, int authority);
 	public HashMap<String, LinkedList<Block>> getSwitchList();
 }

@@ -1,7 +1,6 @@
 /target/
-/bin/
 /.classpath
-<<<<<<< HEAD
-<<<<<<< HEAD
-/.settings/
-
+/.settings
+/graph/
+/graph.db/
+/bin/

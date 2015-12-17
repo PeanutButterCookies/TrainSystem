@@ -84,55 +84,40 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 	}
 	
 	@Override
-	public void engageSwitch(String switchName, boolean engagement){
-		
-		//TEST ONLY
-		System.out.println("***ENTERING engageSwitch()***");
-		//TEST ONLY
-		
+	public boolean engageSwitch(String switchName, boolean engagement){
 		if(this.switchList.containsKey(switchName)){
-			
-			//TEST ONLY
-			System.out.println(">>Checkpoint : inside first if");
-			//TEST ONLY
-			
 			Iterator<Block> switchBlockIterator=this.switchList.get(switchName).iterator();
 			while(switchBlockIterator.hasNext()){
-				
-				//TEST ONLY
-				System.out.println(">>Checkpoint : inside while");
-				//TEST ONLY
-				
 				Block currBlock=switchBlockIterator.next();
 				if(currBlock.getMasterSwitch()){
-					
-					//TEST ONLY
-					System.out.println(">>Checkpoint : inside second if, engagement="+engagement+"\tblock="+currBlock.isSwitchEngaged());
-					//TEST ONLY
-					
-					if(currBlock.isSwitchEngaged()!=engagement){
-						
-						//TEST ONLY
-						System.out.println(">>Checkpoint pre-engagement: engagement="+engagement+"\tcurrent switch engagement="+currBlock.isSwitchEngaged());
-						//TEST ONLY
-						
+					if(currBlock.isSwitchEngaged()!=engagement && plcProgramA.engageSwitch(currBlock) 
+							&& plcProgramB.engageSwitch(currBlock)){
 						currBlock.setSwitchEngagement();
-						
-						//TEST ONLY
-						System.out.println(">>Checkpoint post-engagement: current switch engagement="+currBlock.isSwitchEngaged());
-						//TEST ONLY
-						
-						break;
+						this.ctc.switchChanged(switchName, currBlock.getBlockNumber(), engagement);
+						return true;
 					}
 				}
-			}	
+			}
+			return false;
 		}
 		else{
 			System.err.println("ERROR: THIS TC DOES NOT CONTAIN SWITCH  "+switchName);
+			return false;
 		}
-		//TEST ONLY
-		System.out.println("***EXITING engageSwitch()***");
-		//TEST ONLY
+	}
+	
+	@Override
+	public boolean engageRRCrossing(int blockId, boolean engagement) {
+		if(blockId>=startBlock && blockId<=endBlock && section.get(blockId-this.startBlock).hasRRCrossing()
+				&& plcProgramA.engageRRCrossing(section.get(blockId-startBlock))
+				&& plcProgramB.engageRRCrossing(section.get(blockId-startBlock))){
+			section.get(blockId-startBlock).setRRCrossingEngagement(engagement);
+			return true;
+		}
+		else{
+			System.out.println("ERROR: "+this.line+" line TC#"+this.controllerId+"cannot engage crossing on block #"+blockId);
+			return false;
+		}
 	}
 	
 	@Override
@@ -144,6 +129,24 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 	}
 	
 	@Override
+	public boolean markBlockForMaintanence(int blockId, boolean needsRepair) {
+		if(blockId>=this.startBlock && blockId<=this.endBlock && this.startBlock!=this.overlapBlock
+				&& plcProgramA.maintenance(section.get(blockId-this.startBlock))
+				&& plcProgramB.maintenance(section.get(blockId-this.startBlock))){
+			
+			section.get(blockId-startBlock).setBlockOccupation(needsRepair);;
+			if(needsRepair){
+				this.ctc.setBlockOccupied(this.line,blockId);
+			}
+			else{
+				this.ctc.setBlockUnoccupied(this.line,blockId);
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
 	public void setSpeedAuthority(int blockId, int speed, int authority){
 		System.out.println("TrackController block Id: " + blockId);
 		System.out.println(section.get(blockId-startBlock).getBlockNumber());
@@ -151,9 +154,22 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 		if(blockId<=endBlock && blockId>=startBlock){
 			if(!(plcProgramA.stop(section.get(blockId-startBlock)) && plcProgramB.stop(section.get(blockId-startBlock)))){
 				section.get(blockId-startBlock).setSpeedAuthority(speed,authority);
+				if(section.get(blockId-startBlock).getMasterSwitch() || section.get(blockId-startBlock).hasRRCrossing()){
+					if(!(plcProgramA.slowDown(section.get(blockId-startBlock))
+							&& plcProgramB.slowDown(section.get(blockId-startBlock)))){
+						section.get(blockId-startBlock).setLight(1);
+					}
+					else{
+						section.get(blockId-startBlock).setLight(2);
+					}
+				}
 			}
 			else{
 				System.out.println("SAFETY CRITICAL: TRAIN MUST STOP");
+				if(section.get(blockId-startBlock).getMasterSwitch() || section.get(blockId-startBlock).hasRRCrossing()){
+						section.get(blockId-startBlock).setLight(3);
+					
+				}
 				section.get(blockId-startBlock).setSpeedAuthority(0,0);
 			}
 		}
@@ -196,5 +212,4 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 		
 		return switchMap;
 	}
-	
 }

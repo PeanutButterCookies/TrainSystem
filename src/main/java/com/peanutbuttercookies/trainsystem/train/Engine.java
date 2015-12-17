@@ -1,3 +1,10 @@
+/*
+* Engine
+*
+* 1.2, 12/17/15
+*
+* Autumn Good
+*/
 package com.peanutbuttercookies.trainsystem.train;
 
 import java.util.concurrent.TimeUnit;
@@ -28,6 +35,15 @@ public class Engine {
 		this.train = train;
 	}
 	
+	/**
+	 * Calculates velocity changes from power command. Also responsible for calculating distance traveled
+	 * and updating block occupancy.
+	 *
+	 * @param  power power from controller
+	 * @param  grade the angle of the current track
+	 * @param  mass the mass of the train
+	 * @return      the image at the specified URL
+	 */
 	public void applyPower(double power, double grade, double mass ){
 		// Take power and update speed and acceleration.
 				double frictionForce = 0;
@@ -137,12 +153,14 @@ public class Engine {
 					train.setSpeedLimits(train.getCurrentBlock().getSpeedLimit());
 					train.setAngle(train.getCurrentBlock().getBlockGrade());
 					train.controller.setBlockId(train.getCurrentBlock().getBlockNumber());
-					if(train.getCurrentBlock().hasBeacon()){//to set a beacon
-						train.controller.beaconInfo(train.getCurrentBlock().beacon);
+					if(!train.getCurrentBlock().getBeacon().equals("")){//to set a beacon
+						train.controller.beaconInfo(train.getCurrentBlock().getBeacon());
 					}
 				}
 				train.controller.setCurrentVelocity(currentSpeed);
-				train.getGui().updateUI();
+				if(train.isCurrentlySelected()){
+					train.getGui().updateUI();
+				}
 				System.out.println("CurrentSpeed: "+currentSpeed);
 				//train.controller.calcPower(currentSpeed);
 

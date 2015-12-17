@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CTCSection {
-	private List<CTCBlock> blocks;
+	private List<Integer> blocks;
 	private String name;
 	
 	public CTCSection(String name) {
 		setName(name);
-		blocks = new ArrayList<CTCBlock>();
+		blocks = new ArrayList<Integer>();
 	}
 	
 	public String getName() {
@@ -19,13 +19,13 @@ public class CTCSection {
 		this.name = name;
 	}
 	
-	public void addBlock(CTCBlock block) {
+	public void addBlock(Integer block) {
 		if(!blocks.contains(block)) {
 			blocks.add(block);
 		}
 	}
 	
-	public List<CTCBlock> getBlocks() {
+	public List<Integer> getBlocks() {
 		return blocks;
 	}
 	

@@ -1,3 +1,10 @@
+/*
+* TrainController
+*
+* 2.2, 12/17/15
+*
+* Autumn Good
+*/
 package com.peanutbuttercookies.trainsystem.traincontroller;
 
 import com.peanutbuttercookies.trainsystem.train.TrainModelInterface;
@@ -7,6 +14,7 @@ import com.peanutbuttercookies.trainsystem.traincontroller.TrainControllerUI;
 
 public class TrainController implements TrainControllerInterface {
 
+	private static double clockRatio;
 	private String station;
 	private SpeedControl control = new SpeedControl(this);
 	private TrainModelInterface train;
@@ -37,14 +45,57 @@ public class TrainController implements TrainControllerInterface {
 	}
 
 	@Override
+	/**
+	 * pass speed and authority commands to the controller
+	 */
 	public void setSpeedAndAuth(double speed, double auth) {
 		// TODO Auto-generated method stub
 		commandSpeed = speed;
+		if(commandSpeed < 0){
+			commandSpeed = 0;
+		}
+		
 		this.auth = auth;
 		System.out.println(auth);
 		control.setCommandSpeed(speed);
-		//power = control.calcPower(speed);
-
+		control.setAuth(auth);
+	}
+	
+	/**
+	 * Runs the process while the train is alive
+	 */
+	public boolean run(){
+		while(alive){
+			power = control.calcPower(speed);
+			System.out.println("Power: "+power);
+			train.setPower(power);
+			try {
+				Thread.sleep((long)(1000*clockRatio));
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return alive;
+	}
+	
+	/**
+	 * Calls all the functions needed for when a train first arrives at a station
+	 */
+	public void arriveSequence(){ //opens doors and resets the number of passengers
+		openDoors();
+		train.getMass();
+	}
+	
+	/**
+	 * Calls all the methods for when a train departs a station
+	 */
+	public void departSequence(){
+		closeDoors();
+		setStation("");
+		setBrakes(false);
+		setApproachingStation(false);
+		
 	}
 
 	public String getStation() {
@@ -117,6 +168,7 @@ public class TrainController implements TrainControllerInterface {
 
 	public void setDistance(double distance) {
 		this.distance = distance;
+		control.setDistance(distance);
 	}
 
 	public TrainControllerUI getGui() {
@@ -237,26 +289,12 @@ public class TrainController implements TrainControllerInterface {
 		train.setBrakes(emergencyBrakes);
 	}
 	
-	public void arriveSequence(){ //opens doors and resets the number of passengers
-		openDoors();
-		train.getMass();
-	}
-	
 	public int getId() {
 		return id;
 	}
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	
-	public void departSequence(){
-		closeDoors();
-		setStation("");
-		setBrakes(false);
-		setApproachingStation(false);
-		
 	}
 	
 	public void setCurrentlySelected(boolean selected){
@@ -290,18 +328,9 @@ public class TrainController implements TrainControllerInterface {
 		return out;
 	}
 
-	public void run(){
-		while(alive){
-			power = control.calcPower(speed);
-			System.out.println("Power: "+power);
-			train.setPower(power);
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+	public void setRatio(double ratio){
+		clockRatio = ratio;
+		control.setRatio(clockRatio);
 	}
 	
 }
