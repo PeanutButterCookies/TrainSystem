@@ -60,16 +60,16 @@ public class CTCBlockModel extends AbstractTableModel {
 		}
 
 		if (block.getBlockNumber() == 1) {
-			System.out.println("Prev block set to null");
+			//System.out.println("Prev block set to null");
 			ctcBlock.setPrevBlock(null);
 		} else {
 			int index = (block.getNextPossible().size() > 1)? 1:0;
 			Integer prev = block.getNextPossible().get(index).getBlockNumber();
 			if (blockMap.containsKey(prev)) {
-				System.out.println("Used an old CTCBlock");
+				//System.out.println("Used an old CTCBlock");
 				ctcBlock.setPrevBlock(blockMap.get(prev));
 			} else {
-				System.out.println("Made a new CTCBlock");
+				//System.out.println("Made a new CTCBlock");
 				CTCBlock newBlock = new CTCBlock(block.getNextPossible().get(index));
 				blockMap.put(prev, newBlock);
 				ctcBlock.setPrevBlock(newBlock);

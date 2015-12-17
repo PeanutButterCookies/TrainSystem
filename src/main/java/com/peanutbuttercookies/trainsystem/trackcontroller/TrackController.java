@@ -37,7 +37,7 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 		plcProgramB		=new PLCProgram();
 		this.ctc		=initCtc;
 		this.trackModel	=initTrackModel;
-		switchList		=setSwitchList(section);
+		switchList		=setSwitchList(initSection);
 	}
 	
 	@Override
@@ -85,13 +85,44 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 	
 	@Override
 	public void engageSwitch(String switchName, boolean engagement){
+		
+		//TEST ONLY
+		System.out.println("***ENTERING engageSwitch()***");
+		//TEST ONLY
+		
 		if(this.switchList.containsKey(switchName)){
+			
+			//TEST ONLY
+			System.out.println(">>Checkpoint : inside first if");
+			//TEST ONLY
+			
 			Iterator<Block> switchBlockIterator=this.switchList.get(switchName).iterator();
 			while(switchBlockIterator.hasNext()){
+				
+				//TEST ONLY
+				System.out.println(">>Checkpoint : inside while");
+				//TEST ONLY
+				
 				Block currBlock=switchBlockIterator.next();
-				if(currBlock.hasSwitch()){
+				if(currBlock.getMasterSwitch()){
+					
+					//TEST ONLY
+					System.out.println(">>Checkpoint : inside second if, engagement="+engagement+"\tblock="+currBlock.isSwitchEngaged());
+					//TEST ONLY
+					
 					if(currBlock.isSwitchEngaged()!=engagement){
+						
+						//TEST ONLY
+						System.out.println(">>Checkpoint pre-engagement: engagement="+engagement+"\tcurrent switch engagement="+currBlock.isSwitchEngaged());
+						//TEST ONLY
+						
 						currBlock.setSwitchEngagement();
+						
+						//TEST ONLY
+						System.out.println(">>Checkpoint post-engagement: current switch engagement="+currBlock.isSwitchEngaged());
+						//TEST ONLY
+						
+						break;
 					}
 				}
 			}	
@@ -99,12 +130,17 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 		else{
 			System.err.println("ERROR: THIS TC DOES NOT CONTAIN SWITCH  "+switchName);
 		}
+		//TEST ONLY
+		System.out.println("***EXITING engageSwitch()***");
+		//TEST ONLY
 	}
 	
 	@Override
-	public void setPLCProgram(String plcProgramFileLocation){
-		this.plcProgramA.loadPLCProgram(plcProgramFileLocation, 0);
-		this.plcProgramB.loadPLCProgram(plcProgramFileLocation, 1);
+	public boolean setPLCProgram(String plcProgramFileLocation){
+		boolean success=true;
+		success&=this.plcProgramA.loadPLCProgram(plcProgramFileLocation, 0);
+		success&=this.plcProgramB.loadPLCProgram(plcProgramFileLocation, 1);
+		return success;
 	}
 	
 	@Override
@@ -113,7 +149,13 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 		System.out.println(section.get(blockId-startBlock).getBlockNumber());
 		section.get(blockId-startBlock).setSpeedAuthority(speed,authority);
 		if(blockId<=endBlock && blockId>=startBlock){
-			section.get(blockId-startBlock).setSpeedAuthority(speed,authority);
+			if(!(plcProgramA.stop(section.get(blockId-startBlock)) && plcProgramB.stop(section.get(blockId-startBlock)))){
+				section.get(blockId-startBlock).setSpeedAuthority(speed,authority);
+			}
+			else{
+				System.out.println("SAFETY CRITICAL: TRAIN MUST STOP");
+				section.get(blockId-startBlock).setSpeedAuthority(0,0);
+			}
 		}
 		else{
 			System.err.println("ERROR: BLOCKID NOT CONTAINED WITHIN THIS CONTROLLER");
@@ -122,11 +164,9 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 
 	@Override
 	public void blockOccupied(int blockId) {
-		System.out.println("Block Occupied track controller");
 		if(blockId>=this.startBlock && blockId<=this.endBlock && this.startBlock!=this.overlapBlock){
 			boolean occupied=section.get(blockId-startBlock).isBlockOccupied();
 			if(occupied){
-				System.out.println("Setting ctc block occupied");
 				this.ctc.setBlockOccupied(this.line,blockId);
 			}
 			else{
@@ -135,21 +175,26 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 		}
 	}
 	
-	private HashMap<String,LinkedList<Block>> setSwitchList(LinkedList<Block> blockSection){
-		Iterator<Block> blockIterator = this.section.iterator();
-		HashMap<String,LinkedList<Block>> switchMap= new HashMap<String,LinkedList<Block>>();
-		while(blockIterator.hasNext()){
-			Block currBlock = blockIterator.next();
-			if(currBlock.hasSwitch()){
-				switchMap.put(Integer.toString(currBlock.getSwitchBlockId()), (LinkedList<Block>)currBlock.getSwitchList());
-			}
-		}
-		return switchMap;
-	}
-
 	@Override
 	public HashMap<String, LinkedList<Block>> getSwitchList() {
 		return this.switchList;
 	}
-
+	
+	private HashMap<String,LinkedList<Block>> setSwitchList(LinkedList<Block> blockSection){
+		
+		Iterator<Block> blockIterator = this.section.iterator();
+		HashMap<String,LinkedList<Block>> switchMap= new HashMap<String,LinkedList<Block>>();
+		
+		while(blockIterator.hasNext()){
+			Block currBlock = blockIterator.next();
+			if(currBlock.getMasterSwitch()){
+				LinkedList<Block> blocks=(LinkedList<Block>)currBlock.getSwitchList();
+				blocks.addFirst(currBlock);
+				switchMap.put(Integer.toString(currBlock.getSwitchBlockId()), blocks);
+			}
+		}
+		
+		return switchMap;
+	}
+	
 }

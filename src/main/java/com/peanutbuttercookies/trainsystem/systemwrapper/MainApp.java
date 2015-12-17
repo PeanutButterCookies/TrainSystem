@@ -36,14 +36,14 @@ public class MainApp {
 		List<Line> lines = trackModel.getLines();
 		for(Line line : lines) {
 			trackController.setTrackControllers(line);
-			ctc.importLine(line);
+			//ctc.importLine(line);
 		}
 		
 		tcUI.setLines(lines);
-		CTCModuleUI ctcUI = new CTCModuleUI(ctc);
-		ctc.setUi(ctcUI);
-		TrackModelUI tmUI = new TrackModelUI(trackModel);
-		tmUI.display(0);
+		//CTCModuleUI ctcUI = new CTCModuleUI(ctc);
+		//ctc.setUi(ctcUI);
+		//TrackModelUI tmUI = new TrackModelUI(trackModel);
+		//tmUI.display(0);
 
 	}
 }

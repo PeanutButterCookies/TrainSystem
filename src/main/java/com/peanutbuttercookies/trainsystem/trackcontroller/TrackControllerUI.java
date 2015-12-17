@@ -60,10 +60,18 @@ public class TrackControllerUI extends JFrame {
 	private LinkedList<String>			displayedSwitches=new LinkedList<String>();
 	private List<Line>					lines;
 	
+	//USERNAME AND PASSWORD FOR LOGIN
+	private static final String username="admin";
+	private static final String password="password";
+	
+	public TrackControllerAuthentication authentication = new TrackControllerAuthentication(username,password,this);
+	
+	
 	/**
 	 * Create the frame.
 	 */
 	public TrackControllerUI() {
+
 		setTitle("Track Controller Module");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 1280, 720);
@@ -251,8 +259,15 @@ public class TrackControllerUI extends JFrame {
 		lblTrackControllerSelection2.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTrackControllerSelection2.setFont(new Font("Tahoma", Font.BOLD, 14));
 		
+		/*
+		 ******************************************************************************
+		 * LINE DISPLAY SELECTION
+		 ******************************************************************************
+		 */
+		
 		comboBoxLine_2 = new JComboBox<String> ();
 		comboBoxLine_2.setModel(new DefaultComboBoxModel<String> (new String[] {"All"}));
+		comboBoxLine_2.setSelectedIndex(0);
 		displayedLine=(String)comboBoxLine_2.getSelectedItem();
 		
 		comboBoxLine_2.addActionListener(new ActionListener(){
@@ -260,38 +275,41 @@ public class TrackControllerUI extends JFrame {
 				JComboBox<String>  comboBox=(JComboBox<String>)e.getSource();
 				displayedLine = (String)comboBox.getSelectedItem();
 				
-				switch(displayedLine.toLowerCase()){
-				case "red":{
-					panelColor.setBackground(Color.red);
-				}break;
-				case "blue":{
-					panelColor.setBackground(Color.blue);
-				}break;
-				case "green":{
-					panelColor.setBackground(Color.green);
-				}break;
-				case "yellow":{
-					panelColor.setBackground(Color.yellow);
-				}break;
-				case "orange":{
-					panelColor.setBackground(Color.orange);
-				}break;
-				case "purple":{
-					panelColor.setBackground(Color.magenta);
-				}break;
-				case "violet":{
-					panelColor.setBackground(Color.magenta);
-				}break;
-				case "gray":{
-					panelColor.setBackground(Color.darkGray);
-				}break;
-				case "black":{
-					panelColor.setBackground(Color.black);
-				}break;
-				default:{
-					panelColor.setBackground(Color.white);
+				if(comboBox.getSelectedIndex()!=-1){
+					switch(displayedLine.toLowerCase()){
+					case "red":{
+						panelColor.setBackground(Color.red);
+					}break;
+					case "blue":{
+						panelColor.setBackground(Color.blue);
+					}break;
+					case "green":{
+						panelColor.setBackground(Color.green);
+					}break;
+					case "yellow":{
+						panelColor.setBackground(Color.yellow);
+					}break;
+					case "orange":{
+						panelColor.setBackground(Color.orange);
+					}break;
+					case "purple":{
+						panelColor.setBackground(Color.magenta);
+					}break;
+					case "violet":{
+						panelColor.setBackground(Color.magenta);
+					}break;
+					case "gray":{
+						panelColor.setBackground(Color.darkGray);
+					}break;
+					case "black":{
+						panelColor.setBackground(Color.black);
+					}break;
+					default:{
+						panelColor.setBackground(Color.white);
+					}
+					}
 				}
-				}
+				
 				
 				updateSwitchComboBox();
 				updateVariableTable();
@@ -334,12 +352,19 @@ public class TrackControllerUI extends JFrame {
 			}
 		});
 		
+		/*
+		 ******************************************************************************
+		 * TRACK CONTROLLER DISPLAY SELECTION
+		 ******************************************************************************
+		 */
+		
 		JLabel lblSelectTrackController = new JLabel("Select Track Controller");
 		lblSelectTrackController.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSelectTrackController.setFont(new Font("Tahoma", Font.BOLD, 11));
 		
 		comboBoxTrackController_2 = new JComboBox<String> ();
-		comboBoxTrackController_2.setModel(new DefaultComboBoxModel<String> (new String[] {"All"}));
+		comboBoxTrackController_2.setModel(new DefaultComboBoxModel(new String[] {"All", "1", "2"}));
+		comboBoxTrackController_2.setSelectedIndex(0);
 		displayedController=(String)comboBoxTrackController_2.getSelectedItem();
 		
 		comboBoxTrackController_2.addActionListener(new ActionListener(){
@@ -395,6 +420,12 @@ public class TrackControllerUI extends JFrame {
 		
 		JSeparator separator_3 = new JSeparator();
 		
+		/*
+		 ******************************************************************************
+		 * MANUAL SWITCHING
+		 ******************************************************************************
+		 */
+		
 		JLabel lblManuallyEngageSwitch = new JLabel("Manually Engage Switch");
 		lblManuallyEngageSwitch.setFont(new Font("Tahoma", Font.BOLD, 11));
 		lblManuallyEngageSwitch.setHorizontalAlignment(SwingConstants.CENTER);
@@ -442,7 +473,12 @@ public class TrackControllerUI extends JFrame {
 				}
 				
 				TrackControllerInterface correctTC =findCorrectTC(correctLine,switchName);
-				correctTC.engageSwitch(switchName, engagement);
+				
+				//TEST ONLY
+				System.out.println(">>Checkpoint: switchEngage: switchName="+switchName+"\tTCLine="+correctTC.getLine()+"\tTCID="+correctTC.getControllerId());
+				//TEST ONLY
+				
+				correctTC.engageSwitch(switchName, !engagement);
 				updateVariableTable();
 			}
 		};
@@ -461,9 +497,6 @@ public class TrackControllerUI extends JFrame {
 		comboBoxSwitchList.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				JComboBox<String>  comboBox=(JComboBox<String>)e.getSource();
-				for(int i=0;i<comboBox.getItemCount();i++){
-					System.out.println(i+": "+comboBox.getItemAt(i));
-				}
 				if(comboBox.getSelectedIndex()!=-1){
 					String selected = comboBox.getSelectedItem().toString();
 					if(selected.equals("None")){
@@ -474,7 +507,39 @@ public class TrackControllerUI extends JFrame {
 						rdbtnEngageSwitch.setEnabled(true);
 						rdbtnDisengageSwitch.setEnabled(true);
 						
-						//NEED TO SET INITIAL RB ENGAGEMENT
+						String[] tokens=selected.split(" ");
+						String switchName=tokens[1];
+						
+						Line correctLine=null;
+						
+						if(displayedLine.equals("All")){
+							Iterator<Line> lineIterator=lines.iterator();
+							Line currLine=lineIterator.next();
+							
+							while(!(selected.contains(currLine.getLine())) && lineIterator.hasNext()){
+								currLine=lineIterator.next();
+							}
+							correctLine=currLine;
+						}
+						else{
+							Iterator<Line> lineIterator=lines.iterator();
+							Line currLine=lineIterator.next();
+							while(!currLine.getLine().equals(displayedLine) && lineIterator.hasNext()){
+								currLine=lineIterator.next();
+							}
+							correctLine=currLine;
+						}
+						
+						TrackControllerInterface correctTC =findCorrectTC(correctLine,switchName);
+						
+						Iterator<Block> switchBlockIterator = switchList.get(correctLine.getLine()).get(Integer.toString(correctTC.getControllerId())).iterator();
+						while(switchBlockIterator.hasNext()){
+							Block switchBlock=switchBlockIterator.next();
+							if(Integer.toString(switchBlock.getSwitchBlockId()).equals(switchName)){
+								rdbtnEngageSwitch.setSelected(switchBlock.isSwitchEngaged());
+								break;
+							}
+						}
 					}
 				}		
 			}
@@ -671,6 +736,8 @@ public class TrackControllerUI extends JFrame {
 		JLabel lblEnterLineName = new JLabel("Line:");
 		
 		comboBoxTrackController_1 = new JComboBox<String> ();
+		comboBoxTrackController_1.setModel(new DefaultComboBoxModel(new String[] {"1", "2"}));
+		comboBoxTrackController_1.setSelectedIndex(0);
 		
 		comboBoxLine_1 = new JComboBox<String> ();
 		
@@ -742,12 +809,19 @@ public class TrackControllerUI extends JFrame {
 		);
 		panel.setLayout(gl_panel);
 		contentPane.setLayout(gl_contentPane);
-		setVisible(true);
+		
+		setVisible(false);
+		authentication.setVisible(true);
 	}
+	
+	/***** End of TrackControllerUI() ******/
+	
+	
+	/***** Start of TrackControllerUI Methods *****/
 	
 	public void updateVariableTable(){
 		
-		if(this.displayedLine.equals("All")){
+		if(this.displayedLine!=null && this.displayedController!=null && this.displayedLine.equals("All")){
 			Iterator<Line> lineIterator=lines.iterator();
 			int counter=0;
 			while(lineIterator.hasNext()){
@@ -766,7 +840,7 @@ public class TrackControllerUI extends JFrame {
 				}
 			}
 		}
-		else{
+		else if(this.displayedLine!=null && this.displayedController!=null){
 			Iterator<Line> lineIterator=lines.iterator();
 			Line currLine=lineIterator.next();
 			while(!currLine.getLine().equals(this.displayedLine) && lineIterator.hasNext()){
@@ -829,7 +903,7 @@ public class TrackControllerUI extends JFrame {
 	}
 	
 	public void updateSwitchesTable(){
-		if(this.displayedLine.equals("All")){
+		if(this.displayedLine!=null && this.displayedController!=null && this.displayedLine.equals("All")){
 			Iterator<Line> lineIterator=lines.iterator();
 			int counter=0;
 			while(lineIterator.hasNext()){
@@ -840,15 +914,12 @@ public class TrackControllerUI extends JFrame {
 					TrackControllerInterface currTC=tcIterator.next();
 					
 					DefaultTableModel dtm= (DefaultTableModel)tableSwitches.getModel();
-					dtm.setRowCount(currTC.getSection().size()+counter);
-					/*if(!tcIterator.hasNext()){
-						dtm.setRowCount(tableVariableDisplay.getRowCount()-1);
-					}*/
+					dtm.setRowCount(currTC.getSwitchList().size()+counter);
 					counter=setSwitchTableValues(currLine,currTC,counter);
 				}
 			}
 		}
-		else{
+		else if(this.displayedLine!=null && this.displayedController!=null){
 			Iterator<Line> lineIterator=lines.iterator();
 			Line currLine=lineIterator.next();
 			while(!currLine.getLine().equals(this.displayedLine) && lineIterator.hasNext()){
@@ -864,10 +935,7 @@ public class TrackControllerUI extends JFrame {
 					TrackControllerInterface currTC=tcIterator.next();
 					
 					DefaultTableModel dtm= (DefaultTableModel)tableSwitches.getModel();
-					dtm.setRowCount(currTC.getSection().size()+counter);
-					/*if(!tcIterator.hasNext()){
-						dtm.setRowCount(tableVariableDisplay.getRowCount()-1);
-					}*/
+					dtm.setRowCount(currTC.getSwitchList().size()+counter);
 					counter=setSwitchTableValues(currLine,currTC,counter);
 				}
 			}
@@ -879,7 +947,7 @@ public class TrackControllerUI extends JFrame {
 				}
 				int counter=0;
 				DefaultTableModel dtm= (DefaultTableModel)tableSwitches.getModel();
-				dtm.setRowCount(currTC.getSection().size());
+				dtm.setRowCount(currTC.getSwitchList().size());
 				setSwitchTableValues(currLine,currTC,counter);
 				
 			}
@@ -927,19 +995,20 @@ public class TrackControllerUI extends JFrame {
 	public void setLines(List<Line> lines){
 		this.lines=lines;
 		
+		comboBoxLine_1.removeAllItems();
+		comboBoxLine_2.removeAllItems();
+		comboBoxLine_2.addItem("All");
+		
 		Iterator<Line> lineIterator=lines.iterator();
 		while(lineIterator.hasNext()){
 			Line currLine=lineIterator.next();
 			comboBoxLine_1.addItem(currLine.getLine());
 			comboBoxLine_2.addItem(currLine.getLine());
-			
-			Iterator<TrackControllerInterface> tcIterator = currLine.getAllTrackControllers().iterator();
-			while(tcIterator.hasNext()){
-				TrackControllerInterface currTC=tcIterator.next();
-				comboBoxTrackController_1.addItem(Integer.toString(currTC.getControllerId()));
-				comboBoxTrackController_2.addItem(Integer.toString(currTC.getControllerId()));
-			}
 		}
+		
+		comboBoxLine_1.setSelectedIndex(0);
+		comboBoxLine_2.setSelectedIndex(0);
+		
 		updateSwitchComboBox();
 	}
 	
@@ -949,7 +1018,7 @@ public class TrackControllerUI extends JFrame {
 	
 	private void updateSwitchComboBox(){
 		displayedSwitches.clear();
-		if(this.displayedLine.equals("All")){
+		if(this.displayedLine!=null && this.displayedController!=null && this.displayedLine.equals("All")){
 			Iterator<Line> lineIterator=lines.iterator();
 			while(lineIterator.hasNext()){
 				Line currLine=lineIterator.next();
@@ -960,15 +1029,11 @@ public class TrackControllerUI extends JFrame {
 					Iterator<Block> tcSwitchIterator=switchList.get(currLine.getLine()).get(Integer.toString(currTC.getControllerId())).iterator();
 					while(tcSwitchIterator.hasNext()){
 						displayedSwitches.add("Switch " + Integer.toString(tcSwitchIterator.next().getSwitchBlockId()) + " (" + currLine.getLine()+" Line)");
-						
-						//TEST ONLY
-						System.out.println(displayedSwitches.getLast());
-						//TEST ONLY
 					}
 				}
 			}
 		}
-		else{
+		else if(this.displayedLine!=null && this.displayedController!=null){
 			Iterator<Line> lineIterator=lines.iterator();
 			Line currLine=lineIterator.next();
 			while(!currLine.getLine().equals(this.displayedLine) && lineIterator.hasNext()){
@@ -984,14 +1049,11 @@ public class TrackControllerUI extends JFrame {
 					Iterator<Block> tcSwitchIterator=switchList.get(currLine.getLine()).get(Integer.toString(currTC.getControllerId())).iterator();
 					while(tcSwitchIterator.hasNext()){
 						displayedSwitches.add("Switch " + Integer.toString(tcSwitchIterator.next().getSwitchBlockId()));
-						
-						//TEST ONLY
-						System.out.println(displayedSwitches.getLast());
-						//TEST ONLY
 					}
 				}
 			}
 			else{
+				
 				Iterator<TrackControllerInterface> tcIterator = currLine.getAllTrackControllers().iterator();
 				TrackControllerInterface currTC=tcIterator.next();
 				while(!(Integer.toString(currTC.getControllerId()).equals(this.displayedController)) && tcIterator.hasNext()){
@@ -1000,10 +1062,6 @@ public class TrackControllerUI extends JFrame {
 				Iterator<Block> tcSwitchIterator=switchList.get(currLine.getLine()).get(Integer.toString(currTC.getControllerId())).iterator();
 				while(tcSwitchIterator.hasNext()){
 					displayedSwitches.add("Switch " + Integer.toString(tcSwitchIterator.next().getSwitchBlockId()));
-					
-					//TEST ONLY
-					System.out.println(displayedSwitches.getLast());
-					//TEST ONLY
 				}
 				
 			}
@@ -1012,7 +1070,6 @@ public class TrackControllerUI extends JFrame {
 		Collections.sort(displayedSwitches);
 		comboBoxSwitchList.removeAllItems();
 		comboBoxSwitchList.addItem("None");
-		//comboBoxSwitchList.setSelectedItem("None");
 		comboBoxSwitchList.setSelectedIndex(0);
 		
 		Iterator<String> switchListIterator = displayedSwitches.iterator();
@@ -1024,10 +1081,9 @@ public class TrackControllerUI extends JFrame {
 	}
 	
 	TrackControllerInterface findCorrectTC(Line currLine,String switchName){
-		Iterator<TrackControllerInterface> tcIterator = currLine.getAllTrackControllers().iterator();
-		TrackControllerInterface currTC=tcIterator.next();
-		while(!(Integer.toString(currTC.getControllerId()).equals(displayedController)) && tcIterator.hasNext()){
-			currTC=tcIterator.next();
+		Iterator<TrackControllerInterface> tcIterator = currLine.getAllTrackControllers().iterator();;
+		while(tcIterator.hasNext()){
+			TrackControllerInterface currTC=tcIterator.next();
 			if(currTC.getSwitchList().containsKey(switchName)){
 				return currTC;
 			}
