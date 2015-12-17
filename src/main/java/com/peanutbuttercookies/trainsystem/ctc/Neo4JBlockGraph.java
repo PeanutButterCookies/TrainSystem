@@ -1,9 +1,12 @@
 package com.peanutbuttercookies.trainsystem.ctc;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Vector;
 
+import org.apache.commons.io.FileUtils;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -29,7 +32,13 @@ public class Neo4JBlockGraph {
 	}
 
 	public Neo4JBlockGraph() {
-		graph = new GraphDatabaseFactory().newEmbeddedDatabase(new File("graph.db"));
+		try {
+			FileUtils.deleteDirectory(new File("graph"));
+		} catch (IOException e) {
+			System.out.println("Could not delete old graph file");
+			e.printStackTrace();
+		}
+		graph = new GraphDatabaseFactory().newEmbeddedDatabase(new File("graph"));
 
 	}
 
@@ -73,6 +82,9 @@ public class Neo4JBlockGraph {
 
 				Relationship rel = node.createRelationshipTo(next, RelTypes.CONNECTED_TO);
 				rel.setProperty("enabled", true);
+				if(block.hasSwitch()) {
+					rel.setProperty("switch", true);
+				}
 				if(block.getTwoWay()) {
 					Relationship rel2 = next.createRelationshipTo(node, RelTypes.CONNECTED_TO);
 					rel2.setProperty("enabled", true);
@@ -91,6 +103,7 @@ public class Neo4JBlockGraph {
 
 						Relationship rel = node.createRelationshipTo(possibleNext, RelTypes.CONNECTED_TO);
 						rel.setProperty("enabled", false);
+						rel.setProperty("switch", true);
 						if(block.getTwoWay()) {
 							Relationship rel2 = possibleNext.createRelationshipTo(node, RelTypes.CONNECTED_TO);
 							rel2.setProperty("enabled", false);
@@ -172,7 +185,7 @@ public class Neo4JBlockGraph {
 		return count;
 	}
 	
-	public CTCBlock getAdjacentNode(String line, int blockId, Direction direction) {
+	public synchronized CTCBlock getAdjacentNode(String line, int blockId, Direction direction) {
 		CTCBlock block = null;
 		try(Transaction tx = graph.beginTx()) {
 			Node node = graph.findNode(DynamicLabel.label(line), ID, blockId);
@@ -195,8 +208,21 @@ public class Neo4JBlockGraph {
 		return block;
 	}
 	
-	public double getAuthority(String line, int start, int end) {
-		//TODO
+	public synchronized int getAuthority(String line, List<Integer> nodes) {
+		try(Transaction tx = graph.beginTx()) {
+			int length = 0;
+			Label label = DynamicLabel.label(line);
+			for(Integer i : nodes) {
+				Node node = graph.findNode(label, ID, i);
+				length += (int)node.getProperty("length");
+			}
+			return length;
+		} catch(Exception e) {
+			return -1;
+		}
+	}
+	
+	public synchronized List<Integer> getShortestPath(String line, int start, int end) {
 		try(Transaction tx = graph.beginTx()) {
 			Label label = DynamicLabel.label(line);
 			Node startNode = graph.findNode(label, ID, start);
@@ -208,17 +234,34 @@ public class Neo4JBlockGraph {
 				if(((Integer)path.endNode().getProperty(ID)) != end) {
 					continue;
 				}
-				
-				double length = 0;
+				List<Integer> list = new LinkedList<Integer>();
 				for(Node n : path.nodes()) {
-					length += (double)n.getProperty("length");
+					list.add((int)n.getProperty(ID));
 				}
-				return length;
+				return list;
 			}
 		} catch(Exception e) {
-			return -1;
+			e.printStackTrace();
+			return null;
 		}
-		return 0;
+		return null;
+	}
+	
+	public synchronized Vector<Integer> getSwitchNext(String line, int blockId) {
+		try(Transaction tx = graph.beginTx()) {
+			Node node = graph.findNode(DynamicLabel.label(line), ID, blockId);
+			Vector<Integer> next = new Vector<Integer>();
+			for(Relationship r : node.getRelationships(Direction.OUTGOING)) {
+				if((Boolean)r.getProperty("aSwitch")) {
+					next.add((Integer)r.getEndNode().getProperty(ID));
+				}
+			}
+			
+			return next;
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 }

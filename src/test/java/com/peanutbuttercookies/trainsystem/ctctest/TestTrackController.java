@@ -7,12 +7,11 @@ import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.trackcontroller.PLCProgram;
 import com.peanutbuttercookies.trainsystem.trackcontroller.TrackController;
 
-public class TestTrackController extends TrackController implements TrackControllerInterface {
+public class TestTrackController implements TrackControllerInterface {
 
 	private LinkedList<Block> section;
 
 	public TestTrackController(LinkedList<Block> section) {
-		super(null, 0, null, 0, 0, 0, null, null);
 		this.section = section;
 	}
 
@@ -57,11 +56,6 @@ public class TestTrackController extends TrackController implements TrackControl
 		return null;
 	}
 
-	@Override
-	public void engageSwitch(int switchNum) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public void setPLCProgram(PLCProgram newPlcProgram) {
@@ -72,6 +66,12 @@ public class TestTrackController extends TrackController implements TrackControl
 	@Override
 	public void setSpeedAuthority(int blockId, int speed, int authority) {
 		System.out.println("Block Id: " + blockId + ", Speed: " + speed + ", Authority: " + authority);
+	}
+
+	@Override
+	public void engageSwitch(String switchName, boolean engagement) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

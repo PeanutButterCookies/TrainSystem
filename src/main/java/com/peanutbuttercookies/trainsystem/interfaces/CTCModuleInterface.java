@@ -37,9 +37,10 @@ public interface CTCModuleInterface {
 	public CTCTrainModel newTrainModel(String line);
 	public DefaultComboBoxModel<CTCTrain> newTrainCombo(String line);
 	public DefaultComboBoxModel<CTCSection> newSectionCombo(String line);
-	public DefaultComboBoxModel<CTCBlock> newBlockCombo(String line, CTCSection section);
+	public DefaultComboBoxModel<Integer> newBlockCombo(String line, CTCSection section);
+	public DefaultComboBoxModel<Integer> newSwitchCombo(String line);
+	public DefaultComboBoxModel<Integer> newSwitchDestCombo(String line, int switchBlock);
 	public boolean setTrainComponent(ComponentContainer container);
-	public void setClockSpeed(double clockSpeed);
 	public boolean engageRRCrossing(String line, int blockId);
 	
 	// for use by the track controller

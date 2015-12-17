@@ -7,6 +7,7 @@ package com.peanutbuttercookies.trainsystem.ctc;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
 
@@ -96,14 +97,14 @@ public class CTCModule implements CTCModuleInterface {
 	}
 
 	@Override
-	public DefaultComboBoxModel<CTCBlock> newBlockCombo(String line, CTCSection section) {
+	public DefaultComboBoxModel<Integer> newBlockCombo(String line, CTCSection section) {
 		if (!lineBlockMap.containsKey(line)) {
 			System.out.println("Line : " + line + ", not initialized");
 			return null;
 		}
-		DefaultComboBoxModel<CTCBlock> model = new DefaultComboBoxModel<CTCBlock>();
+		DefaultComboBoxModel<Integer> model = new DefaultComboBoxModel<Integer>();
 		CTCBlockModel blockModel = lineBlockMap.get(line);
-		for (CTCBlock block : blockModel.getBlocks(section)) {
+		for (Integer block : blockModel.getBlocks(section)) {
 			model.addElement(block);
 		}
 		return model;
@@ -139,8 +140,11 @@ public class CTCModule implements CTCModuleInterface {
 			return false;
 		}
 		speedInt = (int) (1609.34 * speedInt / 3600);
-		lineBlockMap.get(line).getBlock(train.getHead()).getTc().setSpeedAuthority(train.getHead(), speedInt,
-				block.getBlockNumber());
+		CTCBlockModel model = lineBlockMap.get(line);
+		int authority = model.getAuthority(train.getHead(), block.getBlockNumber());
+		CTCBlock start = model.getBlock(train.getHead());
+		TrackControllerInterface tc = lineBlockMap.get(line).getTC(start);
+		tc.setSpeedAuthority(train.getHead(), speedInt, authority);
 		return true;
 	}
 
@@ -174,12 +178,6 @@ public class CTCModule implements CTCModuleInterface {
 	}
 
 	@Override
-	public void setClockSpeed(double clockSpeed) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public boolean engageRRCrossing(String line, int blockId) {
 		// TODO Auto-generated method stub
 		return false;
@@ -191,14 +189,16 @@ public class CTCModule implements CTCModuleInterface {
 
 	}
 
-	// FOR TESTING ONLY
-
-	public CTCTrainModel getTrainModel(String line) {
-		return lineTrainMap.get(line);
+	@Override
+	public DefaultComboBoxModel<Integer> newSwitchCombo(String line) {
+		Vector<Integer> switches =  lineBlockMap.get(line).getSwitches();
+		return new DefaultComboBoxModel<Integer>(switches);
 	}
 
-	public CTCBlockModel getBlockModel(String line) {
-		return lineBlockMap.get(line);
+	@Override
+	public DefaultComboBoxModel<Integer> newSwitchDestCombo(String line, int switchBlock) {
+		Vector<Integer> possible = neo4j.getSwitchNext(line, switchBlock);
+		return new DefaultComboBoxModel<Integer>(possible);
 	}
 
 }

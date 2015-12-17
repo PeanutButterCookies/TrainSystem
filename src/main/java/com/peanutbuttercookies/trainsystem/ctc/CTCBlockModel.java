@@ -7,8 +7,12 @@ package com.peanutbuttercookies.trainsystem.ctc;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -21,7 +25,7 @@ public class CTCBlockModel extends AbstractTableModel {
 
 	private static final long serialVersionUID = -3573813996444899446L;
 
-	private Map<Integer, CTCBlock> switchMap;
+	private Set<Integer> switches;
 	private Map<String, CTCSection> sections;
 	private Map<Integer, TrackControllerInterface> tcMap;
 	private Thread update;
@@ -30,7 +34,7 @@ public class CTCBlockModel extends AbstractTableModel {
 
 	public CTCBlockModel(String line, Neo4JBlockGraph neo4j) {
 		this.neo4j = neo4j;
-		switchMap = new LinkedHashMap<Integer, CTCBlock>();
+		switches = new LinkedHashSet<Integer>();
 		sections = new LinkedHashMap<String, CTCSection>();
 		tcMap = new LinkedHashMap<Integer, TrackControllerInterface>();
 		update = new Thread(new TableUpdateThread(this));
@@ -46,19 +50,31 @@ public class CTCBlockModel extends AbstractTableModel {
 	}
 
 	public void addBlock(Block block, TrackControllerInterface tc) {
-		//TODO manage sections
+		if(!sections.containsKey(block.getSection())) {
+			System.out.println("Section added: " + block.getSection());
+			CTCSection section = new CTCSection(block.getSection());
+			sections.put(block.getSection(), section);
+		}
+		
+		sections.get(block.getSection()).addBlock(block.getBlockNumber());
+		if(block.hasSwitch()) {
+			switches.add(block.getBlockNumber());
+		}
+		
 		neo4j.addBlock(line, block);
 		fireTableDataChanged();
+	}
+	
+	public CTCBlock getBlock(int blockId) {
+		return neo4j.getBlock(line, blockId);
 	}
 
 	public Collection<CTCSection> getSections() {
 		return sections.values();
 	}
 
-	public List<CTCBlock> getBlocks(CTCSection section) {
-		//TODO
-//		return sections.get(section.getName()).getBlocks();
-		return null;
+	public List<Integer> getBlocks(CTCSection section) {
+		return sections.get(section.getName()).getBlocks();
 	}
 
 	public boolean setOccupied(int blockId) {
@@ -132,4 +148,21 @@ public class CTCBlockModel extends AbstractTableModel {
 		return CTCBlock.getField(column);
 	}
 
+	public TrackControllerInterface getTC(CTCBlock block) {
+		return tcMap.get(block.getTc());
+	}
+	
+	public int getAuthority(int start, int end) {
+		List<Integer> nodes = neo4j.getShortestPath(line, start, end);
+		int authority = neo4j.getAuthority(line, nodes);
+		return authority;
+	}
+	
+	public Vector<Integer> getSwitches() {
+		Vector<Integer> switchList = new Vector<Integer>();
+		for(Integer  i : switches) {
+			switchList.add(i);
+		}
+		return switchList;
+	}
 }

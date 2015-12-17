@@ -7,6 +7,7 @@ import com.peanutbuttercookies.trainsystem.commonresources.Line;
 import com.peanutbuttercookies.trainsystem.ctc.CTCBlock;
 import com.peanutbuttercookies.trainsystem.ctc.CTCModule;
 import com.peanutbuttercookies.trainsystem.ctc.CTCModuleUI;
+import com.peanutbuttercookies.trainsystem.trackcontroller.TrackControllerStaticModule;
 
 public class CTCUITest {
 	public static final String LINE = "TestLine";
@@ -32,14 +33,16 @@ public class CTCUITest {
 		curr.setNext(null);
 		
 		Line line = new Line(LINE, blocks);
+		System.out.println(blocks.size());
 		TestTrackController tc = new TestTrackController(blocks);
-		line.setTrackControllers(tc, new TestTrackController(new LinkedList<Block>()));
+		TrackControllerStaticModule trackController = new TrackControllerStaticModule();
+		trackController.setTrackControllers(line);
 		CTCModule ctc = new CTCModule();
 		CTCModuleUI ui = new CTCModuleUI(ctc);
 		ctc.setUi(ui);
 		ctc.importLine(line);
-//		line = new Line("Test2", blocks);
-//		ctc.importLine(line);
+		line = new Line("Test2", blocks);
+		ctc.importLine(line);
 		ctc.setBlockOccupied(LINE, 0);
 		for(int i=1; i<9; i++) {
 			Thread.sleep(500);
@@ -48,9 +51,6 @@ public class CTCUITest {
 			ctc.setBlockUnoccupied(LINE, i-1);
 		}
 		
-		for(CTCBlock block : ctc.getBlockModel(LINE).getBlockMap().values()) {
-			System.out.println(block.getBlockNumber());
-		}
 		
 	}
 	

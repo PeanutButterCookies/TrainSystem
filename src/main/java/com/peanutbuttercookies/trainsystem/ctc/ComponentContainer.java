@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Vector;
 
@@ -30,37 +31,53 @@ public class ComponentContainer extends JPanel implements ActionListener {
 	private static final Dimension BUTTON_DIM = new Dimension(width / 4, 30);
 	private static final Dimension COMBO_DIM = new Dimension(width / 4, 30);
 	private static final Dimension ONE_DIM = new Dimension(width, 450);
-	private static final Dimension TWO_DIM = new Dimension(width, 50);
-	private static final Dimension THREE_DIM = new Dimension(width, 50);
-	private static final Dimension FOUR_DIM = new Dimension(width, 50);
+	private static final Dimension SECONDARY_DIM = new Dimension(width, 50);
 
 	private static final Vector<String> uses = new Vector<String>(
-			Arrays.asList(new String[] { "Dispatch", "Mark for Repair", "Change switch", "Set schedule" }));
+			Arrays.asList(new String[] { "Dispatch", "Mark for Repair", "Engage RR Crossing", "Change switch", "Set schedule" }));
 
 	private CTCModuleInterface module;
-	private DefaultComboBoxModel<CTCTrain> trainModel;
-	private DefaultComboBoxModel<CTCSection> sectionModel;
-	private Map<CTCSection, DefaultComboBoxModel<CTCBlock>> blockModels;
-	private JTextField speed;
+	private String line;
+	
+	// Shared components
 	private JComboBox<String> usesCombo;
+	private JButton button;
+	
+	// Dispatch panel and components
+	private JPanel dispatchPanel;
+	private JComboBox<CTCSection> allSections;
+	private Map<CTCSection, DefaultComboBoxModel<Integer>> allBlocks;
+	private JTextField speed;
+	private JComboBox<CTCTrain> trainCBox;
+	private JComboBox<Integer> blockCBox;
+	
+	// Repair panel (reuses section and blocks from dispatch)
+	private JPanel repairPanel;
+
+	// Switch panel and components
+	private JPanel switchPanel;
+	private JComboBox<Integer> switches;
+	private Map<Integer, DefaultComboBoxModel<Integer>> switchDests;
+	private JComboBox<Integer> switchDestCombo;
+	
+	// Schedule panel and components
+	private JPanel schedulePanel;
+	private JTextField fileDisplay;
 	private JButton browse;
 	private String selectedFile;
-	private String line;
-	private JTextField fileDisplay;
-	private JComboBox<CTCBlock> blockCBox;
-	private JComboBox<CTCTrain> trainCBox;
+	
+	// RR Crossing panel and components
+	private JPanel rrPanel;
+	private JComboBox<CTCSection> rrSections;
+	private Map<CTCSection, DefaultComboBoxModel<Integer>> rrBlocks;
+
 
 	public ComponentContainer(String line, CTCModuleInterface module) {
+		// Initialize shared panels/components
 		this.line = line;
 		this.module = module;
-		blockModels = new HashMap<CTCSection, DefaultComboBoxModel<CTCBlock>>();
-		initBrowse();
-		usesCombo = new JComboBox<String>(uses);
-		usesCombo.setPreferredSize(COMBO_DIM);
-		speed = new JTextField();
-		speed.setPreferredSize(COMBO_DIM);
 		setPreferredSize(TAB_DIM);
-
+		
 		JTable blocks = new JTable(module.newBlockModel(line));
 		JTable trains = new JTable(module.newTrainModel(line));
 		JTable schedule = new JTable(module.newScheduleModel(line));
@@ -69,70 +86,93 @@ public class ComponentContainer extends JPanel implements ActionListener {
 		JScrollPane scroll3 = new JScrollPane(schedule);
 
 		JPanel one = new JPanel();
-		JPanel two = new JPanel();
-		JPanel three = new JPanel();
-		JPanel four = new JPanel();
 		one.setLayout(new BoxLayout(one, BoxLayout.X_AXIS));
-		two.setLayout(new BoxLayout(two, BoxLayout.X_AXIS));
-		three.setLayout(new BoxLayout(three, BoxLayout.X_AXIS));
-		four.setLayout(new BoxLayout(four, BoxLayout.X_AXIS));
 		one.setPreferredSize(ONE_DIM);
-		two.setPreferredSize(TWO_DIM);
-		three.setPreferredSize(THREE_DIM);
-		four.setPreferredSize(FOUR_DIM);
 
 		one.add(scroll1);
 		one.add(scroll2);
 		one.add(scroll3);
-		fileDisplay = new JTextField(20);
-		fileDisplay.setEditable(false);
-		two.add(fileDisplay);
-		two.add(browse);
-
-		trainModel = module.newTrainCombo(line);
-		sectionModel = module.newSectionCombo(line);
-		trainCBox = new JComboBox<CTCTrain>(module.newTrainCombo(line));
-		JComboBox<CTCSection> sectionCBox = new JComboBox<CTCSection>(module.newSectionCombo(line));
-
-		for (int i = 0; i < sectionModel.getSize(); i++) {
-			CTCSection section = sectionModel.getElementAt(i);
-			blockModels.put(section, module.newBlockCombo(line, section));
-		}
-		blockCBox = new JComboBox<CTCBlock>(blockModels.get(sectionModel.getSelectedItem()));
-		sectionCBox.addActionListener(new ActionListener() {
+	
+		add(one);
+		
+		usesCombo = new JComboBox<String>(uses);
+		usesCombo.setPreferredSize(COMBO_DIM);
+		usesCombo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				blockCBox.setModel(blockModels.get((CTCSection) sectionCBox.getSelectedItem()));
+				//TODO
+			}
+		});
+	
+		button = new JButton("Send");
+		button.addActionListener(this);
+		button.setPreferredSize(BUTTON_DIM);
+		JPanel sharedPanel = new JPanel();
+		sharedPanel.setPreferredSize(SECONDARY_DIM);
+		sharedPanel.setLayout(new BoxLayout(sharedPanel,BoxLayout.X_AXIS));
+		
+		sharedPanel.add(usesCombo);
+		sharedPanel.add(button);
+
+		// Init dispatch panel and components
+		dispatchPanel = new JPanel();
+		dispatchPanel.setLayout(new BoxLayout(dispatchPanel, BoxLayout.X_AXIS));
+		dispatchPanel.setPreferredSize(SECONDARY_DIM);
+
+		DefaultComboBoxModel<CTCTrain> trainComboModel = module.newTrainCombo(line);
+		trainCBox = new JComboBox<CTCTrain>(trainComboModel);
+		DefaultComboBoxModel<CTCSection> sectionModel = module.newSectionCombo(line);
+		allSections = new JComboBox<CTCSection>(module.newSectionCombo(line));
+		allBlocks = new HashMap<CTCSection, DefaultComboBoxModel<Integer>>();
+		allSections.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				blockCBox.setModel(allBlocks.get((allSections).getSelectedItem()));
 			}
 		});
 
-		JButton button = new JButton("Send");
-		button.addActionListener(this);
+		for (int i = 0; i < sectionModel.getSize(); i++) {
+			CTCSection section = sectionModel.getElementAt(i);
+			allBlocks.put(section, module.newBlockCombo(line, section));
+		}
+		
+		blockCBox = new JComboBox<Integer>(allBlocks.get((CTCSection)allSections.getItemAt(1)));
+			
+		speed = new JTextField();
+		speed.setPreferredSize(COMBO_DIM);
 
-		trainCBox.setPreferredSize(COMBO_DIM);
-		blockCBox.setPreferredSize(COMBO_DIM);
-		sectionCBox.setPreferredSize(COMBO_DIM);
-		button.setPreferredSize(BUTTON_DIM);
 
-		three.add(trainCBox);
-		three.add(sectionCBox);
-		three.add(blockCBox);
-		four.add(speed);
-		four.add(usesCombo);
-		four.add(button);
+		dispatchPanel.add(trainCBox);
+		dispatchPanel.add(allSections);
+		dispatchPanel.add(blockCBox);
+		dispatchPanel.add(speed);
+		
+		// Switch panel and components init
+		switchPanel = new JPanel();
+		switchPanel.setPreferredSize(SECONDARY_DIM);
+		switchPanel.setLayout(new BoxLayout(switchPanel, BoxLayout.X_AXIS));
+		
+		DefaultComboBoxModel<Integer> switchModel = module.newSwitchCombo(line);
+		switchDests = new LinkedHashMap<Integer, DefaultComboBoxModel<Integer>>();
+		switches = new JComboBox<Integer>(switchModel);
+		switches.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				switchDestCombo.setModel(switchDests.get((Integer) switches.getSelectedItem()));
+			}
+		});
 
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		add(one);
-		add(two);
-		add(three);
-		add(four);
+		for (int i = 0; i < switchModel.getSize(); i++) {
+			Integer sw = switchModel.getElementAt(i);
+			switchDests.put(sw, module.newSwitchDestCombo(line, sw));
+		}
 
-	}
+		switchDestCombo = new JComboBox<Integer>(switchDests.get(switchModel.getSelectedItem()));
 
-	public String getLine() {
-		return line;
-	}
-
-	private void initBrowse() {
+		switchPanel.add(switches);
+		switchPanel.add(switchDestCombo);
+		
+		// Schedule panel and components init
+		schedulePanel = new JPanel();
+		schedulePanel.setPreferredSize(SECONDARY_DIM);
+		schedulePanel.setLayout(new BoxLayout(schedulePanel, BoxLayout.X_AXIS));
 		browse = new JButton("Browse");
 		browse.setPreferredSize(BUTTON_DIM);
 		browse.addActionListener(new ActionListener() {
@@ -152,6 +192,26 @@ public class ComponentContainer extends JPanel implements ActionListener {
 				}
 			}
 		});
+
+		fileDisplay = new JTextField(30);
+		fileDisplay.setEditable(false);
+		schedulePanel.add(fileDisplay);
+		schedulePanel.add(browse);
+
+		// TODO: RR Crossing and mark for repair panels
+		
+		
+		
+		// Add all to panel
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		add(one);
+		add(dispatchPanel);
+		add(sharedPanel);
+
+	}
+
+	public String getLine() {
+		return line;
 	}
 
 	@Override
@@ -162,4 +222,5 @@ public class ComponentContainer extends JPanel implements ActionListener {
 					(CTCTrain) trainCBox.getSelectedItem());
 		}
 	}
+	
 }
