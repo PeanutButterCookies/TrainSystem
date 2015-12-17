@@ -19,6 +19,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
@@ -57,6 +58,7 @@ public class TrackModelUI extends JFrame {
 	private JList list_2;
 	private JList list_3;
 	private JLabel lblTemperatureController;
+	private boolean validUser;
 
 	/**
 	 * Create the frame.
@@ -73,25 +75,14 @@ public class TrackModelUI extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		
+		validUser = false;
+
 		JTextPane textPane = new JTextPane();
 
-		
-		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.X_AXIS));
-		JLabel userLabel = new JLabel("Enter username: ");
-		JTextField userName = new JTextField(20);
-		contentPane.add(userLabel, BorderLayout.NORTH);
-		contentPane.add(userName, BorderLayout.SOUTH);
-		JLabel passLabel = new JLabel("Enter password: ");
-		JTextField password = new JTextField(20);
-		contentPane.add(passLabel, BorderLayout.NORTH);
-		contentPane.add(password, BorderLayout.SOUTH);
-		setVisible(true);
-		
-		
-		
-				
-		/*sectionList = new DefaultListModel<String>();
+		contentPane = new JPanel();
+		setContentPane(contentPane);
+
+		sectionList = new DefaultListModel<String>();
 		blockList = new DefaultListModel<Integer>();
 		infoList = new DefaultListModel<String>();
 		lineList = new DefaultListModel<String>();
@@ -106,9 +97,12 @@ public class TrackModelUI extends JFrame {
 
 		slider.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
-				curViewBlock.setTemp(slider.getValue());
-				lblTemperatureController.setText("Temperature Controller: " + slider.getValue());
+				if (curViewBlock != null) {
+					curViewBlock.setTemp(slider.getValue());
+					lblTemperatureController.setText("Temperature Controller: " + slider.getValue());
+				}
 			}
+
 		});
 
 		JScrollPane scrollPane = new JScrollPane(list_1);
@@ -199,16 +193,16 @@ public class TrackModelUI extends JFrame {
 										.addComponent(lblTemperatureController)
 										.addPreferredGap(ComponentPlacement.RELATED)
 										.addComponent(slider, GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)))
-				.addPreferredGap(ComponentPlacement.RELATED).addGroup(
-						gl_contentPane.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_contentPane.createSequentialGroup().addComponent(btnFixBlock)
+				.addPreferredGap(ComponentPlacement.RELATED)
+				.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_contentPane.createSequentialGroup().addComponent(btnFixBlock).addContainerGap())
+						.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_contentPane.createSequentialGroup().addComponent(btnBreakBlock)
 										.addContainerGap())
-								.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-										.addGroup(gl_contentPane.createSequentialGroup().addComponent(btnBreakBlock)
-												.addGap(14))
-										.addGroup(gl_contentPane.createSequentialGroup()
-												.addComponent(btnSwitchEngage, GroupLayout.DEFAULT_SIZE,
-														GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addGroup(
+										gl_contentPane
+												.createSequentialGroup().addComponent(btnSwitchEngage,
+														GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, 8)
 												.addContainerGap())))));
 		gl_contentPane.setVerticalGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPane.createSequentialGroup().addContainerGap()
@@ -276,9 +270,9 @@ public class TrackModelUI extends JFrame {
 					}
 				}
 			}
-		});*/
+		});
 	}
-	
+
 	private void loadTrack(LinkedList<Block> newLine) {
 		line = newLine;
 	}
@@ -301,45 +295,44 @@ public class TrackModelUI extends JFrame {
 		infoList.addElement("Block Grade " + line.get(0).getBlockGrade());
 		infoList.addElement("Speed Limit " + line.get(0).getSpeedLimit());
 		infoList.addElement("INFRASTRUCTURE ");
-		if(line.get(0).hasStation()){
+		if (line.get(0).hasStation()) {
 			infoList.addElement("Station " + line.get(0).getStationName());
 		}
-		if(line.get(0).hasRRCrossing())	{
+		if (line.get(0).hasRRCrossing()) {
 			infoList.addElement("Railroad Crossing");
 		}
-		if(line.get(0).isUnderground())	{
+		if (line.get(0).isUnderground()) {
 			infoList.addElement("Railroad Crossing");
 		}
-		if(line.get(0).getBeacon() != null)	{
+		if (line.get(0).getBeacon() != null) {
 			infoList.addElement("Beacon: " + line.get(0).getBeacon());
 		}
 		infoList.addElement("Elevation " + line.get(0).getElevation());
 		infoList.addElement("Cumulative Elevation " + line.get(0).getCumulativeElevation());
-		if(line.get(0).hasSwitch())	{
+		if (line.get(0).hasSwitch()) {
 			infoList.addElement("Switch: " + line.get(0).getSwitchNum());
 		}
-		//infoList.addElement("Master Switch: " + line.get(0).getMasterSwitch());
-		//infoList.addElement("Direction " + line.get(0).getArrowDirection());
+		// infoList.addElement("Master Switch: " +
+		// line.get(0).getMasterSwitch());
+		// infoList.addElement("Direction " + line.get(0).getArrowDirection());
 		infoList.addElement("Occupancy " + line.get(0).isBlockOccupied());
-		//infoList.addElement("Two Way: " + line.get(0).getTwoWay());
-		//infoList.addElement("Next: " + line.get(0).getNext().getBlockNumber());
-		//infoList.addElement("Prev: " + line.get(0).getPrev().getBlockNumber());
-		/*infoList.addElement("NEXT POSSIBLE BLOCKS");
-		LinkedList<Block> nextBlocks = new LinkedList<Block>(line.get(0).getNextPossible());
-		String nextPos = "";
-		for (int i = 0; i < nextBlocks.size(); i++) {
-			nextPos += nextBlocks.get(i).getBlockNumber() + " ";
-		}
-		infoList.addElement(nextPos);
-		if (line.get(0).getSwitchList() != null) {
-			infoList.addElement("SWITCH LIST");
-			nextBlocks = new LinkedList<Block>(line.get(0).getSwitchList());
-			nextPos = "";
-			for (int i = 0; i < nextBlocks.size(); i++) {
-				nextPos += nextBlocks.get(i).getBlockNumber() + " ";
-			}
-			infoList.addElement(nextPos);
-		}*/
+		// infoList.addElement("Two Way: " + line.get(0).getTwoWay());
+		// infoList.addElement("Next: " +
+		// line.get(0).getNext().getBlockNumber());
+		// infoList.addElement("Prev: " +
+		// line.get(0).getPrev().getBlockNumber());
+		/*
+		 * infoList.addElement("NEXT POSSIBLE BLOCKS"); LinkedList<Block>
+		 * nextBlocks = new LinkedList<Block>(line.get(0).getNextPossible());
+		 * String nextPos = ""; for (int i = 0; i < nextBlocks.size(); i++) {
+		 * nextPos += nextBlocks.get(i).getBlockNumber() + " "; }
+		 * infoList.addElement(nextPos); if (line.get(0).getSwitchList() !=
+		 * null) { infoList.addElement("SWITCH LIST"); nextBlocks = new
+		 * LinkedList<Block>(line.get(0).getSwitchList()); nextPos = ""; for
+		 * (int i = 0; i < nextBlocks.size(); i++) { nextPos +=
+		 * nextBlocks.get(i).getBlockNumber() + " "; }
+		 * infoList.addElement(nextPos); }
+		 */
 
 		for (int i = 0; i < track.size(); i++) {
 			if (!lineList.contains(track.get(i).getAllBlocks().get(0).getLine()))
@@ -376,46 +369,46 @@ public class TrackModelUI extends JFrame {
 		infoList.addElement("Block Grade " + line.get(blockNum).getBlockGrade());
 		infoList.addElement("Speed Limit " + line.get(blockNum).getSpeedLimit());
 		infoList.addElement("INFRASTRUCTURE ");
-		if(line.get(blockNum).hasStation()){
+		if (line.get(blockNum).hasStation()) {
 			infoList.addElement("Station " + line.get(blockNum).getStationName());
 		}
-		if(line.get(blockNum).hasRRCrossing())	{
+		if (line.get(blockNum).hasRRCrossing()) {
 			infoList.addElement("Railroad Crossing");
 		}
-		if(line.get(blockNum).isUnderground())	{
+		if (line.get(blockNum).isUnderground()) {
 			infoList.addElement("Railroad Crossing");
 		}
-		if(line.get(blockNum).getBeacon() != null)	{
+		if (line.get(blockNum).getBeacon() != null) {
 			infoList.addElement("Beacon: " + line.get(blockNum).getBeacon());
 		}
 		infoList.addElement("Elevation " + line.get(blockNum).getElevation());
 		infoList.addElement("Cumulative Elevation " + line.get(blockNum).getCumulativeElevation());
-		if(line.get(blockNum).hasSwitch())	{
+		if (line.get(blockNum).hasSwitch()) {
 			infoList.addElement("Switch: " + line.get(blockNum).getSwitchNum());
 		}
-		//infoList.addElement("Master Switch: " + line.get(blockNum).getMasterSwitch());
-		//infoList.addElement("Direction " + line.get(blockNum).getArrowDirection());
+		// infoList.addElement("Master Switch: " +
+		// line.get(blockNum).getMasterSwitch());
+		// infoList.addElement("Direction " +
+		// line.get(blockNum).getArrowDirection());
 		infoList.addElement("Occupancy " + line.get(blockNum).isBlockOccupied());
-		//infoList.addElement("Two Way: " + line.get(blockNum).getTwoWay());
-		//infoList.addElement("Next: " + line.get(blockNum).getNext().getBlockNumber());
-		//infoList.addElement("Prev: " + line.get(blockNum).getPrev().getBlockNumber());
-		//infoList.addElement("NEXT POSSIBLE BLOCKS");
+		// infoList.addElement("Two Way: " + line.get(blockNum).getTwoWay());
+		// infoList.addElement("Next: " +
+		// line.get(blockNum).getNext().getBlockNumber());
+		// infoList.addElement("Prev: " +
+		// line.get(blockNum).getPrev().getBlockNumber());
+		// infoList.addElement("NEXT POSSIBLE BLOCKS");
 		/*
-		LinkedList<Block> nextBlocks = new LinkedList<Block>(line.get(blockNum).getNextPossible());
-		String nextPos = "";
-		for (int i = 0; i < nextBlocks.size(); i++) {
-			nextPos += nextBlocks.get(i).getBlockNumber() + " ";
-		}
-		infoList.addElement(nextPos);
-		if (line.get(blockNum).getSwitchList() != null) {
-			infoList.addElement("SWITCH LIST");
-			nextBlocks = new LinkedList<Block>(line.get(blockNum).getSwitchList());
-			nextPos = "";
-			for (int i = 0; i < nextBlocks.size(); i++) {
-				nextPos += nextBlocks.get(i).getBlockNumber() + " ";
-			}
-			infoList.addElement(nextPos);
-		}*/
+		 * LinkedList<Block> nextBlocks = new
+		 * LinkedList<Block>(line.get(blockNum).getNextPossible()); String
+		 * nextPos = ""; for (int i = 0; i < nextBlocks.size(); i++) { nextPos
+		 * += nextBlocks.get(i).getBlockNumber() + " "; }
+		 * infoList.addElement(nextPos); if (line.get(blockNum).getSwitchList()
+		 * != null) { infoList.addElement("SWITCH LIST"); nextBlocks = new
+		 * LinkedList<Block>(line.get(blockNum).getSwitchList()); nextPos = "";
+		 * for (int i = 0; i < nextBlocks.size(); i++) { nextPos +=
+		 * nextBlocks.get(i).getBlockNumber() + " "; }
+		 * infoList.addElement(nextPos); }
+		 */
 
 	}
 }
