@@ -1,3 +1,10 @@
+/*
+ * Christopher Good
+ * Kevin Nash
+ * Fauzul Azim
+ * 12/17/2015
+ */
+
 package com.peanutbuttercookies.trainsystem.commonresources;
 
 import java.util.LinkedList;
@@ -30,7 +37,7 @@ public class Block {
 	private String beacon;
 	private final int switchNum; // switchNum=-1 for block without
 	private int temp;
-	private int light;	//green = 1; yellow = 2; red = 3;
+	private int light; // green = 1; yellow = 2; red = 3;
 	// switch
 	private final int arrowDirection; // head=1, none=0, tail=-1, both = 2
 	private boolean twoWay;
@@ -49,8 +56,13 @@ public class Block {
 	private boolean rrCrossingEngaged;
 	private LinkedList<BlockOccupationListener> listeners;
 	private TrainModelInterface trainComm = null;
-	
 
+	/**
+	 * This is a constructor for the yard block
+	 * 
+	 * @param initLine
+	 * @param isYard
+	 */
 	public Block(String initLine, boolean isYard) {
 		this(initLine, "", 0, 0, 0, 0, 0, 0, false, false, true, false, false, false, null, -2, 0);
 		this.blockOccupied = true;
@@ -91,8 +103,8 @@ public class Block {
 		this.backwards = false;
 		this.temp = 70;
 		this.hasBeacon = false;
-		
-		if(infrastructureSwitch || infrastructureRRCrossing)	{
+
+		if (infrastructureRRCrossing) {
 			this.setLight(1);
 		}
 	}
@@ -200,6 +212,8 @@ public class Block {
 		this.switchEngaged = engaged;
 	}
 
+	// Changes the engagement of the switch. If the switch is true, it becomes
+	// false, vice versa.
 	public void setSwitchEngagement() {
 		if (masterSwitch) {
 			if (this.getNext().hasSwitch()) {
@@ -233,6 +247,7 @@ public class Block {
 		}
 	}
 
+	// sets all the next possible blocks this block can go to
 	public void setNextPossible(Block newBlock) {
 		boolean add = true;
 		for (int i = 0; i < nextPossible.size(); i++) {
@@ -243,6 +258,7 @@ public class Block {
 			nextPossible.add(newBlock);
 	}
 
+	// removes a next possible block
 	public void removeNextPossible(Block newBlock) {
 		for (int i = 0; i < nextPossible.size(); i++) {
 			if (nextPossible.get(i).getBlockNumber() == newBlock.getBlockNumber())
@@ -250,6 +266,11 @@ public class Block {
 		}
 	}
 
+	/**
+	 * This method creates a list of all blocks that can be switched to *
+	 * 
+	 * @param newBlock
+	 */
 	public void setSwitchList(Block newBlock) {
 		boolean add = true;
 		for (int i = 0; i < switchList.size(); i++) {
@@ -282,6 +303,7 @@ public class Block {
 
 	public void setMasterSwitch(boolean input) {
 		this.masterSwitch = input;
+		this.setLight(1);
 	}
 
 	public boolean getMasterSwitch() {
@@ -291,6 +313,10 @@ public class Block {
 	public Block getPrevBlock() {
 		return this.prev;
 	}
+
+	/**
+	 * This method sets the next block
+	 */
 
 	public void setNext() {
 		for (int i = 0; i < nextPossible.size(); i++) {
@@ -307,7 +333,7 @@ public class Block {
 
 	public void setNext(Block next) {
 		this.next = next;
-		next.setPrev(this);	
+		next.setPrev(this);
 	}
 
 	public boolean isRRCrossingEngaged() {
@@ -334,10 +360,11 @@ public class Block {
 			trainComm.setSpeedAndAuth(speed, authority);
 		}
 	}
-	
+
 	public static void setTrainWrapper(TrainWrapper trainWrapper) {
 		trainWrap = trainWrapper;
 	}
+
 	public void setBackwards() {
 		this.backwards = true;
 	}
@@ -370,8 +397,14 @@ public class Block {
 		this.trainPrev = trainPrev;
 	}
 
+	/**
+	 * This method sets the next block for the train
+	 * 
+	 * @param nothing
+	 * @return void
+	 */
 	public void setTrainNext() {
-		if(next.getBlockNumber() == 0){
+		if (next.getBlockNumber() == 0) {
 			trainWrap.destroyTrain(trainComm);
 		}
 		if (next == trainPrev) {
@@ -381,6 +414,13 @@ public class Block {
 		}
 	}
 
+	/**
+	 * This method sets the block occupied where the train is
+	 * 
+	 * @param occupied
+	 * @param prev
+	 * @param trainComm
+	 */
 	public void setTrainOccupation(boolean occupied, Block prev, TrainModelInterface trainComm) {
 		if (occupied) {
 			this.trainComm = trainComm;
@@ -391,7 +431,6 @@ public class Block {
 		}
 		blockOccupied = occupied;
 		for (BlockOccupationListener i : listeners) {
-			System.out.println("Block occupation listener found");
 			i.blockOccupied(this.blockNumber);
 		}
 	}
@@ -404,18 +443,26 @@ public class Block {
 	public String getBeacon() {
 		return beacon;
 	}
-	
-	public TrainModelInterface getTrainComm()	{
+
+	public TrainModelInterface getTrainComm() {
 		return this.trainComm;
 	}
-	
-	public void setLight(int signal){
+
+	public void setLight(int signal) {
 		this.light = signal;
 	}
-	
-	public int getLight(){
-		return light;
+
+	public String getLight() {
+		if (light == 1)	{
+			return "Green";
+		}
+		else if (light == 2) {
+			return "Yellow";
+		} 
+		else if (light == 3) {
+			return "Red";
+		}
+		return null;
 	}
-	
-	
+
 }

@@ -63,11 +63,6 @@ public class TestTrackController implements TrackControllerInterface {
 		System.out.println("Block Id: " + blockId + ", Speed: " + speed + ", Authority: " + authority);
 	}
 
-	@Override
-	public void engageSwitch(String switchName, boolean engagement) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public boolean setPLCProgram(String plcProgramFileLocation) {
@@ -79,6 +74,18 @@ public class TestTrackController implements TrackControllerInterface {
 	public HashMap<String, LinkedList<Block>> getSwitchList() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean engageSwitch(String switchName, boolean engagement) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean engageRRCrossing(int blockId, boolean engagement) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }
