@@ -41,7 +41,6 @@ public class TrainController implements TrainControllerInterface {
 	public TrainController(TrainModelInterface train) {
 		// TODO Auto-generated constructor stub
 		this.train = train;
-		setSpeedLimit(20);
 	}
 
 	@Override
@@ -128,6 +127,7 @@ public class TrainController implements TrainControllerInterface {
 
 	public void setCommandSpeed(double commandSpeed) {
 		this.commandSpeed = commandSpeed;
+		control.setCommandSpeed(commandSpeed);
 	}
 
 	public double getAuth() {
@@ -151,7 +151,9 @@ public class TrainController implements TrainControllerInterface {
 	}
 
 	public void setDoorsOpen(boolean doorsOpen) {
-		this.doorsOpen = doorsOpen;
+		if(speed == 0){
+			this.doorsOpen = doorsOpen;
+		}
 	}
 
 	public double getPower() {
