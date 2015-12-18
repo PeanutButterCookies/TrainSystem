@@ -1,0 +1,5 @@
+stop:(NB_1_occupied || NB_2_occupied)
+slowdown:(NB_3_occupied || NB_4_occupied)
+switch:(!CB_occupied)
+rrcrossing:(CB_rr || (NB_rr && !NB_1_occupied))
+maintenance:(!PB_occupied && !CB_occupied)

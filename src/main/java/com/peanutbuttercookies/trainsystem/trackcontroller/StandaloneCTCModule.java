@@ -111,9 +111,9 @@ public class StandaloneCTCModule implements CTCModuleInterface {
 	}
 
 	@Override
-	public void importLine(Line line) {
+	public boolean importLine(Line line) {
 		// TODO Auto-generated method stub
-
+		return false;
 	}
 
 	@Override

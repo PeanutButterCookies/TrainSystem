@@ -11,10 +11,15 @@ import com.peanutbuttercookies.trainsystem.interfaces.CTCModuleInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackControllerInterface;
 import com.peanutbuttercookies.trainsystem.interfaces.TrackModelInterface;
 
+/**
+ * 
+ * @author chris
+ *
+ * This is the main track controller object class. There are 2 TC's per line
+ */
 public class TrackController implements TrackControllerInterface,BlockOccupationListener {
 	private final CTCModuleInterface ctc;
 	private final TrackModelInterface trackModel;
-	
 	private final String line;
 	private final int controllerId;
 	private final LinkedList<Block> section;
@@ -28,12 +33,13 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 	public TrackController(String initLine, int initControllerId, LinkedList<Block> initSection,
 			int initStartBlock, int initEndBlock, int initOverlapBlock, CTCModuleInterface initCtc,
 			TrackModelInterface initTrackModel){
+		
 		line			=initLine;
 		controllerId	=initControllerId;
 		section			=initSection;
 		startBlock		=initStartBlock;
 		endBlock		=initEndBlock;
-		overlapBlock	=initOverlapBlock;
+		overlapBlock	=initOverlapBlock;		//lists block that is shared with other TC
 		plcProgramA		=new PLCProgram();
 		plcProgramB		=new PLCProgram();
 		this.ctc		=initCtc;
@@ -90,7 +96,7 @@ public class TrackController implements TrackControllerInterface,BlockOccupation
 	@Override
 	public boolean engageSwitch(String switchName, boolean engagement){
 		if(this.switchList.containsKey(switchName)){
-			Iterator<Block> switchBlockIterator=this.switchList.get(switchName).iterator();
+			Iterator<Block> switchBlockIterator=this.switchList.get(switchName).iterator();		
 			while(switchBlockIterator.hasNext()){
 				Block currBlock=switchBlockIterator.next();
 				if(currBlock.getMasterSwitch()){
